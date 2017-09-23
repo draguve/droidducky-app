@@ -1,6 +1,7 @@
 package com.draguve.droidducky;
 
 import android.util.Log;
+import android.widget.EditText;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -17,29 +18,29 @@ public class TheExecuter {
 
     private final static String TAG = "TheExecutor";
 
-    public TheExecuter() {
-
-    }
-
-
-
-    public static void SendKeyStrokes(String[] keys){
-        try{
-            Process process = Runtime.getRuntime().exec("su");
-            DataOutputStream os = new DataOutputStream(process.getOutputStream());
-            os.writeBytes("cd /data/data/com.draguve.droidducky/files" + '\n');
-            for(String key : keys){
-                String command = "echo " + key +" | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
-                os.writeBytes(command);
+    //Sends keystokes to the hostdevice with hid-gadget async
+    public static void sendKeyStrokesASYNC(final String[] keys) {
+        final String[] finalkeys= keys;
+        new Thread(new Runnable() {
+            public void run() {
+                try {
+                    Process process = Runtime.getRuntime().exec("su");
+                    DataOutputStream os = new DataOutputStream(process.getOutputStream());
+                    os.writeBytes("cd " + DUtils.binHome + '\n');
+                    for(String key : finalkeys){
+                        String command = "echo " + key +" | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
+                        os.writeBytes(command);
+                    }
+                    os.writeBytes("exit\n");
+                    os.flush();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-            os.writeBytes("exit\n");
-            os.flush();
-        }catch(IOException e){
-            e.printStackTrace();
-        }
+        }).start();
     }
 
-    public static void RunAsRoot(String[] command) {
+    public static void runAsRoot(String[] command) {
         try {
             Process process = Runtime.getRuntime().exec("su");
             DataOutputStream os = new DataOutputStream(process.getOutputStream());
@@ -53,7 +54,19 @@ public class TheExecuter {
         }
     }
 
-    public static String RunAsRootOutput(String command) {
+    public static void runAsRoot(String command){
+        try{
+            Process process = Runtime.getRuntime().exec("su");
+            DataOutputStream os = new DataOutputStream(process.getOutputStream());
+            os.writeBytes(command + '\n');
+            os.writeBytes("exit\n");
+            os.flush();
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+    public static String runAsRootOutput(String command) {
         String output = "";
         String line;
         try {

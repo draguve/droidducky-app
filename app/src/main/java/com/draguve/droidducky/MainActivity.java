@@ -7,7 +7,7 @@ import android.view.View;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static String binHome = "/data/data/com.draguve.droidducky/files";
+    public static String binHome;
     public static Application application;
 
     @Override
@@ -15,16 +15,33 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         application = getApplication();
+        binHome = "/data/data/"+application.getPackageName()+"/files";
+        DUtils.initUtils(binHome,application);
+        if(!checkForFiles()) {
+            Setup();
+            DUtils.showToast("Setup Started");
+        }
     }
 
-    public void Setup(View view){
+    //Checks Files
+    public boolean checkForFiles(){
+        if(DUtils.checkFilePermissions(binHome + "/hid-gadget-test")){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    //Copies assets to files folder and sets permissions
+    public void Setup(){
         DUtils.assetsToFiles(binHome,"","data",application.getApplicationContext());
         String command = "chmod 755 " + binHome + "/hid-gadget-test";
-        DUtils.showToast(TheExecuter.RunAsRootOutput(command),application);
+        TheExecuter.runAsRoot(command);
     }
 
-    public void RunKeyboardAttack(View view){
+    public void runKeyboardAttack(View view){
         String[] letters = {"t","e","s","t"};
-        TheExecuter.SendKeyStrokes(letters);
+        TheExecuter.sendKeyStrokesASYNC(letters);
+        DUtils.showToast("Running");
     }
 }

@@ -19,6 +19,10 @@ import java.io.OutputStream;
 
 public class DUtils {
 
+    public static String binHome;
+    public static Application application;
+
+    //Copies files from the assets folder to the files folder as assets folder is non executable
     public static void assetsToFiles(String TARGET_BASE_PATH, String path, String copyType,Context appContext) {
         AssetManager assetManager = appContext.getAssets();
         String assets[];
@@ -53,8 +57,12 @@ public class DUtils {
         }
     }
 
+    public static void initUtils(String _path,Application _app){
+        application = _app;
+        binHome = _path;
+    }
+
     public static Boolean pathIsAllowed(String path, String copyType) {
-        // never copy images, sounds or webkit
         if (!path.startsWith("images") && !path.startsWith("sounds") && !path.startsWith("webkit")) {
             if (copyType.equals("sdcard")) {
                 if (path.equals("")) {
@@ -104,11 +112,18 @@ public class DUtils {
         }
     }
 
-    public static void showToast(String message ,Application application) {
+    //Shows a toast to the user for information
+    public static void showToast(String message) {
         int duration = Toast.LENGTH_SHORT;
         Toast toast = Toast.makeText(application, message, duration);
-        toast.setGravity(Gravity.TOP | Gravity.CENTER_HORIZONTAL, 0, 0);
+        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
         toast.show();
+    }
+
+    //Checks If File is present and has execution permission
+    public static boolean checkFilePermissions(String path){
+        File f = new File(path);
+        return (f.exists() && f.canExecute() && f.canRead() && f.canWrite());
     }
 
 
