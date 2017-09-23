@@ -21,6 +21,24 @@ public class TheExecuter {
 
     }
 
+
+
+    public static void SendKeyStrokes(String[] keys){
+        try{
+            Process process = Runtime.getRuntime().exec("su");
+            DataOutputStream os = new DataOutputStream(process.getOutputStream());
+            os.writeBytes("cd /data/data/com.draguve.droidducky/files" + '\n');
+            for(String key : keys){
+                String command = "echo " + key +" | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
+                os.writeBytes(command);
+            }
+            os.writeBytes("exit\n");
+            os.flush();
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    }
+
     public static void RunAsRoot(String[] command) {
         try {
             Process process = Runtime.getRuntime().exec("su");

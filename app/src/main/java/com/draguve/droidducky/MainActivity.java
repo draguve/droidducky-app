@@ -1,20 +1,9 @@
 package com.draguve.droidducky;
 
 import android.app.Application;
-import android.content.Context;
-import android.content.res.AssetManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.Toast;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -36,10 +25,6 @@ public class MainActivity extends AppCompatActivity {
 
     public void RunKeyboardAttack(View view){
         String[] letters = {"t","e","s","t"};
-        for(int i=0;i<letters.length;i++){
-            String[] command = {"cd " + binHome,"echo "+ letters[i] +" | ./hid-gadget-test /dev/hidg0 keyboard"};
-            TheExecuter.RunAsRoot(command);
-        }
+        TheExecuter.SendKeyStrokes(letters);
     }
-
 }
