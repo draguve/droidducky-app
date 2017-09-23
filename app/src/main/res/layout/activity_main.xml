@@ -16,4 +16,13 @@ tools:context="com.draguve.droidducky.MainActivity">
     tools:layout_editor_absoluteX="8dp"
     tools:layout_editor_absoluteY="71dp"
     android:onClick="runKeyboardAttack"/>
+
+    <EditText
+        android:id="@+id/text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:ems="10"
+        android:inputType="textMultiLine" />
+
+
 </LinearLayout>

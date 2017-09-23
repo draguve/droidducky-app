@@ -1,7 +1,6 @@
 package com.draguve.droidducky;
 
 import android.util.Log;
-import android.widget.EditText;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -9,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
+
 
 /**
  * Created by Draguve on 9/23/2017.
@@ -17,17 +18,21 @@ import java.io.OutputStream;
 public class TheExecuter {
 
     private final static String TAG = "TheExecutor";
+    static volatile boolean sendKeystokes = false;
 
     //Sends keystokes to the hostdevice with hid-gadget async
-    public static void sendKeyStrokesASYNC(final String[] keys) {
-        final String[] finalkeys= keys;
+    public static void sendKeyStrokes(final ArrayList<String> keys) {
         new Thread(new Runnable() {
             public void run() {
+                sendKeystokes = true;
                 try {
                     Process process = Runtime.getRuntime().exec("su");
                     DataOutputStream os = new DataOutputStream(process.getOutputStream());
                     os.writeBytes("cd " + DUtils.binHome + '\n');
-                    for(String key : finalkeys){
+                    for(String key : keys){
+                        if(!sendKeystokes){
+                            return;
+                        }
                         String command = "echo " + key +" | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
                         os.writeBytes(command);
                     }
@@ -38,6 +43,10 @@ public class TheExecuter {
                 }
             }
         }).start();
+    }
+
+    public void stopSendingKeystrokes(){
+        sendKeystokes = false;
     }
 
     public static void runAsRoot(String[] command) {
