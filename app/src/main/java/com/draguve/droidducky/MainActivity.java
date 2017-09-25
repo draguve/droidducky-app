@@ -1,9 +1,11 @@
 package com.draguve.droidducky;
 
 import android.app.Application;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import java.util.ArrayList;
@@ -12,6 +14,8 @@ public class MainActivity extends AppCompatActivity {
 
     public static String binHome;
     public static Application application;
+    public static boolean running = false;
+    static Button runButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
         application = getApplication();
         binHome = "/data/data/"+application.getPackageName()+"/files";
         DUtils.initUtils(binHome,application);
+        runButton = (Button)findViewById(R.id.run);
         if(!checkForFiles()) {
             Setup();
             DUtils.showToast("Setup Started");
@@ -43,9 +48,24 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void runKeyboardAttack(View view){
-        EditText text = (EditText)findViewById(R.id.text);
-        ArrayList<String> letters = Parser.convertString(text.getText().toString().toCharArray());
-        TheExecuter.sendKeyStrokes(letters);
-        DUtils.showToast("Running");
+        if(!running){
+            running = true;
+            EditText text = (EditText)findViewById(R.id.text);
+            ArrayList<String> letters = Parser.convertString(text.getText().toString().toCharArray());
+            new KeyboardInjector().execute(letters);
+            runButton.setText("Running");
+            runButton.setClickable(false);
+        }else{
+            DUtils.showToast("Already Running");
+        }
+    }
+
+    public static void executionFinished(boolean finished){
+        if(finished){
+            DUtils.showToast("Ran Successfully");
+        }
+        runButton.setText("Run");
+        runButton.setClickable(true);
+        running = false;
     }
 }

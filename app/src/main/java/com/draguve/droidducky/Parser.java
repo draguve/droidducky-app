@@ -84,7 +84,6 @@ public class Parser {
             }else{
                 toRetrun.add(String.valueOf(letter));
             }
-
         }
         return toRetrun;
     }

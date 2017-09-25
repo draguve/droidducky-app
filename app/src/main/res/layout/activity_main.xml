@@ -9,7 +9,7 @@ tools:context="com.draguve.droidducky.MainActivity">
 
 
     <Button
-    android:id="@+id/button2"
+    android:id="@+id/run"
     android:layout_width="368dp"
     android:layout_height="wrap_content"
     android:text="Run"
