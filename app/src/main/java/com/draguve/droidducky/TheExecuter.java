@@ -1,6 +1,7 @@
 package com.draguve.droidducky;
 
 import android.os.AsyncTask;
+import android.os.SystemClock;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -55,11 +56,11 @@ public class TheExecuter {
             InputStream stderr = process.getErrorStream();
             InputStream stdout = process.getInputStream();
 
+            stdin.write(("cd " + DUtils.binHome + '\n').getBytes());
             stdin.write((command + '\n').getBytes());
             stdin.write(("exit\n").getBytes());
             stdin.flush();
             stdin.close();
-
             BufferedReader br = new BufferedReader(new InputStreamReader(stdout));
             while ((line = br.readLine()) != null) {
                 output = output + line;
@@ -78,5 +79,29 @@ public class TheExecuter {
             Log.d(TAG, "An InterruptedException was caught: " + ex.getMessage());
         }
         return output;
+    }
+
+    public static void injectKeystrokes(ArrayList<String> keys){
+        try {
+            Process process = Runtime.getRuntime().exec("su");
+            DataOutputStream os = new DataOutputStream(process.getOutputStream());
+            os.writeBytes("cd " + DUtils.binHome + '\n');
+            for(String key : keys){
+                if(key.length()>5&&key.substring(0,5).equals("DELAY")){
+                    int time = Integer.parseInt(key.substring(5).trim());
+                    SystemClock.sleep(time);
+                }else{
+                    String command = "echo " + key +" | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
+                    os.writeBytes(command);
+                    os.flush();
+                    Log.d("TheExecuter","writing");
+                }
+            }
+            os.writeBytes("exit\n");
+            os.flush();
+            os.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

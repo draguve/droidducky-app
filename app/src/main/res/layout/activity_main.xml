@@ -15,14 +15,15 @@ tools:context="com.draguve.droidducky.MainActivity">
     android:text="Run"
     tools:layout_editor_absoluteX="8dp"
     tools:layout_editor_absoluteY="71dp"
-    android:onClick="runKeyboardAttack"/>
+    android:onClick="runKeyboardAttack" />
 
-    <EditText
-        android:id="@+id/text"
+    <MultiAutoCompleteTextView
+        android:id="@+id/codeArea"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:ems="10"
-        android:inputType="textMultiLine" />
+        android:text="WriteHere"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:gravity="top"/>
 
 
 </LinearLayout>

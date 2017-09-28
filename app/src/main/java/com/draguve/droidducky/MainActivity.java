@@ -1,14 +1,17 @@
 package com.draguve.droidducky;
 
 import android.app.Application;
-import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.logging.Level;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -48,24 +51,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void runKeyboardAttack(View view){
-        if(!running){
-            running = true;
-            EditText text = (EditText)findViewById(R.id.text);
-            ArrayList<String> letters = Parser.convertString(text.getText().toString().toCharArray());
-            new KeyboardInjector().execute(letters);
-            runButton.setText("Running");
-            runButton.setClickable(false);
-        }else{
-            DUtils.showToast("Already Running");
+        EditText text = (EditText)findViewById(R.id.codeArea);
+        ArrayList<String> duckyLines = new ArrayList<>(Arrays.asList(text.getText().toString().split("\n")));
+        ArrayList<String> letters = Parser.parseDucky(duckyLines);
+        for(String key : letters){
+            Log.e("All Letters",key);
         }
-    }
-
-    public static void executionFinished(boolean finished){
-        if(finished){
-            DUtils.showToast("Ran Successfully");
-        }
-        runButton.setText("Run");
-        runButton.setClickable(true);
-        running = false;
+        TheExecuter.injectKeystrokes(letters);
     }
 }
