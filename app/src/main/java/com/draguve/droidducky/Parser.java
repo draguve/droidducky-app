@@ -109,14 +109,77 @@ public class Parser {
 
     public static void parseDuckyCommand(String command,ArrayList<String> allCommands){
         String[] words = command.split(" ");
-        if(words[0].toUpperCase().equals("STRING")){
-            allCommands.addAll(parseString(command.substring(6).trim().toCharArray()));
-        }else if(words[0].toUpperCase().equals("GUI") || words[0].toUpperCase().equals("WINDOWS")){
-            allCommands.add("left-meta " + convertLetter(words[1].charAt(0)));
-        }else if(words[0].toUpperCase().equals("DELAY")){
-            allCommands.add(command.toUpperCase());
-        }else if(words[0].toUpperCase().equals("ENTER")){
-            allCommands.add("enter");
+        Boolean doneParseing = false;
+        String toAdd = "";
+        int current = 0;
+        while(!doneParseing){
+            if( words.length < current){
+                doneParseing = true;
+            }else if(words[current].toUpperCase().equals("STRING")){
+                allCommands.addAll(parseString(command.substring(6).trim().toCharArray()));
+                doneParseing = true;
+            }else if(words[current].toUpperCase().equals("GUI") || words[0].toUpperCase().equals("WINDOWS")){
+                toAdd = toAdd + "left-meta " + convertLetter(words[current+1].charAt(0));
+                doneParseing = true;
+            }else if(words[0].toUpperCase().equals("DELAY")){
+                allCommands.add(command.toUpperCase());
+                doneParseing = true;
+            }else if(words[current].toUpperCase().equals("ENTER")){
+                toAdd = toAdd + "enter";
+                doneParseing = true;
+            }else if(staySame.contains(words[current].toUpperCase())){
+                toAdd = toAdd + words[current].toLowerCase();
+                doneParseing= true;
+            }else if(words[current].toUpperCase().equals("DOWNARROW") || words[current].toUpperCase().equals("DOWN")){
+                toAdd = toAdd + "down";
+                doneParseing = true;
+            }else if(words[current].toUpperCase().equals("UPARROW") || words[current].toUpperCase().equals("UP")){
+                toAdd = toAdd + "up";
+                doneParseing = true;
+            }else if(words[current].toUpperCase().equals("LEFTARROW") || words[current].toUpperCase().equals("LEFT")){
+                toAdd = toAdd + "left";
+                doneParseing = true;
+            }else if(words[current].toUpperCase().equals("RIGHTARROW") || words[current].toUpperCase().equals("RIGHT")){
+                toAdd = toAdd + "right";
+                doneParseing = true;
+            }else if(words[current].toUpperCase().equals("DEFAULTDELAY") || words[current].toUpperCase().equals("DEFAULT_DELAY")){
+                toAdd = "DELAY 200";
+                doneParseing = true;
+            }else if(words[current].toUpperCase().equals("BREAK") || words[current].toUpperCase().equals("PAUSE")){
+                toAdd = toAdd + "pause";
+                doneParseing = true;
+            }else if(words[current].toUpperCase().equals("ESC") || words[current].toUpperCase().equals("ESCAPE")){
+                toAdd = toAdd + "escape";
+                doneParseing = true;
+            }else if(words[current].toUpperCase().equals("PRINTSCREEN")){
+                toAdd = toAdd + "print";
+                doneParseing = true;
+            }else if(words[current].toUpperCase().equals("SHIFT")){
+                toAdd = toAdd + "left-shift ";
+                current++;
+            }else if(words[current].toUpperCase().equals("CRTL")||words[current].toUpperCase().equals("CONTROL")){
+                toAdd = toAdd + "left-ctrl ";
+                current++;
+            }else if(words[current].toUpperCase().equals("ALT")){
+                toAdd = toAdd + "left-alt ";
+                current++;
+            }else if(words[current].toUpperCase().equals("ALT-SHIFT")){
+                allCommands.add("left-alt left-shift");
+                doneParseing = true;
+            }else if(words[current].toUpperCase().equals("CTRL-ALT")){
+                toAdd = toAdd + "left-ctrl left-alt ";
+                current ++;
+            }else if(words[current].toUpperCase().equals("CTRL-SHIFT")){
+                toAdd = toAdd + "left-ctrl left-shift ";
+                current ++;
+            }else {
+                for(int i=current;i<words.length-current;i++){
+                    toAdd = toAdd + " " + words[i];
+                }
+            }
+        }
+        if(!toAdd.equals("")){
+            allCommands.add(toAdd);
         }
     }
 }
