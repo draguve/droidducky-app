@@ -104,4 +104,8 @@ public class TheExecuter {
             e.printStackTrace();
         }
     }
+
+    public static void injectASYNC(ArrayList<String> keys){
+
+    }
 }

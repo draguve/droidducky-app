@@ -113,7 +113,7 @@ public class Parser {
         String toAdd = "";
         int current = 0;
         while(!doneParseing){
-            if( words.length < current){
+            if( words.length <= current){
                 doneParseing = true;
             }else if(words[current].toUpperCase().equals("STRING")){
                 allCommands.addAll(parseString(command.substring(6).trim().toCharArray()));
@@ -173,9 +173,11 @@ public class Parser {
                 toAdd = toAdd + "left-ctrl left-shift ";
                 current ++;
             }else {
-                for(int i=current;i<words.length-current;i++){
-                    toAdd = toAdd + " " + words[i];
+                for(int i=current;i<words.length;i++){
+                    toAdd = toAdd + " " + words[i].toLowerCase();
                 }
+                doneParseing = true;
+                //toAdd = toAdd + " " + words[current];
             }
         }
         if(!toAdd.equals("")){
