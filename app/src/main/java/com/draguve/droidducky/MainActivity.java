@@ -8,16 +8,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.logging.Level;
 
 public class MainActivity extends AppCompatActivity {
 
     public static String binHome;
     public static Application application;
-    public static boolean running = false;
     static Button runButton;
 
     @Override
@@ -45,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     //Copies assets to files folder and sets permissions
     public void Setup(){
-        DUtils.assetsToFiles(binHome,"","data",application.getApplicationContext());
+        DUtils.assetsToFiles(binHome,"","data",this);
         String command = "chmod 755 " + binHome + "/hid-gadget-test";
         TheExecuter.runAsRoot(command);
     }
@@ -53,10 +50,18 @@ public class MainActivity extends AppCompatActivity {
     public void runKeyboardAttack(View view){
         EditText text = (EditText)findViewById(R.id.codeArea);
         ArrayList<String> duckyLines = new ArrayList<>(Arrays.asList(text.getText().toString().split("\n")));
-        ArrayList<String> letters = Parser.parseDucky(duckyLines);
+        //ArrayList<String> letters = Parser.parseDucky(duckyLines);
+        ArrayList<String> letters = DuckConverter.convert(duckyLines,this);
         for(String key : letters){
-            Log.e("All Letters",key);
+            if(key.charAt(0)=='\u0002'){
+                int time = Integer.parseInt(key.substring(1).trim());
+                Log.d("Keys",""+time);
+            }else if(key.charAt(0)=='\u0001'){
+                Log.d("Keys",key.substring(1));
+            }else{
+                Log.d("Keys",key);
+            }
         }
-        TheExecuter.injectKeystrokes(letters);
+        //TheExecuter.injectKeystrokes(letters);
     }
 }

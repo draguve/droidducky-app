@@ -87,14 +87,15 @@ public class TheExecuter {
             DataOutputStream os = new DataOutputStream(process.getOutputStream());
             os.writeBytes("cd " + DUtils.binHome + '\n');
             for(String key : keys){
-                if(key.length()>5&&key.substring(0,5).equals("DELAY")){
-                    int time = Integer.parseInt(key.substring(5).trim());
+                if(key.charAt(0)=='\u0002'){
+                    int time = Integer.parseInt(key.substring(1).trim());
                     SystemClock.sleep(time);
+                }else if(key.charAt(0)=='\u0001'){
+                    DUtils.showToast(key.substring(1));
                 }else{
                     String command = "echo " + key +" | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
                     os.writeBytes(command);
                     os.flush();
-                    Log.d("TheExecuter","writing");
                 }
             }
             os.writeBytes("exit\n");
@@ -103,9 +104,5 @@ public class TheExecuter {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public static void injectASYNC(ArrayList<String> keys){
-
     }
 }
