@@ -50,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
     public void runKeyboardAttack(View view){
         EditText text = (EditText)findViewById(R.id.codeArea);
         ArrayList<String> duckyLines = new ArrayList<>(Arrays.asList(text.getText().toString().split("\n")));
-        //ArrayList<String> letters = Parser.parseDucky(duckyLines);
         ArrayList<String> letters = DuckConverter.convert(duckyLines,this);
         for(String key : letters){
             if(key.charAt(0)=='\u0002'){
@@ -62,6 +61,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("Keys",key);
             }
         }
-        //TheExecuter.injectKeystrokes(letters);
+        TheExecuter.injectKeystrokes(letters);
     }
 }

@@ -27,15 +27,13 @@ public class DUtils {
         AssetManager assetManager = appContext.getAssets();
         String assets[];
         try {
-            // Log.i("tag", "assetsTo" + copyType +"() "+path);
             assets = assetManager.list(path);
             if (assets.length == 0) {
                 copyFile(TARGET_BASE_PATH, path,appContext);
             } else {
                 String fullPath = TARGET_BASE_PATH + "/" + path;
-                // Log.i("tag", "path="+fullPath);
                 File dir = new File(fullPath);
-                if (!dir.exists() && pathIsAllowed(path, copyType)) { // copy thouse dirs
+                if (!dir.exists()) { // copy thouse dirs
                     if (!dir.mkdirs()) {
                         Log.i("tag", "could not create dir " + fullPath);
                     }
@@ -47,9 +45,7 @@ public class DUtils {
                     } else {
                         p = path + "/";
                     }
-                    if (pathIsAllowed(path, copyType)) {
-                        assetsToFiles(TARGET_BASE_PATH, p + asset, copyType,appContext);
-                    }
+                    assetsToFiles(TARGET_BASE_PATH, p + asset, copyType,appContext);
                 }
             }
         } catch (IOException ex) {
@@ -60,31 +56,6 @@ public class DUtils {
     public static void initUtils(String _path,Application _app){
         application = _app;
         binHome = _path;
-    }
-
-    public static Boolean pathIsAllowed(String path, String copyType) {
-        if (!path.startsWith("images") && !path.startsWith("sounds") && !path.startsWith("webkit")) {
-            if (copyType.equals("sdcard")) {
-                if (path.equals("")) {
-                    return true;
-                }
-                return false;
-            }
-            if (copyType.equals("data")) {
-                if (path.equals("")) {
-                    return true;
-                } else if (path.startsWith("scripts")) {
-                    return true;
-                } else if (path.startsWith("wallpapers")) {
-                    return true;
-                } else if (path.startsWith("etc")) {
-                    return true;
-                }
-                return false;
-            }
-            return false;
-        }
-        return false;
     }
 
     public static void copyFile(String TARGET_BASE_PATH, String filename,Context appContext) {
