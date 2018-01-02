@@ -48,18 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void runKeyboardAttack(View view){
         EditText text = (EditText)findViewById(R.id.codeArea);
-        ArrayList<String> duckyLines = new ArrayList<>(Arrays.asList(text.getText().toString().split("\n")));
-        ArrayList<String> letters = DuckConverter.convert(duckyLines,this);
-        /*for(String key : letters){
-            if(key.charAt(0)=='\u0002'){
-                int time = Integer.parseInt(key.substring(1).trim());
-                Log.d("Keys",""+time);
-            }else if(key.charAt(0)=='\u0001'){
-                Log.d("Keys",key.substring(1));
-            }else{
-                Log.d("Keys",key);
-            }
-        }*/
-        TheExecuter.injectKeystrokes(letters);
+        Script script = new Script("script",""+text.getText().toString());
+        script.executeCode(this);
     }
 }
