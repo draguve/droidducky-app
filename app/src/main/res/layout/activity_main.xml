@@ -21,9 +21,9 @@ tools:context="com.draguve.droidducky.MainActivity">
         android:id="@+id/codeArea"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="top"
         android:text="WriteHere"
-        android:textAppearance="@style/TextAppearance.AppCompat"
-        android:gravity="top"/>
+        android:textAppearance="@style/TextAppearance.AppCompat" />
 
 
 </LinearLayout>
