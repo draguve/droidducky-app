@@ -3,7 +3,6 @@ package com.draguve.droidducky;
 import android.app.Application;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -26,8 +25,8 @@ public class MainActivity extends AppCompatActivity {
         DUtils.initUtils(binHome,application);
         runButton = (Button)findViewById(R.id.run);
         if(!checkForFiles()) {
-            Setup();
-            DUtils.showToast("Setup Started");
+            setup();
+            DUtils.showToast("setup Started");
         }
     }
 
@@ -41,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //Copies assets to files folder and sets permissions
-    public void Setup(){
+    public void setup(){
         DUtils.assetsToFiles(binHome,"","data",this);
         String command = "chmod 755 " + binHome + "/hid-gadget-test";
         TheExecuter.runAsRoot(command);
@@ -51,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         EditText text = (EditText)findViewById(R.id.codeArea);
         ArrayList<String> duckyLines = new ArrayList<>(Arrays.asList(text.getText().toString().split("\n")));
         ArrayList<String> letters = DuckConverter.convert(duckyLines,this);
-        for(String key : letters){
+        /*for(String key : letters){
             if(key.charAt(0)=='\u0002'){
                 int time = Integer.parseInt(key.substring(1).trim());
                 Log.d("Keys",""+time);
@@ -60,7 +59,7 @@ public class MainActivity extends AppCompatActivity {
             }else{
                 Log.d("Keys",key);
             }
-        }
+        }*/
         TheExecuter.injectKeystrokes(letters);
     }
 }
