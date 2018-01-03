@@ -2,6 +2,7 @@ package com.draguve.droidducky;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.AssetManager;
 import android.util.Log;
 import android.view.Gravity;

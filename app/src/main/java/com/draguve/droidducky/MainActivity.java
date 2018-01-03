@@ -1,6 +1,7 @@
 package com.draguve.droidducky;
 
 import android.app.Application;
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -50,5 +51,10 @@ public class MainActivity extends AppCompatActivity {
         EditText text = (EditText)findViewById(R.id.codeArea);
         Script script = new Script("script",""+text.getText().toString());
         script.executeCode(this);
+    }
+
+    public void openCodeEditor(){
+        //Intent intent = new Intent(this,);
+        //startActivity(intent);
     }
 }
