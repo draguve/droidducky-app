@@ -60,13 +60,15 @@ public class ScriptsManager extends SQLiteOpenHelper{
     }
 
     public Script getScript(String id){
+        Script script = null;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_SCRIPTS, new String[] { KEY_ID,
                         KEY_NAME, KEY_CODE }, KEY_ID + "=?",
                 new String[] { id }, null, null, null, null);
-        if (cursor != null)
+        if (cursor != null) {
             cursor.moveToFirst();
-        Script script = new Script(cursor.getString(0),cursor.getString(1),cursor.getString(2));
+            script = new Script(cursor.getString(0),cursor.getString(1),cursor.getString(2));
+        }
         return script;
     }
 

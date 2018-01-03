@@ -8,6 +8,7 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,23 +29,25 @@ public class selector extends AppCompatActivity {
         setContentView(R.layout.activity_selector);
        // Toolbar toolbar = findViewById(R.id.a);
        // setSupportActionBar(toolbar);
-
+        ScriptsManager db = new ScriptsManager(this);
+        scriptList = db.getAllScripts();
+        for(Script thing : scriptList){
+            Log.e("Script",thing.getName());
+        }
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-
         mAdapter = new ScriptsAdapter(scriptList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
         recyclerView.setAdapter(mAdapter);
-
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
 
         //Testing Code
-        for(int i=0;i<10;i++){
+        /*for(int i=0;i<10;i++){
             Script temp = new Script("Test "+i,"String abcd");
             scriptList.add(temp);
-        }
+        }*/
         mAdapter.notifyDataSetChanged();
     }
 }

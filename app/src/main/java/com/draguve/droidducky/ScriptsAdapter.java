@@ -4,6 +4,7 @@ package com.draguve.droidducky;
  * Created by Draguve on 1/3/2018.
  */
 
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,6 +49,9 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
             @Override
             public void onClick(View v) {
                 Toast.makeText(v.getContext(),"I"+position,LENGTH_SHORT).show();
+                Intent codeEditorIntent = new Intent(v.getContext(),CodeEditor.class);
+                codeEditorIntent.putExtra("idSelected",scriptList.get(position).getID());
+                v.getContext().startActivity(codeEditorIntent);
             }
         });
         Script script = scriptList.get(position);

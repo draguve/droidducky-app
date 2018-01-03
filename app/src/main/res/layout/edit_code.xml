@@ -7,6 +7,7 @@
     android:orientation="vertical"
     android:gravity="left"
     android:paddingLeft="10dp"
+    android:paddingRight="10dp"
     android:layout_weight="1">
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +16,7 @@
         android:layout_weight="1">
 
         <com.rengwuxian.materialedittext.MaterialEditText
-        android:id="@+id/editText2"
+        android:id="@+id/codeEdit"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:ems="10"
@@ -28,15 +29,15 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
         android:orientation="horizontal"
         android:gravity="center|bottom">
 
         <com.rengwuxian.materialedittext.MaterialEditText
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:hint="Script Name"
+            android:id="@+id/scriptName"
             app:met_floatingLabel="highlight"/>
         <Button
             android:id="@+id/test"
