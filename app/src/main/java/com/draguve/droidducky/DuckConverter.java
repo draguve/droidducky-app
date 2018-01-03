@@ -77,6 +77,7 @@ public class DuckConverter {
     }
 
     public static ArrayList<String> convertString(String line,Properties properties){
+        line = line.trim();
         ArrayList<String> letters = new ArrayList<>();
         for(char letter : line.toCharArray()){
             letters.add(convertChar(letter,properties));

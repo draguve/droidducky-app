@@ -48,7 +48,6 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(v.getContext(),"I"+position,LENGTH_SHORT).show();
                 Intent codeEditorIntent = new Intent(v.getContext(),CodeEditor.class);
                 codeEditorIntent.putExtra("idSelected",scriptList.get(position).getID());
                 v.getContext().startActivity(codeEditorIntent);

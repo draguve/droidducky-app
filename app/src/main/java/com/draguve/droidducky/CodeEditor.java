@@ -48,12 +48,12 @@ public class CodeEditor extends AppCompatActivity {
 
     public void saveScript(View view){
         if(scriptName.getText().length()==0){
-            Toast.makeText(this,"Please name the script to save it",Toast.LENGTH_SHORT);
+            Toast.makeText(this,"Please name the script to save it",Toast.LENGTH_SHORT).show();
         }
         currentScript.setCode(codeTextBox.getText().toString());
         currentScript.setName(scriptName.getText().toString());
         if(db.getScript(currentScript.getID())!=null){
-            Toast.makeText(this,"Replacing the saved script",Toast.LENGTH_SHORT);
+            Toast.makeText(getApplicationContext(),"Replacing the saved script",Toast.LENGTH_SHORT).show();
             db.updateScript(currentScript);
         }else{
             db.addScript(currentScript);
