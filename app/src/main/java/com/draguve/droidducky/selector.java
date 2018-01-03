@@ -25,15 +25,11 @@ public class selector extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        DUtils.setupFilesForInjection(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selector);
-       // Toolbar toolbar = findViewById(R.id.a);
-       // setSupportActionBar(toolbar);
         ScriptsManager db = new ScriptsManager(this);
         scriptList = db.getAllScripts();
-        for(Script thing : scriptList){
-            Log.e("Script",thing.getName());
-        }
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         mAdapter = new ScriptsAdapter(scriptList);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
@@ -42,12 +38,6 @@ public class selector extends AppCompatActivity {
         recyclerView.setAdapter(mAdapter);
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
-
-        //Testing Code
-        /*for(int i=0;i<10;i++){
-            Script temp = new Script("Test "+i,"String abcd");
-            scriptList.add(temp);
-        }*/
         mAdapter.notifyDataSetChanged();
     }
 }
