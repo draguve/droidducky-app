@@ -21,7 +21,6 @@ import java.io.OutputStream;
 public class DUtils {
 
     public static String binHome;
-    public static Application application;
 
     //Copies files from the assets folder to the files folder as assets folder is non executable
     public static void assetsToFiles(String TARGET_BASE_PATH, String path, String copyType,Context appContext) {
@@ -54,8 +53,7 @@ public class DUtils {
         }
     }
 
-    public static void initUtils(String _path,Application _app){
-        application = _app;
+    public static void initUtils(String _path){
         binHome = _path;
     }
 
@@ -84,12 +82,21 @@ public class DUtils {
         }
     }
 
-    //Shows a toast to the user for information
-    public static void showToast(String message) {
-        int duration = Toast.LENGTH_SHORT;
-        Toast toast = Toast.makeText(application, message, duration);
-        toast.setGravity(Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, 0, 0);
-        toast.show();
+
+    public static boolean checkForFiles(){
+        if(DUtils.checkFilePermissions(binHome + "/hid-gadget-test")){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public static void setupFilesForInjection(Context context){
+        binHome = "/data/data/"+context.getApplicationContext().getPackageName()+"/files";
+        DUtils.initUtils(binHome);
+        assetsToFiles(binHome,"","data",context);
+        String command = "chmod 755 " + binHome + "/hid-gadget-test";
+        TheExecuter.runAsRoot(command);
     }
 
     //Checks If File is present and has execution permission
@@ -97,6 +104,7 @@ public class DUtils {
         File f = new File(path);
         return (f.exists() && f.canExecute() && f.canRead() && f.canWrite());
     }
+
 
 
 }
