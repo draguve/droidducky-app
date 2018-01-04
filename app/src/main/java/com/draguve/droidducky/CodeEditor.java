@@ -4,10 +4,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
-import android.widget.Toolbar;
+//import android.widget.Toolbar;
 
 /**
  * Created by Draguve on 1/4/2018.
@@ -40,6 +41,21 @@ public class CodeEditor extends AppCompatActivity {
         }else{
             currentScript = new Script("","");
         }
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.code_toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+    }
+
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        goBackToSelector();
+        return true;
     }
 
     public void runCode(View view){

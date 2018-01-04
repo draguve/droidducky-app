@@ -41,6 +41,16 @@ public class selector extends AppCompatActivity {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
         mAdapter.notifyDataSetChanged();
+
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.selector_toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+
     }
 
     @Override
@@ -49,4 +59,6 @@ public class selector extends AppCompatActivity {
         scriptList = db.getAllScripts();
         mAdapter.updateScriptList(scriptList);
     }
+
+
 }

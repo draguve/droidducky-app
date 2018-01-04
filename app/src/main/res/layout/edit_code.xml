@@ -6,9 +6,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:gravity="left"
-    android:paddingLeft="10dp"
-    android:paddingRight="10dp"
     android:layout_weight="1">
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/code_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:elevation="4dp"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,6 +29,7 @@
         android:inputType="textMultiLine"
         android:hint="Code"
         app:met_floatingLabel="highlight"
+        app:met_primaryColor="@color/colorPrimary"
         android:gravity="top"/>
     </LinearLayout>
 
@@ -38,6 +45,7 @@
             android:layout_height="wrap_content"
             android:hint="Script Name"
             android:id="@+id/scriptName"
+            app:met_primaryColor="@color/colorPrimary"
             app:met_floatingLabel="highlight"/>
         <Button
             android:id="@+id/test"
