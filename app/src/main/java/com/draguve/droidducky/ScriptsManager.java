@@ -65,7 +65,7 @@ public class ScriptsManager extends SQLiteOpenHelper{
         Cursor cursor = db.query(TABLE_SCRIPTS, new String[] { KEY_ID,
                         KEY_NAME, KEY_CODE }, KEY_ID + "=?",
                 new String[] { id }, null, null, null, null);
-        if (cursor != null) {
+        if (cursor != null && cursor.getCount()>0) {
             cursor.moveToFirst();
             script = new Script(cursor.getString(0),cursor.getString(1),cursor.getString(2));
         }

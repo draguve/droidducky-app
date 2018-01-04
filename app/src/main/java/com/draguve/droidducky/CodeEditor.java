@@ -27,12 +27,12 @@ public class CodeEditor extends AppCompatActivity {
         setContentView(R.layout.edit_code);
         Intent callingIntent = getIntent();
         String scriptID = callingIntent.getExtras().getString("idSelected",null);
+        codeTextBox = (EditText)findViewById(R.id.codeEdit);
+        scriptName = (EditText)findViewById(R.id.scriptName);
         db = new ScriptsManager(this);
         if(scriptID!=null){
             currentScript = db.getScript(scriptID);
             if(currentScript!=null){
-                codeTextBox = (EditText)findViewById(R.id.codeEdit);
-                scriptName = (EditText)findViewById(R.id.scriptName);
                 scriptName.setText(currentScript.getName());
                 codeTextBox.setText(currentScript.getCode());
             }else{
@@ -64,8 +64,10 @@ public class CodeEditor extends AppCompatActivity {
     }
 
     public void saveScript(View view){
-        if(scriptName.getText().length()==0){
-            Toast.makeText(this,"Please name the script to save it",Toast.LENGTH_SHORT).show();
+        if(scriptName!=null) {
+            if(scriptName.getText().length()==0){
+                Toast.makeText(this,"Please name the script to save it",Toast.LENGTH_SHORT).show();
+            }
         }
         currentScript.setCode(codeTextBox.getText().toString());
         currentScript.setName(scriptName.getText().toString());

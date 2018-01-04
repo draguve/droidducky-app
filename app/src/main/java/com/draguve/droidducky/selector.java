@@ -61,4 +61,10 @@ public class selector extends AppCompatActivity {
     }
 
 
+    public void addNewCode(View view) {
+        final int result = 1;
+        Intent codeEditorIntent = new Intent(this,CodeEditor.class);
+        codeEditorIntent.putExtra("idSelected",(String) null);
+        this.startActivityForResult(codeEditorIntent,result);
+    }
 }
