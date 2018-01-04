@@ -1,6 +1,7 @@
 package com.draguve.droidducky;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -20,6 +21,7 @@ import java.util.List;
 public class selector extends AppCompatActivity {
 
     private List<Script> scriptList = new ArrayList<>();
+    ScriptsManager db = null;
     private RecyclerView recyclerView;
     private ScriptsAdapter mAdapter;
 
@@ -28,10 +30,10 @@ public class selector extends AppCompatActivity {
         DUtils.setupFilesForInjection(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selector);
-        ScriptsManager db = new ScriptsManager(this);
+        db = new ScriptsManager(this);
         scriptList = db.getAllScripts();
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mAdapter = new ScriptsAdapter(scriptList);
+        mAdapter = new ScriptsAdapter(scriptList,this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -39,5 +41,12 @@ public class selector extends AppCompatActivity {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(),DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
         mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        scriptList = db.getAllScripts();
+        mAdapter.updateScriptList(scriptList);
     }
 }

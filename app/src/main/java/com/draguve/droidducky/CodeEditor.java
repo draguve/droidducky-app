@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+import android.widget.Toolbar;
 
 /**
  * Created by Draguve on 1/4/2018.
@@ -58,5 +59,16 @@ public class CodeEditor extends AppCompatActivity {
         }else{
             db.addScript(currentScript);
         }
+    }
+
+    public void goBackToSelector(){
+        Intent goingBack = new Intent();
+        setResult(RESULT_OK,goingBack);
+        finish();
+    }
+
+    @Override
+    public void onBackPressed() {
+        goBackToSelector();
     }
 }

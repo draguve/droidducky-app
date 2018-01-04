@@ -4,6 +4,8 @@ package com.draguve.droidducky;
  * Created by Draguve on 1/3/2018.
  */
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,6 +21,7 @@ import static android.widget.Toast.LENGTH_SHORT;
 public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHolder>{
 
     private List<Script> scriptList;
+    private Activity mainActivityContext;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, year, genre;
@@ -30,8 +33,9 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
             year = (TextView) view.findViewById(R.id.year);
         }
     }
-    public ScriptsAdapter(List<Script> scriptList) {
+    public ScriptsAdapter(List<Script> scriptList,Context mainActivityContext) {
         this.scriptList = scriptList;
+        this.mainActivityContext = (Activity) mainActivityContext;
     }
 
     @Override
@@ -48,9 +52,10 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final int result = 1;
                 Intent codeEditorIntent = new Intent(v.getContext(),CodeEditor.class);
                 codeEditorIntent.putExtra("idSelected",scriptList.get(position).getID());
-                v.getContext().startActivity(codeEditorIntent);
+                mainActivityContext.startActivityForResult(codeEditorIntent,result);
             }
         });
         Script script = scriptList.get(position);
@@ -62,5 +67,11 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
     @Override
     public int getItemCount() {
         return scriptList.size();
+    }
+
+    public void updateScriptList(List<Script> scripts){
+        this.scriptList.clear();
+        this.scriptList.addAll(scripts);
+        this.notifyDataSetChanged();
     }
 }
