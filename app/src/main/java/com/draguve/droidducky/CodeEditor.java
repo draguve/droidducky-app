@@ -8,6 +8,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 //import android.widget.Toolbar;
 
 /**
@@ -67,13 +70,40 @@ public class CodeEditor extends AppCompatActivity {
         if(scriptName!=null) {
             if(scriptName.getText().length()==0){
                 Toast.makeText(this,"Please name the script to save it",Toast.LENGTH_SHORT).show();
+                return;
             }
         }
         currentScript.setCode(codeTextBox.getText().toString());
         currentScript.setName(scriptName.getText().toString());
         if(db.getScript(currentScript.getID())!=null){
-            Toast.makeText(getApplicationContext(),"Replacing the saved script",Toast.LENGTH_SHORT).show();
-            db.updateScript(currentScript);
+            //Toast.makeText(getApplicationContext(),"Replacing the saved script",Toast.LENGTH_SHORT).show();
+            //db.updateScript(currentScript);
+            new MaterialDialog.Builder(this)
+                    .title("How do you want to save the script")
+                    .positiveText("Create new")
+                    .negativeText("Cancel")
+                    .neutralText("Overwrite")
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(MaterialDialog dialog, DialogAction which) {
+                            db.addScript(new Script(currentScript.getName(),currentScript.getCode()));
+                            goBackToSelector();
+                        }
+                    })
+                    .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(MaterialDialog dialog, DialogAction which) {
+                            db.addScript(currentScript);
+                            goBackToSelector();
+                        }
+                    })
+                    .onNegative(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(MaterialDialog dialog, DialogAction which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .show();
         }else{
             db.addScript(currentScript);
         }
