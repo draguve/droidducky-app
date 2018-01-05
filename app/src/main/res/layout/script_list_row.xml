@@ -26,11 +26,22 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/title" />
 
-    <TextView
-        android:id="@+id/year"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:textColor="@color/year" />
+        android:orientation="horizontal"
+        android:layout_alignParentRight="true">
+
+        <Button
+            android:id="@+id/list_run"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Run" />
+        <Button
+            android:id="@+id/list_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete" />
+    </LinearLayout>
 
 </RelativeLayout>

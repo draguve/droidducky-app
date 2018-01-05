@@ -8,34 +8,39 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
 
-import static android.widget.Toast.LENGTH_SHORT;
 
 public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHolder>{
 
     private List<Script> scriptList;
     private Activity mainActivityContext;
+    private ScriptsManager db;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, year, genre;
+        public TextView title, genre;
+        public Button run,delete;
 
         public MyViewHolder(View view) {
             super(view);
             title = (TextView) view.findViewById(R.id.title);
             genre = (TextView) view.findViewById(R.id.genre);
-            year = (TextView) view.findViewById(R.id.year);
+            run = (Button)view.findViewById(R.id.list_run);
+            delete = (Button)view.findViewById(R.id.list_delete);
         }
     }
     public ScriptsAdapter(List<Script> scriptList,Context mainActivityContext) {
         this.scriptList = scriptList;
         this.mainActivityContext = (Activity) mainActivityContext;
+        db = new ScriptsManager(mainActivityContext);
     }
 
     @Override
@@ -58,10 +63,22 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
                 mainActivityContext.startActivityForResult(codeEditorIntent,result);
             }
         });
+        holder.run.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scriptList.get(position).executeCode(mainActivityContext);
+            }
+        });
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                db.deleteScript(scriptList.get(position).getID());
+                updateScriptList(db.getAllScripts());
+            }
+        });
         Script script = scriptList.get(position);
         holder.title.setText(script.getName());
         holder.genre.setText("Test");
-        holder.year.setText("Test");
     }
 
     @Override
