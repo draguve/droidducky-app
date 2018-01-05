@@ -106,6 +106,8 @@ public class CodeEditor extends AppCompatActivity {
                     .show();
         }else{
             db.addScript(currentScript);
+            goBackToSelector();
+
         }
     }
 

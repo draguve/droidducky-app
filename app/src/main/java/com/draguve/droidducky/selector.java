@@ -1,8 +1,13 @@
 package com.draguve.droidducky;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -15,6 +20,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,9 +30,17 @@ public class selector extends AppCompatActivity {
     ScriptsManager db = null;
     private RecyclerView recyclerView;
     private ScriptsAdapter mAdapter;
+    public static final int MULTIPLE_PERMISSIONS = 10; // code you want.
+
+    String[] permissions= new String[]{
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         DUtils.setupFilesForInjection(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_selector);
@@ -51,6 +65,9 @@ public class selector extends AppCompatActivity {
             }
         });
 
+        if(checkPermissions()){
+            createFolder();
+        }
     }
 
     @Override
@@ -60,11 +77,51 @@ public class selector extends AppCompatActivity {
         mAdapter.updateScriptList(scriptList);
     }
 
+    private  boolean checkPermissions() {
+        int result;
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        for (String p:permissions) {
+            result = ContextCompat.checkSelfPermission(this,p);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                listPermissionsNeeded.add(p);
+            }
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),MULTIPLE_PERMISSIONS );
+            return false;
+        }
+        return true;
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MULTIPLE_PERMISSIONS:{
+                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+                    // permissions granted.
+                    createFolder();
+                } else {
+                    Log.d("Permissions","PermissionsProblem");
+                }
+                return;
+            }
+        }
+    }
+
 
     public void addNewCode(View view) {
         final int result = 1;
         Intent codeEditorIntent = new Intent(this,CodeEditor.class);
         codeEditorIntent.putExtra("idSelected",(String) null);
         this.startActivityForResult(codeEditorIntent,result);
+    }
+
+    public static void createFolder(){
+        File path = Environment.getExternalStorageDirectory();
+        File file = new File(path,"Droidducky");
+        if (!file.exists()) {
+            file.mkdirs();
+        }
     }
 }

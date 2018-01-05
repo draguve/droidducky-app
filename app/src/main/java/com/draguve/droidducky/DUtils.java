@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.AssetManager;
+import android.os.Environment;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.Toast;
@@ -83,10 +84,10 @@ public class DUtils {
     }
 
 
-    public static boolean checkForFiles(){
-        if(DUtils.checkFilePermissions(binHome + "/hid-gadget-test")){
+    public static boolean checkForFiles() {
+        if (DUtils.checkFilePermissions(binHome + "/hid-gadget-test")) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }
@@ -104,7 +105,4 @@ public class DUtils {
         File f = new File(path);
         return (f.exists() && f.canExecute() && f.canRead() && f.canWrite());
     }
-
-
-
 }

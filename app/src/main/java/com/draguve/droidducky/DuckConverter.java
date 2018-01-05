@@ -6,10 +6,17 @@ package com.draguve.droidducky;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Properties;
@@ -17,9 +24,11 @@ import java.util.Properties;
 public class DuckConverter {
 
     static String lastLine="";
+    static Context mAppContext = null;
 
     public static ArrayList<String> convert(ArrayList<String> DuckLines,Context appContext){
         Properties properties = new Properties();
+        mAppContext = appContext;
         try{
             properties = loadProperties(appContext);
         }catch(IOException e){
@@ -69,6 +78,28 @@ public class DuckConverter {
             return letters;
         }else if(words[0].trim().toUpperCase().equals("DEFAULT_DELAY")){
             letters.add("\u0002"+"200");
+            return letters;
+        }else if(words[0].trim().toUpperCase().equals("WRITE_FILE")){
+            File path = Environment.getExternalStorageDirectory();
+            File file = new File(path,"/DroidDucky/"+words[1].trim());
+            if(file.exists()){
+                try {
+                    BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+                    String receiveString = "";
+                    while ( (receiveString = bufferedReader.readLine()) != null ) {
+                        Log.d("DuckConverter",receiveString);
+                        letters.addAll(convertString(receiveString+"\n",properties));
+                    }
+                    bufferedReader.close();
+                }
+                catch (FileNotFoundException e) {
+                    Log.e("login activity", "File not found: " + e.toString());
+                } catch (IOException e) {
+                    Log.e("login activity", "Can not read file: " + e.toString());
+                }
+            }else{
+                Toast.makeText(mAppContext,"Can't Find File , Ignoring File ",Toast.LENGTH_SHORT);
+            }
             return letters;
         }else{
             letters.add(convertCommand(line.trim().split(" "),properties));
