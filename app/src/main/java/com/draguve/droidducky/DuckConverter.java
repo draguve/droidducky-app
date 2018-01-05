@@ -60,7 +60,7 @@ public class DuckConverter {
         ArrayList<String> letters = new ArrayList<>();
         String[] words = line.trim().split(" ");
         if(words[0].trim().toUpperCase().equals("STRING")){
-            return convertString(line.trim().substring(6),properties);
+            return convertString(line.trim().substring(6),properties,true);
         }else if(words[0].trim().toUpperCase().equals("REPEAT")){
             int numberOfTime=Integer.parseInt(words[1]);
             for(int i=0;i<numberOfTime;i++){
@@ -87,8 +87,9 @@ public class DuckConverter {
                     BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
                     String receiveString = "";
                     while ( (receiveString = bufferedReader.readLine()) != null ) {
-                        Log.d("DuckConverter",receiveString);
-                        letters.addAll(convertString(receiveString+"\n",properties));
+                        //Log.d("DuckConverter",receiveString);
+                        letters.addAll(convertString(receiveString,properties,false));
+                        letters.add("enter");
                     }
                     bufferedReader.close();
                 }
@@ -107,8 +108,10 @@ public class DuckConverter {
         }
     }
 
-    public static ArrayList<String> convertString(String line,Properties properties){
-        line = line.trim();
+    public static ArrayList<String> convertString(String line,Properties properties,boolean trimAfter){
+        if(trimAfter){
+            line = line.trim();
+        }
         ArrayList<String> letters = new ArrayList<>();
         for(char letter : line.toCharArray()){
             letters.add(convertChar(letter,properties));
