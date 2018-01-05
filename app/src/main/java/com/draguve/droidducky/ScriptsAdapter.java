@@ -16,6 +16,9 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import java.util.List;
 
 
@@ -72,8 +75,18 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                db.deleteScript(scriptList.get(position).getID());
-                updateScriptList(db.getAllScripts());
+                new MaterialDialog.Builder(mainActivityContext)
+                        .title("Do you really want to delete the Script")
+                        .positiveText("Delete")
+                        .negativeText("Cancel")
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(MaterialDialog dialog, DialogAction which) {
+                                db.deleteScript(scriptList.get(position).getID());
+                                updateScriptList(db.getAllScripts());
+                            }
+                        })
+                        .show();
             }
         });
         Script script = scriptList.get(position);
