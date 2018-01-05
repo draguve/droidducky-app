@@ -93,7 +93,7 @@ public class CodeEditor extends AppCompatActivity {
                     .onNeutral(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(MaterialDialog dialog, DialogAction which) {
-                            db.addScript(currentScript);
+                            db.updateScript(currentScript);
                             goBackToSelector();
                         }
                     })
