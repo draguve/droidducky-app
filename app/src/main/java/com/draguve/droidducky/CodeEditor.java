@@ -11,7 +11,6 @@ import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-//import android.widget.Toolbar;
 
 /**
  * Created by Draguve on 1/4/2018.

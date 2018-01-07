@@ -1,14 +1,8 @@
 package com.draguve.droidducky;
 
-import android.app.Application;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.AssetManager;
-import android.os.Environment;
 import android.util.Log;
-import android.view.Gravity;
-import android.widget.Toast;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;

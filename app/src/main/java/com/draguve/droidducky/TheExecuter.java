@@ -1,7 +1,6 @@
 package com.draguve.droidducky;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.SystemClock;
 import android.util.Log;
 
