@@ -75,8 +75,6 @@ public class CodeEditor extends AppCompatActivity {
         currentScript.setCode(codeTextBox.getText().toString());
         currentScript.setName(scriptName.getText().toString());
         if(db.getScript(currentScript.getID())!=null){
-            //Toast.makeText(getApplicationContext(),"Replacing the saved script",Toast.LENGTH_SHORT).show();
-            //db.updateScript(currentScript);
             new MaterialDialog.Builder(this)
                     .title("How do you want to save the script")
                     .positiveText("Create new")

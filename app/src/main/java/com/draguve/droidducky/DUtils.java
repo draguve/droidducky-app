@@ -2,9 +2,15 @@ package com.draguve.droidducky;
 
 import android.content.Context;
 import android.content.res.AssetManager;
+import android.os.Environment;
 import android.util.Log;
+import android.widget.Toast;
+
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -59,7 +65,6 @@ public class DUtils {
         OutputStream out;
         String newFileName = null;
         try {
-            // Log.i("tag", "copyFile() "+filename);
             in = assetManager.open(filename);
             newFileName = TARGET_BASE_PATH + "/" + filename;
             out = new FileOutputStream(newFileName);
@@ -98,5 +103,31 @@ public class DUtils {
     public static boolean checkFilePermissions(String path){
         File f = new File(path);
         return (f.exists() && f.canExecute() && f.canRead() && f.canWrite());
+    }
+
+    public void addFileToCodes(String filename,Context appContext){
+        File path = Environment.getExternalStorageDirectory();
+        File file = new File(path,"/DroidDucky/"+filename.trim());
+        String finalCode = "";
+        if(file.exists()){
+            try {
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+                String receiveString = "";
+                while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    finalCode += receiveString+"\n";
+                }
+                bufferedReader.close();
+                Script toAdd = new Script(filename,finalCode);
+                ScriptsManager db = new ScriptsManager(appContext);
+                db.addScript(toAdd);
+            }
+            catch (FileNotFoundException e) {
+                Log.e("login activity", "File not found: " + e.toString());
+            } catch (IOException e) {
+                Log.e("login activity", "Can not read file: " + e.toString());
+            }
+        }else{
+            Toast.makeText(appContext,"Can't Find File",Toast.LENGTH_SHORT);
+        }
     }
 }
