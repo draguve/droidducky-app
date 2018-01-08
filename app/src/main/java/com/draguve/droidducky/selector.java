@@ -185,6 +185,10 @@ public class selector extends AppCompatActivity {
                     startActivityForResult(intent, FIND_FILE);
                 break;
             }
+            case R.id.enable_tether:{
+                DUtils.setUSBTether(true);
+                break;
+            }
             // case blocks for other MenuItems (if any)
         }
         return false;
