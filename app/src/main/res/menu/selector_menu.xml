@@ -13,7 +13,7 @@
     <item
         android:id="@+id/add_file"
         android:orderInCategory="300"
-        android:title="Add script from file"
+        android:title="Import script from file"
         app:showAsAction="never"/>
 
 </menu>

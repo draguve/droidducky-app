@@ -31,6 +31,8 @@ public class CodeEditor extends AppCompatActivity {
         String scriptID = callingIntent.getExtras().getString("idSelected",null);
         codeTextBox = (EditText)findViewById(R.id.codeEdit);
         scriptName = (EditText)findViewById(R.id.scriptName);
+        codeTextBox.setHorizontallyScrolling(true);
+        codeTextBox.setHorizontalScrollBarEnabled(true);
         db = new ScriptsManager(this);
         if(scriptID!=null){
             currentScript = db.getScript(scriptID);

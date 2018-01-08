@@ -44,9 +44,11 @@
         android:layout_weight="1"
         android:layout_height="wrap_content"
         android:hint="Script Name"
+        android:inputType="textMultiLine"
         android:id="@+id/scriptName"
         app:met_primaryColor="@color/colorPrimary"
-        app:met_floatingLabel="highlight"/>
+        app:met_floatingLabel="highlight"
+        android:scrollHorizontally="true"/>
     <Button
         android:id="@+id/test"
         android:layout_width="wrap_content"

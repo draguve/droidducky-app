@@ -87,23 +87,31 @@ public class selector extends AppCompatActivity {
         if(requestCode==FIND_FILE){
             Uri uri = null;
             if (data != null) {
+                //Get script from file
                 uri = data.getData();
                 InputStream inputStream = null;
+                String code="";
                 try {
                     inputStream = getContentResolver().openInputStream(uri);
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(
-                            inputStream));
-
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
                     String line;
-                    Log.i("","open text file - content"+"\n");
                     while ((line = reader.readLine()) != null) {
-                        Log.i("",line+"\n");
+                        code += (line+"");
                     }
                     reader.close();
                     inputStream.close();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
+                String filename = uri.getPath();
+                int cut = filename.lastIndexOf('/');
+                if (cut != -1) {
+                    filename = filename.substring(cut + 1);
+                }else{
+                    filename = "Unknown";
+                }
+                Script script = new Script(filename,code);
+                db.addScript(script);
             }
         }
         scriptList = db.getAllScripts();
