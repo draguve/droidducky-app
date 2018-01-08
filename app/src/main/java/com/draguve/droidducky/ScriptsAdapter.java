@@ -102,4 +102,8 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
         this.scriptList.addAll(scripts);
         this.notifyDataSetChanged();
     }
+
+    public List<Script> getCurrentList(){
+        return scriptList;
+    }
 }
