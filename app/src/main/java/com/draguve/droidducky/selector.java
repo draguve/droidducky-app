@@ -191,6 +191,7 @@ public class selector extends AppCompatActivity {
             }
             case R.id.disable_tether:{
                 DUtils.setUSBTether(false);
+                break;
             }
             // case blocks for other MenuItems (if any)
         }
