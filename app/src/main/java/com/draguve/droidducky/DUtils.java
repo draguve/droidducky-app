@@ -130,4 +130,13 @@ public class DUtils {
             Toast.makeText(appContext,"Can't Find File",Toast.LENGTH_SHORT);
         }
     }
+
+    public static void setUSBTether(boolean enable){
+        int checkint = 33; //Check and set for all androids
+        if(enable){
+            TheExecuter.runAsRoot("service call connectivity "+checkint+" i32 1");
+        }else{
+            TheExecuter.runAsRoot("service call connectivity "+checkint+" i32 0");
+        }
+    }
 }
