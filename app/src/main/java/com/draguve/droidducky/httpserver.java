@@ -23,15 +23,17 @@ public class httpserver extends NanoHTTPD {
     @Override
     public Response serve(IHTTPSession session){
         Log.d("nanoHttpd",session.getUri());
-        String answer = "";
         FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(Environment.getExternalStorageDirectory() + "/Droidducky/draguve.txt");
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        File file = new File(Environment.getExternalStorageDirectory(),"/Droidducky"+session.getUri());
+        if(file.exists() && file.isFile()){
+            try {
+                fis = new FileInputStream(Environment.getExternalStorageDirectory() + "/Droidducky" +session.getUri());
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return NanoHTTPD.newChunkedResponse(Response.Status.OK,"text/plain",fis);
         }
-        //return new NanoHTTPD.Response(Response.Status.OK, "audio/mpeg", fis);
-        return NanoHTTPD.newChunkedResponse(Response.Status.OK,"text/plain",fis);
+        return NanoHTTPD.newFixedLengthResponse("File Not Found");
     }
 }
