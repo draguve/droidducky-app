@@ -80,7 +80,7 @@ public class DuckConverter {
             return letters;
         }else if(words[0].trim().toUpperCase().equals("WRITE_FILE")){
             File path = Environment.getExternalStorageDirectory();
-            File file = new File(path,"/DroidDucky/"+words[1].trim());
+            File file = new File(path,"/DroidDucky/code/"+words[1].trim());
             if(file.exists()){
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new FileReader(file));

@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -20,9 +19,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
-import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -165,6 +161,15 @@ public class selector extends AppCompatActivity {
         File file = new File(path,"Droidducky");
         if (!file.exists()) {
             file.mkdirs();
+        }
+        // TODO create a settings page to change the folders automagicly
+        File serverFolder = new File(file,"host");
+        if(!serverFolder.exists()){
+            serverFolder.mkdirs();
+        }
+        File codeFolder = new File(file,"code");
+        if(!codeFolder.exists()){
+            codeFolder.mkdirs();
         }
     }
 

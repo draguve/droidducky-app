@@ -26,10 +26,10 @@ public class httpserver extends NanoHTTPD {
         Log.d("nanoHttpd",session.getUri());
         FileInputStream fis = null;
         String fileName = session.getUri();
-        File file = new File(Environment.getExternalStorageDirectory(),"/Droidducky"+fileName);
+        File file = new File(Environment.getExternalStorageDirectory(),"/Droidducky/host"+fileName);
         if(file.exists() && file.isFile()){
             try {
-                fis = new FileInputStream(Environment.getExternalStorageDirectory() + "/Droidducky" +fileName);
+                fis = new FileInputStream(Environment.getExternalStorageDirectory() + "/Droidducky/host" +fileName);
             } catch (FileNotFoundException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
