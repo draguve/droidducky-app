@@ -28,4 +28,10 @@
         android:title="Disable tether"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/enable_server"
+        android:orderInCategory="300"
+        android:title="Enable Server"
+        app:showAsAction="never"/>
+
 </menu>

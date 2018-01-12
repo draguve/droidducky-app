@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
@@ -46,6 +47,8 @@ public class selector extends AppCompatActivity {
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
+
+    private httpserver server;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,8 +196,28 @@ public class selector extends AppCompatActivity {
                 DUtils.setUSBTether(false);
                 break;
             }
-            // case blocks for other MenuItems (if any)
+            case R.id.enable_server:{
+                if(server==null){
+                    server = new httpserver();
+                    try {
+                        server.start();
+                    } catch(IOException ioe) {
+                        Log.w("Httpd", "The server could not start.");
+                    }
+                    Log.w("Httpd", "Web server initialized.");
+                }
+                break;
+            }
+            // ca`se blocks for other MenuItems (if any)
         }
         return false;
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        super.onDestroy();
+        if (server != null)
+            server.stop();
     }
 }

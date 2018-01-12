@@ -1,6 +1,7 @@
 package com.draguve.droidducky;
 
 import android.os.Environment;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,7 +21,8 @@ public class httpserver extends NanoHTTPD {
     }
 
     @Override
-    public Response serve(String uri, Method method, Map<String, String> header, Map<String, String> parameters, Map<String, String> files) {
+    public Response serve(IHTTPSession session){
+        Log.d("nanoHttpd",session.getUri());
         String answer = "";
         FileInputStream fis = null;
         try {
