@@ -34,4 +34,10 @@
         android:title="Enable Server"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/disable_server"
+        android:orderInCategory="300"
+        android:title="Disable Server"
+        app:showAsAction="never"/>
+
 </menu>

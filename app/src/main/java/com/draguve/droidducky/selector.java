@@ -19,6 +19,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -210,8 +211,15 @@ public class selector extends AppCompatActivity {
                         Log.w("Httpd", "The server could not start.");
                     }
                     Log.w("Httpd", "Web server initialized.");
+                    Toast.makeText(this,"Server Started",Toast.LENGTH_SHORT);
                 }
                 break;
+            }case R.id.disable_server:{
+                if(server!=null){
+                    Toast.makeText(this,"Server Stopped",Toast.LENGTH_SHORT);
+                    server.stop();
+                    server = null;
+                }
             }
             // ca`se blocks for other MenuItems (if any)
         }
@@ -219,8 +227,7 @@ public class selector extends AppCompatActivity {
     }
 
     @Override
-    public void onDestroy()
-    {
+    public void onDestroy() {
         super.onDestroy();
         if (server != null)
             server.stop();
