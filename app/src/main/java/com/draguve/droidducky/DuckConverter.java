@@ -27,9 +27,11 @@ public class DuckConverter {
 
     public static ArrayList<String> convert(ArrayList<String> DuckLines,Context appContext){
         Properties properties = new Properties();
+        Properties lang = new Properties();
         mAppContext = appContext;
         try{
             properties = loadProperties(appContext);
+            lang = loadLanguageProperties("en",appContext);
         }catch(IOException e){
             Log.e("DuckConverter",e.toString());
         }
@@ -50,6 +52,21 @@ public class DuckConverter {
         InputStream inputStream = assetManager.open("keyboard.properties");
         if(inputStream==null){
             Log.e("DuckConverter","InputStream is Null");
+        }
+        prop.load(inputStream);
+        return prop;
+    }
+
+    public static Properties loadLanguageProperties(String lang, Context context) throws IOException {
+        String filename = lang + ".properties";
+        Properties prop = new Properties();
+        if(context==null){
+            Log.e("DuckConverter","Context is Null");
+        }
+        AssetManager assetManager = context.getAssets();
+        InputStream inputStream = assetManager.open(filename);
+        if(inputStream==null){
+            Log.e("DuckConverter","Language not found");
         }
         prop.load(inputStream);
         return prop;
