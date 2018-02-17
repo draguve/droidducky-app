@@ -22,72 +22,158 @@ import java.util.Properties;
 
 public class DuckConverter {
 
-    static String lastLine="";
-    static Context mAppContext = null;
+
+    /* contains the keyboard configuration */
+    private static Properties keyboardProps;
+    /* contains the language layout */
+    private static Properties layoutProps;
+    /* contains the commands configuration */
+    private static Properties commandProps;
+    private static int defaultDelay = 200;
+    private static String lastLine;
 
     public static ArrayList<String> convert(ArrayList<String> DuckLines,Context appContext){
-        Properties properties = new Properties();
-        mAppContext = appContext;
         try{
-            properties = loadProperties(appContext);
+            loadAllProperties("us",appContext);
         }catch(IOException e){
             Log.e("DuckConverter",e.toString());
         }
         ArrayList<String> letters = new ArrayList<>();
         for(String line: DuckLines){
-            letters.addAll(convertLine(line,properties,letters));
+            letters.addAll(convertLine(line,appContext));
             lastLine=line;
         }
         return letters;
     }
 
-    public static Properties loadProperties(Context context) throws IOException {
+    private static void loadAllProperties(String lang,Context context) throws IOException {
+        keyboardProps = loadProperties("keyboard",context);
+        layoutProps = loadProperties(lang,context);
+        commandProps = loadProperties("commands",context);
+    }
+
+    private static Properties loadProperties(String file, Context context) throws IOException {
+        String filename = file + ".properties";
         Properties prop = new Properties();
         if(context==null){
             Log.e("DuckConverter","Context is Null");
         }
         AssetManager assetManager = context.getAssets();
-        InputStream inputStream = assetManager.open("keyboard.properties");
+        InputStream inputStream = assetManager.open(filename);
         if(inputStream==null){
-            Log.e("DuckConverter","InputStream is Null");
+            Log.e("DuckConverter","Language not found");
         }
         prop.load(inputStream);
         return prop;
     }
 
-    public static ArrayList<String> convertLine(String line,Properties properties,ArrayList<String> allLetters) {
-        ArrayList<String> letters = new ArrayList<>();
+    private static ArrayList<String> stringToCommands(String input) {
+        ArrayList < String > commands = new ArrayList<>();
+        for (char x: input.toCharArray()) {
+            commands.add(charToCommand(x));
+        }
+        return commands;
+    }
+
+    private static String charToCode(char c) {
+        String code;
+        if (c < 128) {
+            code = "ASCII_" + Integer.toHexString(c).toUpperCase();
+        } else if (c < 256) {
+            code = "ISO_8859_1_" + Integer.toHexString(c).toUpperCase();
+        } else {
+            code = "UNICODE_" + Integer.toHexString(c).toUpperCase();
+        }
+        return code;
+    }
+
+    private static String codeToCommand(String str) {
+        if (layoutProps.getProperty(str) != null) {
+            String keys[] = layoutProps.getProperty(str).split(",");
+            StringBuilder code = new StringBuilder("");
+            for (int j = keys.length - 1; j >= 0; j--) {
+                String key = keys[j].trim();
+                if (keyboardProps.getProperty(key) != null) {
+                    code.append(keyboardProps.getProperty(key).trim());
+                    code.append(" ");
+                } else if (layoutProps.getProperty(key) != null) {
+                    code.append(layoutProps.getProperty(key).trim());
+                    code.append(" ");
+                } else {
+                    System.out.println("Key not found:" + key);
+                }
+            }
+            return code.toString();
+        } else {
+            System.out.println("Char not found:" + str);
+            return null;
+        }
+    }
+
+    private static String charToCommand(char c){
+        return codeToCommand(charToCode(c));
+    }
+
+    private static String convertCommand(String[] words) {
+        if (words.length > 1) {
+            String word = words[0].trim().toUpperCase();
+            word = commandProps.getProperty(word, "");
+            return word + " " + convertCommand(Arrays.copyOfRange(words, 1, words.length));
+        } else {
+            if (words[0].length() == 1) {
+                return "" + charToCommand(words[0].charAt(0));
+            } else {
+                return commandProps.getProperty(words[0].trim().toUpperCase(), "");
+            }
+        }
+    }
+
+    private static ArrayList <String> convertLine(String line,Context context) {
+        ArrayList < String > letters = new ArrayList<>();
         String[] words = line.trim().split(" ");
-        if(words[0].trim().toUpperCase().equals("STRING")){
-            return convertString(line.trim().substring(6),properties,true);
-        }else if(words[0].trim().toUpperCase().equals("REPEAT")){
-            int numberOfTime=Integer.parseInt(words[1]);
-            for(int i=0;i<numberOfTime;i++){
-                allLetters.addAll(convertLine(lastLine,properties,allLetters));
+        if (words[0].trim().toUpperCase().equals("STRING")) {
+            return stringToCommands(line.trim().substring(6));
+        } else if (words[0].trim().toUpperCase().equals("REPEAT")) {
+            int numberOfTimes = 1;
+            if (words.length > 1) {
+                try {
+                    numberOfTimes = Integer.parseInt(words[1]);
+                } catch (Exception e) {
+                    System.out.print("Could'nt Convert Number");
+                }
+            } else {
+                numberOfTimes = 1;
+            }
+            for (int i = 0; i < numberOfTimes; i++) {
+                letters.addAll(convertLine(lastLine,context));
             }
             return letters;
-        }else if(words[0].trim().toUpperCase().equals("REM")){
-            letters.add("\u0001"+line.substring(3).trim());
+        } else if (words[0].trim().toUpperCase().equals("REM")) {
+            letters.add("\u0001" + line.substring(3).trim());
             return letters;
-        }else if(words[0].trim().toUpperCase().equals("DELAY")){
-            letters.add("\u0002"+line.substring(5).trim());
+        } else if (words[0].trim().toUpperCase().equals("DELAY") || words[0].trim().toUpperCase().equals("SLEEP")) {
+            letters.add("\u0002" + line.substring(5).trim());
             return letters;
-        }else if(words[0].trim().toUpperCase().equals("DEFAULTDELAY")){
-            letters.add("\u0002"+"200");
-            return letters;
-        }else if(words[0].trim().toUpperCase().equals("DEFAULT_DELAY")){
-            letters.add("\u0002"+"200");
-            return letters;
+        } else if (words[0].trim().toUpperCase().equals("DEFAULTDELAY") || words[0].trim().toUpperCase().equals("DEFAULT_DELAY")) {
+            if (words.length > 1) {
+                try {
+                    defaultDelay = Integer.parseInt(words[1]);
+                } catch (Exception e) {
+                    System.out.print("Couldnt Convert Number");
+                }
+            } else {
+                letters.add("\u0002" + defaultDelay);
+                return letters;
+            }
         }else if(words[0].trim().toUpperCase().equals("WRITE_FILE")){
             File path = Environment.getExternalStorageDirectory();
             File file = new File(path,"/DroidDucky/code/"+words[1].trim());
             if(file.exists()){
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-                    String receiveString = "";
+                    String receiveString;
                     while ( (receiveString = bufferedReader.readLine()) != null ) {
-                        //Log.d("DuckConverter",receiveString);
-                        letters.addAll(convertString(receiveString,properties,false));
+                        letters.addAll(stringToCommands(receiveString));
                         letters.add("enter");
                     }
                     bufferedReader.close();
@@ -98,53 +184,13 @@ public class DuckConverter {
                     Log.e("login activity", "Can not read file: " + e.toString());
                 }
             }else{
-                Toast.makeText(mAppContext,"Can't Find File , Ignoring File ",Toast.LENGTH_SHORT);
+                Toast.makeText(context,"Can't Find File , Ignoring File ",Toast.LENGTH_SHORT).show();
             }
             return letters;
-        }else{
-            letters.add(convertCommand(line.trim().split(" "),properties));
+        }else {
+            letters.add(convertCommand(line.trim().split(" ")));
             return letters;
         }
-    }
-
-    public static ArrayList<String> convertString(String line,Properties properties,boolean trimAfter){
-        if(trimAfter){
-            line = line.trim();
-        }
-        ArrayList<String> letters = new ArrayList<>();
-        for(char letter : line.toCharArray()){
-            letters.add(convertChar(letter,properties));
-        }
-        return letters;
-    }
-
-    public static String convertChar(char letter,Properties properties){
-        if(Character.isLetterOrDigit(letter)){
-            if(Character.isUpperCase(letter)){
-                return "left-shift "+ Character.toLowerCase(letter);
-            }else{
-                return ""+letter;
-            }
-        }else{
-            String value = properties.getProperty(""+letter,"");
-            if(value != null){
-                return value;
-            }
-        }
-        return "";
-    }
-
-    public static String convertCommand(String[] words,Properties properties){
-        if(words.length>1){
-            String word = words[0].trim().toUpperCase();
-            word = properties.getProperty(word,"");
-            return word + " " + convertCommand(Arrays.copyOfRange(words,1,words.length),properties);
-        }else{
-            if(words[0].length()==1){
-                return ""+convertChar(words[0].charAt(0),properties);
-            }else{
-                return properties.getProperty(words[0].trim().toUpperCase(),"");
-            }
-        }
+        return null;
     }
 }
