@@ -57,6 +57,10 @@ public class DuckConverter {
         return prop;
     }
 
+    public static Properties loadLanguageProperties(Context context) throws IOException{
+        return loadLanguageProperties("us",context);
+    }
+
     public static Properties loadLanguageProperties(String lang, Context context) throws IOException {
         String filename = lang + ".properties";
         Properties prop = new Properties();
