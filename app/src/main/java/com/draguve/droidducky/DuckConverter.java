@@ -22,7 +22,15 @@ import java.util.Properties;
 
 public class DuckConverter {
 
-    static String lastLine="";
+
+    /* contains the keyboard configuration */
+    private static Properties keyboardProps = new Properties();
+    /* contains the language layout */
+    private static Properties layoutProps = new Properties();
+    /* contains the commands configuration */
+    private static Properties commandProps = new Properties();
+    private static int defaultDelay = 200;
+    private static String lastLine;
     static Context mAppContext = null;
 
     public static ArrayList<String> convert(ArrayList<String> DuckLines,Context appContext){
@@ -30,8 +38,7 @@ public class DuckConverter {
         Properties lang = new Properties();
         mAppContext = appContext;
         try{
-            properties = loadProperties(appContext);
-            lang = loadLanguageProperties("en",appContext);
+            loadProperties("us",appContext);
         }catch(IOException e){
             Log.e("DuckConverter",e.toString());
         }
@@ -43,26 +50,16 @@ public class DuckConverter {
         return letters;
     }
 
-    public static Properties loadProperties(Context context) throws IOException {
-        Properties prop = new Properties();
-        if(context==null){
-            Log.e("DuckConverter","Context is Null");
-        }
-        AssetManager assetManager = context.getAssets();
-        InputStream inputStream = assetManager.open("keyboard.properties");
-        if(inputStream==null){
-            Log.e("DuckConverter","InputStream is Null");
-        }
-        prop.load(inputStream);
-        return prop;
+    public static void loadAllProperties(String lang,Context context) throws IOException {
+        if(keyboardProps==null)
+            keyboardProps = loadProperties("keyboard",context);
+        layoutProps = loadProperties(lang,context);
+        if(commandProps==null)
+            commandProps = loadProperties("commands",context);
     }
 
-    public static Properties loadLanguageProperties(Context context) throws IOException{
-        return loadLanguageProperties("us",context);
-    }
-
-    public static Properties loadLanguageProperties(String lang, Context context) throws IOException {
-        String filename = lang + ".properties";
+    public static Properties loadProperties(String file, Context context) throws IOException {
+        String filename = file + ".properties";
         Properties prop = new Properties();
         if(context==null){
             Log.e("DuckConverter","Context is Null");
@@ -125,47 +122,6 @@ public class DuckConverter {
         }else{
             letters.add(convertCommand(line.trim().split(" "),properties));
             return letters;
-        }
-    }
-
-    public static ArrayList<String> convertString(String line,Properties properties,boolean trimAfter){
-        if(trimAfter){
-            line = line.trim();
-        }
-        ArrayList<String> letters = new ArrayList<>();
-        for(char letter : line.toCharArray()){
-            letters.add(convertChar(letter,properties));
-        }
-        return letters;
-    }
-
-    public static String convertChar(char letter,Properties properties){
-        if(Character.isLetterOrDigit(letter)){
-            if(Character.isUpperCase(letter)){
-                return "left-shift "+ Character.toLowerCase(letter);
-            }else{
-                return ""+letter;
-            }
-        }else{
-            String value = properties.getProperty(""+letter,"");
-            if(value != null){
-                return value;
-            }
-        }
-        return "";
-    }
-
-    public static String convertCommand(String[] words,Properties properties){
-        if(words.length>1){
-            String word = words[0].trim().toUpperCase();
-            word = properties.getProperty(word,"");
-            return word + " " + convertCommand(Arrays.copyOfRange(words,1,words.length),properties);
-        }else{
-            if(words[0].length()==1){
-                return ""+convertChar(words[0].charAt(0),properties);
-            }else{
-                return properties.getProperty(words[0].trim().toUpperCase(),"");
-            }
         }
     }
 }
