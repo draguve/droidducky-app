@@ -12,7 +12,7 @@ import java.util.ArrayList;
  */
 
 public class ScriptsManager extends SQLiteOpenHelper{
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     // Database Name
     private static final String DATABASE_NAME = "scriptsManager.db";
@@ -24,6 +24,7 @@ public class ScriptsManager extends SQLiteOpenHelper{
     private static final String KEY_ID = "id";
     private static final String KEY_NAME = "name";
     private static final String KEY_CODE = "code";
+    private static final String KEY_LANG = "lang";
 
     public ScriptsManager(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -34,7 +35,7 @@ public class ScriptsManager extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_SCRIPTS + "("
                 + KEY_ID + " TEXT PRIMARY KEY," + KEY_NAME + " TEXT,"
-                + KEY_CODE + " TEXT" + ")";
+                + KEY_CODE + " TEXT," + KEY_LANG + " TEXT" +  ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
@@ -53,6 +54,7 @@ public class ScriptsManager extends SQLiteOpenHelper{
         values.put(KEY_ID,script.getID());
         values.put(KEY_NAME,script.getName());
         values.put(KEY_CODE,script.getCode());
+        values.put(KEY_LANG,script.getLang());
         db.insert(TABLE_SCRIPTS,null,values);
         db.close();
     }
@@ -61,11 +63,11 @@ public class ScriptsManager extends SQLiteOpenHelper{
         Script script = null;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_SCRIPTS, new String[] { KEY_ID,
-                        KEY_NAME, KEY_CODE }, KEY_ID + "=?",
+                        KEY_NAME, KEY_CODE,KEY_LANG }, KEY_ID + "=?",
                 new String[] { id }, null, null, null, null);
         if (cursor != null && cursor.getCount()>0) {
             cursor.moveToFirst();
-            script = new Script(cursor.getString(0),cursor.getString(1),cursor.getString(2));
+            script = new Script(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3));
         }
         return script;
     }
@@ -77,7 +79,7 @@ public class ScriptsManager extends SQLiteOpenHelper{
         Cursor cursor = db.rawQuery(query,null);
         if(cursor.moveToFirst()){
             do{
-                Script script = new Script(cursor.getString(0),cursor.getString(1),cursor.getString(2));
+                Script script = new Script(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3));
                 scripts.add(script);
             } while(cursor.moveToNext());
         }
@@ -90,7 +92,7 @@ public class ScriptsManager extends SQLiteOpenHelper{
         ContentValues values = new ContentValues();
         values.put(KEY_NAME, script.getName());
         values.put(KEY_CODE, script.getCode());
-
+        values.put(KEY_LANG, script.getLang());
         // updating row
         db.update(TABLE_SCRIPTS, values, KEY_ID + " = ?", new String[] { String.valueOf(script.getID()) });
     }
@@ -100,5 +102,4 @@ public class ScriptsManager extends SQLiteOpenHelper{
         db.delete(TABLE_SCRIPTS,KEY_ID + " = ?",new String[]{ id });
         db.close();
     }
-
 }

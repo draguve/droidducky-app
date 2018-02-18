@@ -6,18 +6,25 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
+import java.util.Arrays;
+
 /**
  * Created by Draguve on 1/4/2018.
  */
 
-public class CodeEditor extends AppCompatActivity {
+public class CodeEditor extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
+    private Spinner langSpinner;
+    private static final String[] languages = {"be","br","ca","ch","de","dk","es","fi","fr","gb","hr","it","no","pt","ru","si","sv","tr","us"};
     private Script currentScript = null;
     ScriptsManager db;
     EditText codeTextBox = null;
@@ -29,6 +36,15 @@ public class CodeEditor extends AppCompatActivity {
         setContentView(R.layout.edit_code);
         Intent callingIntent = getIntent();
         String scriptID = callingIntent.getExtras().getString("idSelected",null);
+
+        //Spinner Settings
+        langSpinner = (Spinner)findViewById(R.id.lang);
+        ArrayAdapter<String>adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,languages);
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        langSpinner.setAdapter(adapter);
+        langSpinner.setOnItemSelectedListener(this);
+
         codeTextBox = (EditText)findViewById(R.id.codeEdit);
         scriptName = (EditText)findViewById(R.id.scriptName);
         codeTextBox.setHorizontallyScrolling(true);
@@ -39,11 +55,15 @@ public class CodeEditor extends AppCompatActivity {
             if(currentScript!=null){
                 scriptName.setText(currentScript.getName());
                 codeTextBox.setText(currentScript.getCode());
+                //Can be optimized,the reverse search
+                langSpinner.setSelection(Arrays.asList(languages).indexOf(currentScript.getLang()));
             }else{
-                currentScript = new Script("","");
+                currentScript = new Script("","","us");
+                langSpinner.setSelection(18);
             }
         }else{
-            currentScript = new Script("","");
+            currentScript = new Script("","","us");
+            langSpinner.setSelection(18);
         }
         final Toolbar toolbar = (Toolbar) findViewById(R.id.code_toolbar);
         setSupportActionBar(toolbar);
@@ -85,7 +105,7 @@ public class CodeEditor extends AppCompatActivity {
                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(MaterialDialog dialog, DialogAction which) {
-                            db.addScript(new Script(currentScript.getName(),currentScript.getCode()));
+                            db.addScript(new Script(currentScript.getName(),currentScript.getCode(),currentScript.getLang()));
                             goBackToSelector();
                         }
                     })
@@ -114,6 +134,15 @@ public class CodeEditor extends AppCompatActivity {
         Intent goingBack = new Intent();
         setResult(RESULT_OK,goingBack);
         finish();
+    }
+
+    public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
+        currentScript.setLang(languages[position]);
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        currentScript.setLang("us");
+        // Another interface callback
     }
 
     @Override

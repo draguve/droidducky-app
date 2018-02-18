@@ -32,9 +32,9 @@ public class DuckConverter {
     private static int defaultDelay = 200;
     private static String lastLine;
 
-    public static ArrayList<String> convert(ArrayList<String> DuckLines,Context appContext){
+    public static ArrayList<String> convert(ArrayList<String> DuckLines,String lang,Context appContext){
         try{
-            loadAllProperties("us",appContext);
+            loadAllProperties(lang,appContext);
         }catch(IOException e){
             Log.e("DuckConverter",e.toString());
         }

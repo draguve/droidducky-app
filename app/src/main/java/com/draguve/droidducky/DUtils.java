@@ -117,7 +117,7 @@ public class DUtils {
                     finalCode += receiveString+"\n";
                 }
                 bufferedReader.close();
-                Script toAdd = new Script(filename,finalCode);
+                Script toAdd = new Script(filename,finalCode,"us");
                 ScriptsManager db = new ScriptsManager(appContext);
                 db.addScript(toAdd);
             }

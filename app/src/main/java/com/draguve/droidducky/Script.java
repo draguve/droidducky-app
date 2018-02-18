@@ -14,17 +14,20 @@ public class Script {
     private String _id;
     private String _name;
     private String _code;
+    private String _lang;
 
-    public Script(String id,String name,String code){
+    public Script(String id,String name,String code,String lang){
         _id = id;
         _name = name;
         _code = code;
+        _lang = lang;
     }
 
-    public Script(String name,String code){
+    public Script(String name,String code,String lang){
         _id = UUID.randomUUID().toString();
         _name = name;
         _code = code;
+        _lang = lang;
     }
 
     public void setName(String name){
@@ -34,6 +37,8 @@ public class Script {
     public void setCode(String code){
         _code = code;
     }
+
+    public void setLang(String lang) { _lang = lang; }
 
     public String getName(){
         return  _name;
@@ -47,9 +52,11 @@ public class Script {
         return _id;
     }
 
+    public String getLang() { return _lang;}
+
     public void executeCode(Context context){
         ArrayList<String> duckyLines = new ArrayList<>(Arrays.asList(_code.replaceAll("\\r", "").split("\n")));
-        duckyLines = DuckConverter.convert(duckyLines,context);
+        duckyLines = DuckConverter.convert(duckyLines,_lang,context);
         TheExecuter.injectKeystrokes(duckyLines,context);
     }
 }
