@@ -56,7 +56,7 @@ public class Script {
 
     public void executeCode(Context context){
         ArrayList<String> duckyLines = new ArrayList<>(Arrays.asList(_code.replaceAll("\\r", "").split("\n")));
-        duckyLines = DuckConverter.convert(duckyLines,context);
+        duckyLines = DuckConverter.convert(duckyLines,_lang,context);
         TheExecuter.injectKeystrokes(duckyLines,context);
     }
 }
