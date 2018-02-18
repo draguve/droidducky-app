@@ -14,11 +14,13 @@ public class Script {
     private String _id;
     private String _name;
     private String _code;
+    private String _lang;
 
-    public Script(String id,String name,String code){
+    public Script(String id,String name,String code,String lang){
         _id = id;
         _name = name;
         _code = code;
+        _lang = lang;
     }
 
     public Script(String name,String code){
@@ -35,6 +37,8 @@ public class Script {
         _code = code;
     }
 
+    public void setLang(String lang) { _lang = lang; }
+
     public String getName(){
         return  _name;
     }
@@ -46,6 +50,8 @@ public class Script {
     public String getID(){
         return _id;
     }
+
+    public String getLang() { return _lang;}
 
     public void executeCode(Context context){
         ArrayList<String> duckyLines = new ArrayList<>(Arrays.asList(_code.replaceAll("\\r", "").split("\n")));
