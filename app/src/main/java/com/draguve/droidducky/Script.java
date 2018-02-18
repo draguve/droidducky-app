@@ -23,10 +23,11 @@ public class Script {
         _lang = lang;
     }
 
-    public Script(String name,String code){
+    public Script(String name,String code,String lang){
         _id = UUID.randomUUID().toString();
         _name = name;
         _code = code;
+        _lang = lang;
     }
 
     public void setName(String name){

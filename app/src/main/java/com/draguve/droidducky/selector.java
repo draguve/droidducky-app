@@ -110,7 +110,7 @@ public class selector extends AppCompatActivity {
                 }else{
                     filename = "Unknown";
                 }
-                Script script = new Script(filename,code);
+                Script script = new Script(filename,code,"us");
                 db.addScript(script);
             }
         }
