@@ -45,7 +45,7 @@ public class DuckConverter {
         return letters;
     }
 
-    private static void loadAllProperties(String lang,Context context) throws IOException {
+    public static void loadAllProperties(String lang,Context context) throws IOException {
         keyboardProps = loadProperties("keyboard",context);
         layoutProps = loadProperties(lang,context);
         commandProps = loadProperties("commands",context);
@@ -127,7 +127,7 @@ public class DuckConverter {
         }
     }
 
-    private static ArrayList <String> convertLine(String line,Context context) {
+    public static ArrayList <String> convertLine(String line,Context context,String last) {
         ArrayList < String > letters = new ArrayList<>();
         String[] words = line.trim().split(" ");
         if (words[0].trim().toUpperCase().equals("STRING")) {
@@ -144,7 +144,7 @@ public class DuckConverter {
                 numberOfTimes = 1;
             }
             for (int i = 0; i < numberOfTimes; i++) {
-                letters.addAll(convertLine(lastLine,context));
+                letters.addAll(convertLine(last,context,null));
             }
             return letters;
         } else if (words[0].trim().toUpperCase().equals("REM")) {
@@ -190,7 +190,12 @@ public class DuckConverter {
             letters.add(convertCommand(line.trim().split(" ")));
             return letters;
         }
-        lastLine = line;
         return null;
+    }
+
+    private static ArrayList <String> convertLine(String line,Context context) {
+        ArrayList toReturn  = convertLine(line,context,lastLine);
+        lastLine = line;
+        return toReturn;
     }
 }
