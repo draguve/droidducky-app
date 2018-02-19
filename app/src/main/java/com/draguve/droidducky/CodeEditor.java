@@ -67,6 +67,8 @@ public class CodeEditor extends AppCompatActivity implements AdapterView.OnItemS
         }
         final Toolbar toolbar = (Toolbar) findViewById(R.id.code_toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("Edit DuckyScript");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

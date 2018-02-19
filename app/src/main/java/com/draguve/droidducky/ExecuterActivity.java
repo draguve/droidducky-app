@@ -5,8 +5,11 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ProgressBar;
 
 import java.io.DataOutputStream;
 import java.util.ArrayList;
@@ -16,11 +19,15 @@ public class ExecuterActivity extends AppCompatActivity {
 
     Script currentScript;
     Context appContext;
+    private ProgressBar codeProgress;
+    private Button runButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_executer);
+        codeProgress = (ProgressBar)findViewById(R.id.script_progress);
+        runButton = (Button) findViewById(R.id.runcode);
         Intent callingIntent = getIntent();
         String scriptID = callingIntent.getExtras().getString("idSelected",null);
         ScriptsManager db = new ScriptsManager(this);
@@ -32,6 +39,22 @@ public class ExecuterActivity extends AppCompatActivity {
             //Go back to the calling activity if the could'nt get id
             goBackToSelector();
         }
+        final Toolbar toolbar = (Toolbar) findViewById(R.id.executer_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("The Executor");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        goBackToSelector();
+        return true;
     }
 
     public void executeCode(View view){
@@ -39,14 +62,16 @@ public class ExecuterActivity extends AppCompatActivity {
             DUtils.setupFilesForInjection(this);
         }
         new ExecuterAsync().execute(currentScript);
-    }
-
-    public static void setPercentage(int percentage){
+        runButton.setEnabled(false);
 
     }
 
-    public static void executionFinished(){
+    public void setPercentage(int percentage){
+        codeProgress.setProgress(percentage);
+    }
 
+    public void executionFinished(){
+        runButton.setEnabled(true);
     }
 
     public void logREMComment(String comment){
@@ -59,10 +84,16 @@ public class ExecuterActivity extends AppCompatActivity {
         finish();
     }
 
+    @Override
+    public void onBackPressed() {
+        goBackToSelector();
+    }
+
     public class ExecuterAsync extends AsyncTask<Script,Float,Integer>{
 
         protected Integer doInBackground(Script... scripts){
             try {
+                publishProgress(0f);
                 Script scriptToRun = scripts[0];
                 //Initialize the superuser shell
                 Process process = Runtime.getRuntime().exec("su");
@@ -77,6 +108,7 @@ public class ExecuterActivity extends AppCompatActivity {
                 }catch (Exception e){
                     e.printStackTrace();
                 }
+                float size = duckyLines.size();
                 //for(String line: duckyLines){
                 for(int i=0;i<duckyLines.size();i++){
                     ArrayList<String> keys = DuckConverter.convertLine(duckyLines.get(i),appContext,lastLine);
@@ -93,12 +125,13 @@ public class ExecuterActivity extends AppCompatActivity {
                         }
                     }
                     lastLine = duckyLines.get(i);
-                    publishProgress((float)(i/duckyLines.size()));
+                    publishProgress(i/size);
                 }
                 //stop and flush the shell after execution finished
                 os.writeBytes("exit\n");
                 os.flush();
                 os.close();
+                publishProgress(1f);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -106,11 +139,11 @@ public class ExecuterActivity extends AppCompatActivity {
         }
 
         protected void onProgressUpdate(Float... progress) {
-            Log.e("Async","progress : "+progress);
+            setPercentage((int)(progress[0]*100));
         }
 
         protected void onPostExecute(Integer result) {
-            //
+            executionFinished();
         }
 
     }
