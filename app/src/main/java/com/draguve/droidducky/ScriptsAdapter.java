@@ -67,7 +67,12 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
         holder.run.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                scriptList.get(position).executeCode(mainActivityContext);
+                //scriptList.get(position).executeCode(mainActivityContext);
+                final int result = 1;
+                Intent codeEditorIntent = new Intent(v.getContext(),ExecuterActivity.class);
+                codeEditorIntent.putExtra("idSelected",scriptList.get(position).getID());
+                mainActivityContext.startActivityForResult(codeEditorIntent,result);
+
             }
         });
         holder.delete.setOnClickListener(new View.OnClickListener() {
