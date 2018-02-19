@@ -41,7 +41,6 @@ public class DuckConverter {
         ArrayList<String> letters = new ArrayList<>();
         for(String line: DuckLines){
             letters.addAll(convertLine(line,appContext));
-            lastLine=line;
         }
         return letters;
     }
@@ -191,6 +190,7 @@ public class DuckConverter {
             letters.add(convertCommand(line.trim().split(" ")));
             return letters;
         }
+        lastLine = line;
         return null;
     }
 }
