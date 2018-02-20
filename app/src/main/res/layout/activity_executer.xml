@@ -31,8 +31,8 @@
         android:layout_height="wrap_content" />
 
     <TextView
-        android:id="@+id/output"
+        android:id="@+id/rem_output"
         android:layout_width="match_parent"
         android:layout_height="451dp"
-        android:text="TextView" />
+        android:text="" />
 </LinearLayout>

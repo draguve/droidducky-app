@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.io.DataOutputStream;
 import java.util.ArrayList;
@@ -21,15 +22,23 @@ public class ExecuterActivity extends AppCompatActivity {
     Context appContext;
     private ProgressBar codeProgress;
     private Button runButton;
+    private TextView remWindow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_executer);
+
+        //Storing ui elements
         codeProgress = (ProgressBar)findViewById(R.id.script_progress);
         runButton = (Button) findViewById(R.id.runcode);
+        remWindow = (TextView) findViewById(R.id.rem_output);
+
+        //Getting arguments from the calling intent
         Intent callingIntent = getIntent();
         String scriptID = callingIntent.getExtras().getString("idSelected",null);
+
+        //To get script object from the scriptId
         ScriptsManager db = new ScriptsManager(this);
         appContext = this;
         if(scriptID!=null){
@@ -39,10 +48,14 @@ public class ExecuterActivity extends AppCompatActivity {
             //Go back to the calling activity if the could'nt get id
             goBackToSelector();
         }
+
+        //Get toolbar to change title and stuff
         final Toolbar toolbar = (Toolbar) findViewById(R.id.executer_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("The Executor");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        //Bind back button
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -58,6 +71,7 @@ public class ExecuterActivity extends AppCompatActivity {
     }
 
     public void executeCode(View view){
+        remWindow.setText("");
         if(!DUtils.checkForFiles()) {
             DUtils.setupFilesForInjection(this);
         }
@@ -75,7 +89,9 @@ public class ExecuterActivity extends AppCompatActivity {
     }
 
     public void logREMComment(String comment){
-        Log.i("ExecuterActivity",comment);
+        String s = remWindow.getText().toString();
+        s += "\n"+ comment;
+        remWindow.setText(s);
     }
 
     public void goBackToSelector(){
@@ -89,6 +105,8 @@ public class ExecuterActivity extends AppCompatActivity {
         goBackToSelector();
     }
 
+
+    //Class to execute the duckyscript without blocking the main thread
     public class ExecuterAsync extends AsyncTask<Script,Float,Integer>{
 
         protected Integer doInBackground(Script... scripts){
