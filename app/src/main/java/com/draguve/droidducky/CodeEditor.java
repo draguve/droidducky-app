@@ -24,9 +24,13 @@ import java.util.Arrays;
 
 public class CodeEditor extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
+
+    private Integer EXECUTER_CODE = 1;
+
     private Spinner langSpinner;
     private static final String[] languages = {"be","br","ca","ch","de","dk","es","fi","fr","gb","hr","it","no","pt","ru","si","sv","tr","us"};
     private Script currentScript = null;
+    private Script executerScript = null;
     ScriptsManager db;
     EditText codeTextBox = null;
     EditText scriptName = null;
@@ -88,8 +92,13 @@ public class CodeEditor extends AppCompatActivity implements AdapterView.OnItemS
     }
 
     public void runCode(View view){
-        currentScript.setCode(codeTextBox.getText().toString());
-        currentScript.executeCode(this);
+        executerScript = new Script("Temp",codeTextBox.getText().toString(),languages[langSpinner.getSelectedItemPosition()]);
+        db.addScript(executerScript);
+        final int result = 1;
+        Intent codeExeIntent = new Intent(this,ExecuterActivity.class);
+        codeExeIntent.putExtra("idSelected",executerScript.getID());
+        this.startActivityForResult(codeExeIntent,result);
+        //currentScript.executeCode(this);
     }
 
     public void saveScript(View view){
@@ -157,12 +166,20 @@ public class CodeEditor extends AppCompatActivity implements AdapterView.OnItemS
 
     @Override
     public void onBackPressed() {
-        if(codeTextBox.getText().toString().trim().equals(currentScript.getCode().trim())){
+        if(!codeTextBox.getText().toString().trim().equals(currentScript.getCode().trim())){
             Toast.makeText(this,"Changes in script saved",Toast.LENGTH_SHORT).show();
             currentScript.setCode(codeTextBox.getText().toString());
             currentScript.setName(scriptName.getText().toString());
             db.updateScript(currentScript);
         }
         goBackToSelector();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == EXECUTER_CODE) {
+            db.deleteScript(executerScript.getID());
+            executerScript = null;
+        }
     }
 }
