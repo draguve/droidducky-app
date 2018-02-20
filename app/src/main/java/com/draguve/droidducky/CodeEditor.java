@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -49,6 +50,8 @@ public class CodeEditor extends AppCompatActivity implements AdapterView.OnItemS
         scriptName = (EditText)findViewById(R.id.scriptName);
         codeTextBox.setHorizontallyScrolling(true);
         codeTextBox.setHorizontalScrollBarEnabled(true);
+        codeTextBox.setVerticalScrollBarEnabled(true);
+
         db = new ScriptsManager(this);
         if(scriptID!=null){
             currentScript = db.getScript(scriptID);
@@ -132,36 +135,12 @@ public class CodeEditor extends AppCompatActivity implements AdapterView.OnItemS
     }
 
     public void goBackToSelector(){
-        if(scriptName.getText().toString() == currentScript.getCode()){
-            new MaterialDialog.Builder(this)
-                    .title("Do you want to save the changes to the code")
-                    .positiveText("Save as new")
-                    .negativeText("No")
-                    .neutralText("Overwrite")
-                    .onPositive(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(MaterialDialog dialog, DialogAction which) {
-                            db.addScript(new Script(codeTextBox.getText().toString(),codeTextBox.getText().toString(),currentScript.getLang()));
-                            dialog.dismiss();
-                        }
-                    })
-                    .onNeutral(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(MaterialDialog dialog, DialogAction which) {
-                            currentScript.setCode(codeTextBox.getText().toString());
-                            currentScript.setName(codeTextBox.getText().toString());
-                            db.updateScript(currentScript);
-                            dialog.dismiss();
-                        }
-                    })
-                    .onNegative(new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(MaterialDialog dialog, DialogAction which) {
-                            dialog.dismiss();
-                        }
-                    })
-                    .show();
-        }
+        Intent goingBack = new Intent();
+        setResult(RESULT_OK,goingBack);
+        finish();
+    }
+
+    public void goBack(){
         Intent goingBack = new Intent();
         setResult(RESULT_OK,goingBack);
         finish();
@@ -178,6 +157,12 @@ public class CodeEditor extends AppCompatActivity implements AdapterView.OnItemS
 
     @Override
     public void onBackPressed() {
+        if(codeTextBox.getText().toString().trim().equals(currentScript.getCode().trim())){
+            Toast.makeText(this,"Changes in script saved",Toast.LENGTH_SHORT).show();
+            currentScript.setCode(codeTextBox.getText().toString());
+            currentScript.setName(scriptName.getText().toString());
+            db.updateScript(currentScript);
+        }
         goBackToSelector();
     }
 }
