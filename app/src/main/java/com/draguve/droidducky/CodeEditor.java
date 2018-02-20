@@ -128,11 +128,40 @@ public class CodeEditor extends AppCompatActivity implements AdapterView.OnItemS
         }else{
             db.addScript(currentScript);
             goBackToSelector();
-
         }
     }
 
     public void goBackToSelector(){
+        if(scriptName.getText().toString() == currentScript.getCode()){
+            new MaterialDialog.Builder(this)
+                    .title("Do you want to save the changes to the code")
+                    .positiveText("Save as new")
+                    .negativeText("No")
+                    .neutralText("Overwrite")
+                    .onPositive(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(MaterialDialog dialog, DialogAction which) {
+                            db.addScript(new Script(codeTextBox.getText().toString(),codeTextBox.getText().toString(),currentScript.getLang()));
+                            dialog.dismiss();
+                        }
+                    })
+                    .onNeutral(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(MaterialDialog dialog, DialogAction which) {
+                            currentScript.setCode(codeTextBox.getText().toString());
+                            currentScript.setName(codeTextBox.getText().toString());
+                            db.updateScript(currentScript);
+                            dialog.dismiss();
+                        }
+                    })
+                    .onNegative(new MaterialDialog.SingleButtonCallback() {
+                        @Override
+                        public void onClick(MaterialDialog dialog, DialogAction which) {
+                            dialog.dismiss();
+                        }
+                    })
+                    .show();
+        }
         Intent goingBack = new Intent();
         setResult(RESULT_OK,goingBack);
         finish();
