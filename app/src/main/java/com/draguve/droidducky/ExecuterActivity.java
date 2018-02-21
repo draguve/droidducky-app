@@ -79,6 +79,7 @@ public class ExecuterActivity extends AppCompatActivity {
                     try {
                         server.start();
                         Log.w("Httpd", "Web server initialized.");
+                        logREMComment("Web server initialized");
                     } catch(IOException ioe) {
                         Log.w("Httpd", "The server could not start.");
                     }
@@ -86,6 +87,7 @@ public class ExecuterActivity extends AppCompatActivity {
                     Log.w("Httpd", "Web server Stopped.");
                     server.stop();
                     server = null;
+                    logREMComment("Web server disabled");
                 }
             }
 
