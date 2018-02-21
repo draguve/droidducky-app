@@ -9,10 +9,14 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import java.io.DataOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -23,6 +27,8 @@ public class ExecuterActivity extends AppCompatActivity {
     private ProgressBar codeProgress;
     private Button runButton;
     private TextView remWindow;
+    private ToggleButton serverToggle;
+    private httpserver server;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +39,7 @@ public class ExecuterActivity extends AppCompatActivity {
         codeProgress = (ProgressBar)findViewById(R.id.script_progress);
         runButton = (Button) findViewById(R.id.runcode);
         remWindow = (TextView) findViewById(R.id.rem_output);
+        serverToggle = (ToggleButton) findViewById(R.id.serverToggle);
 
         //Getting arguments from the calling intent
         Intent callingIntent = getIntent();
@@ -61,6 +68,27 @@ public class ExecuterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 onBackPressed();
             }
+        });
+
+        //server toggle button logic
+        serverToggle.setChecked(false);
+        serverToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked && server==null) {
+                    server = new httpserver();
+                    try {
+                        server.start();
+                        Log.w("Httpd", "Web server initialized.");
+                    } catch(IOException ioe) {
+                        Log.w("Httpd", "The server could not start.");
+                    }
+                }else if(!isChecked && server!=null){
+                    Log.w("Httpd", "Web server Stopped.");
+                    server.stop();
+                    server = null;
+                }
+            }
+
         });
     }
 
