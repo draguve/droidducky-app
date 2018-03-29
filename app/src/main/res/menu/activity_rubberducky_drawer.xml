@@ -12,5 +12,10 @@
             android:id="@+id/rb_command_line"
             android:icon="@drawable/ic_menu_gallery"
             android:title="Command Line" />
+        <item
+            android:id="@+id/rb_keyboard"
+            android:icon="@drawable/ic_menu_send"
+            android:title="Keyboard"
+            />
     </group>
 </menu>
