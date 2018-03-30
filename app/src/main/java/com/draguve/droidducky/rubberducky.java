@@ -263,7 +263,7 @@ public class rubberducky extends AppCompatActivity
         } else if (id == R.id.rb_command_line) {
 
         } else if (id == R.id.rb_keyboard){
-
+        
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
