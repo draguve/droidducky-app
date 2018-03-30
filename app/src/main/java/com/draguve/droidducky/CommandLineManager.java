@@ -62,40 +62,41 @@ public class CommandLineManager extends SQLiteOpenHelper {
         db.close();
     }
 
-    public Script getScript(String id){
-        Script script = null;
+    public CommandLineScript getScript(String id){
+        CommandLineScript script = null;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(TABLE_SCRIPTS, new String[] { KEY_ID,
-                        KEY_NAME, KEY_CODE,KEY_LANG }, KEY_ID + "=?",
+                        KEY_NAME, KEY_CODE,KEY_LANG,KEY_OS }, KEY_ID + "=?",
                 new String[] { id }, null, null, null, null);
         if (cursor != null && cursor.getCount()>0) {
             cursor.moveToFirst();
-            script = new Script(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3));
+            script = new CommandLineScript(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3), CommandLineScript.OperatingSystem.fromInteger(cursor.getInt(4)));
         }
         return script;
     }
 
-    public ArrayList<Script> getAllScripts(){
-        ArrayList<Script> scripts = new ArrayList<>();
+    public ArrayList<CommandLineScript> getAllScripts(){
+        ArrayList<CommandLineScript> scripts = new ArrayList<>();
         String query = "SELECT * FROM " + TABLE_SCRIPTS;
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = db.rawQuery(query,null);
         if(cursor.moveToFirst()){
             do{
-                Script script = new Script(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3));
+                CommandLineScript script = new CommandLineScript(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3), CommandLineScript.OperatingSystem.fromInteger(cursor.getInt(4)));
                 scripts.add(script);
             } while(cursor.moveToNext());
         }
         return scripts;
     }
 
-    public void updateScript(Script script){
+    public void updateScript(CommandLineScript script){
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(KEY_NAME, script.getName());
         values.put(KEY_CODE, script.getCode());
         values.put(KEY_LANG, script.getLang());
+        values.put(KEY_OS,script.getOS().ordinal());
         // updating row
         db.update(TABLE_SCRIPTS, values, KEY_ID + " = ?", new String[] { String.valueOf(script.getID()) });
     }

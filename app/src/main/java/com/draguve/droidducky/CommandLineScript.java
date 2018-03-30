@@ -37,7 +37,7 @@ public class CommandLineScript {
     public void setCode(String code){
         _code = code;
     }
-    
+
     public void setLang(String lang) { _lang = lang; }
 
     public void setOS(OperatingSystem os){
