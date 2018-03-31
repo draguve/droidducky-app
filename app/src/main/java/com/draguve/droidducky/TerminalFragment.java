@@ -1,13 +1,24 @@
 package com.draguve.droidducky;
 
 import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -27,6 +38,14 @@ public class TerminalFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    private List<CommandLineScript> scriptList = new ArrayList<>();
+    CommandLineManager db = null;
+    private RecyclerView recyclerView;
+    private CommandLineScriptAdapter mAdapter;
+
+    static final int OPEN_WRITER = 1;
+    static final int FIND_FILE = 1337;
 
     private OnFragmentInteractionListener mListener;
 
@@ -66,8 +85,57 @@ public class TerminalFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_terminal, container, false);
+        db = new CommandLineManager(getActivity());
+        scriptList = db.getAllScripts();
+        recyclerView = (RecyclerView) view.findViewById(R.id.terminal_recyclerview);
+        mAdapter = new CommandLineScriptAdapter(scriptList,getActivity());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(mAdapter);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(dividerItemDecoration);
+        mAdapter.notifyDataSetChanged();
+
         ((AppCompatActivity)getActivity()).getSupportActionBar().setSubtitle("Terminal");
         return view;
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(requestCode==FIND_FILE){
+            Uri uri = null;
+            if (data != null) {
+                //Get script from file
+                uri = data.getData();
+                InputStream inputStream = null;
+                String code="";
+                try {
+                    inputStream = getActivity().getContentResolver().openInputStream(uri);
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        code += (line+"");
+                    }
+                    reader.close();
+                    inputStream.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                String filename = uri.getPath();
+                int cut = filename.lastIndexOf('/');
+                if (cut != -1) {
+                    filename = filename.substring(cut + 1);
+                }else{
+                    filename = "Unknown";
+                }
+                CommandLineScript script = new CommandLineScript(filename,code,"us", CommandLineScript.OperatingSystem.WINDOWS);
+                db.addCommandScript(script);
+            }
+        }
+        scriptList = db.getAllScripts();
+        mAdapter.updateScriptList(scriptList);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

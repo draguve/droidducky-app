@@ -51,10 +51,6 @@ public class DuckyScript extends Fragment {
     static final int OPEN_WRITER = 1;
     static final int FIND_FILE = 1337;
 
-
-
-
-
     private OnFragmentInteractionListener mListener;
 
     public DuckyScript() {

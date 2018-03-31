@@ -81,6 +81,20 @@ public class CommandLineScript {
             }
             return null;
         }
+
+        public String getString(OperatingSystem os){
+            switch (os){
+                case LINUX:
+                    return "Linux";
+                case WINDOWS:
+                    return "Windows";
+                case DARWIN:
+                    return "Darwin";
+                case WINDOWS_ADMIN:
+                    return "Windows-UAC";
+            }
+            return null;
+        }
     }
 }
 

@@ -93,7 +93,7 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
         });
         Script script = scriptList.get(position);
         holder.title.setText(script.getName());
-        holder.genre.setText(script.getLang());
+        holder.genre.setText(script.getLang().toUpperCase());
     }
 
     @Override
