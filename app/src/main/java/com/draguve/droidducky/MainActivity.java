@@ -1,7 +1,9 @@
 package com.draguve.droidducky;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
@@ -19,17 +21,20 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.draguve.droidducky.DuckyScript.OPEN_WRITER;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
     public enum DDScreen{DUCKYSCRIPT,TERMINAL,KEYBOARD;};
     public DDScreen currentScreen = null;
-
-    private FloatingActionButton fab = null;
 
     public static final int MULTIPLE_PERMISSIONS = 10; // code you want.
 
@@ -48,15 +53,6 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -70,6 +66,12 @@ public class MainActivity extends AppCompatActivity
         if(checkPermissions()){
             createFolder();
         }
+
+        DuckyScript duckyScriptScreen = new DuckyScript();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame,duckyScriptScreen)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
@@ -144,7 +146,6 @@ public class MainActivity extends AppCompatActivity
         if (!file.exists()) {
             file.mkdirs();
         }
-        // TODO create a settings page to change the folders automagicly
         File serverFolder = new File(file,"host");
         if(!serverFolder.exists()){
             serverFolder.mkdirs();
