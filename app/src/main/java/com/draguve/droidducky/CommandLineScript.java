@@ -65,7 +65,8 @@ public class CommandLineScript {
     public enum OperatingSystem{
         LINUX,
         WINDOWS,
-        DARWIN;
+        DARWIN,
+        WINDOWS_ADMIN;
 
         public static OperatingSystem fromInteger(int x) {
             switch(x) {
@@ -75,6 +76,8 @@ public class CommandLineScript {
                     return WINDOWS;
                 case 2:
                     return DARWIN;
+                case 3:
+                    return WINDOWS_ADMIN;
             }
             return null;
         }

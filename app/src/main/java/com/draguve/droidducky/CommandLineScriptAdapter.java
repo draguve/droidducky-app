@@ -1,9 +1,5 @@
 package com.draguve.droidducky;
 
-/**
- * Created by Draguve on 1/3/2018.
- */
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -19,12 +15,15 @@ import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.List;
 
+/**
+ * Created by Draguve on 4/1/2018.
+ */
 
-public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHolder>{
+public class CommandLineScriptAdapter extends RecyclerView.Adapter<CommandLineScriptAdapter.MyViewHolder>{
 
-    private List<Script> scriptList;
+    private List<CommandLineScript> scriptList;
     private Activity mainActivityContext;
-    private ScriptsManager db;
+    private CommandLineManager db;
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView title, genre;
@@ -38,40 +37,33 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
             delete = (Button)view.findViewById(R.id.list_delete);
         }
     }
-    public ScriptsAdapter(List<Script> scriptList,Context mainActivityContext) {
+    public CommandLineScriptAdapter(List<CommandLineScript> scriptList,Context mainActivityContext) {
         this.scriptList = scriptList;
         this.mainActivityContext = (Activity) mainActivityContext;
-        db = new ScriptsManager(mainActivityContext);
+        db = new CommandLineManager(mainActivityContext);
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public CommandLineScriptAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.script_list_row, parent, false);
 
-        return new MyViewHolder(itemView);
+        return new CommandLineScriptAdapter.MyViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder,final int position) {
+    public void onBindViewHolder(CommandLineScriptAdapter.MyViewHolder holder, final int position) {
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final int result = 1;
-                Intent codeEditorIntent = new Intent(v.getContext(),CodeEditor.class);
-                codeEditorIntent.putExtra("idSelected",scriptList.get(position).getID());
-                mainActivityContext.startActivityForResult(codeEditorIntent,result);
+
             }
         });
         holder.run.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //scriptList.get(position).executeCode(mainActivityContext);
-                final int result = 1;
-                Intent codeEditorIntent = new Intent(v.getContext(),ExecuterActivity.class);
-                codeEditorIntent.putExtra("idSelected",scriptList.get(position).getID());
-                mainActivityContext.startActivityForResult(codeEditorIntent,result);
+
             }
         });
         holder.delete.setOnClickListener(new View.OnClickListener() {
@@ -91,9 +83,9 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
                         .show();
             }
         });
-        Script script = scriptList.get(position);
+        CommandLineScript script = scriptList.get(position);
         holder.title.setText(script.getName());
-        holder.genre.setText(script.getLang());
+        holder.genre.setText("Test");
     }
 
     @Override
@@ -101,13 +93,14 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
         return scriptList.size();
     }
 
-    public void updateScriptList(List<Script> scripts){
+    public void updateScriptList(List<CommandLineScript> scripts){
         this.scriptList.clear();
         this.scriptList.addAll(scripts);
         this.notifyDataSetChanged();
     }
 
-    public List<Script> getCurrentList(){
+    public List<CommandLineScript> getCurrentList(){
         return scriptList;
     }
 }
+
