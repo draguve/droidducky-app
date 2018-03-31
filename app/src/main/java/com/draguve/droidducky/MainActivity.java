@@ -112,11 +112,11 @@ public class MainActivity extends AppCompatActivity
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.dd_duckyscript) {
+        if (id == R.id.dd_duckyscript && currentScreen != DDScreen.DUCKYSCRIPT) {
             currentScreen = DDScreen.DUCKYSCRIPT;
-        } else if (id == R.id.dd_terminal) {
+        } else if (id == R.id.dd_terminal && currentScreen != DDScreen.TERMINAL) {
             currentScreen = DDScreen.TERMINAL;
-        } else if (id == R.id.dd_keyboard) {
+        } else if (id == R.id.dd_keyboard && currentScreen != DDScreen.KEYBOARD) {
             currentScreen = DDScreen.KEYBOARD;
         }
 
