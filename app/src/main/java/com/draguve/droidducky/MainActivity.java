@@ -20,6 +20,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.Window;
+import android.view.WindowManager;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -72,6 +74,13 @@ public class MainActivity extends AppCompatActivity
                 .replace(R.id.content_frame,duckyScriptScreen)
                 .addToBackStack(null)
                 .commit();
+
+        //Code to get custom status bar and nav bar color
+        Window window = this.getWindow();
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        window.setStatusBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
+        window.setNavigationBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
     }
 
     @Override
