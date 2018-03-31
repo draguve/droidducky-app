@@ -114,8 +114,18 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.dd_duckyscript && currentScreen != DDScreen.DUCKYSCRIPT) {
             currentScreen = DDScreen.DUCKYSCRIPT;
+            DuckyScript duckyScriptScreen = new DuckyScript();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame,duckyScriptScreen)
+                    .addToBackStack(null)
+                    .commit();
         } else if (id == R.id.dd_terminal && currentScreen != DDScreen.TERMINAL) {
             currentScreen = DDScreen.TERMINAL;
+            TerminalFragment terminalFragment = new TerminalFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame,terminalFragment)
+                    .addToBackStack(null)
+                    .commit();
         } else if (id == R.id.dd_keyboard && currentScreen != DDScreen.KEYBOARD) {
             currentScreen = DDScreen.KEYBOARD;
         }
