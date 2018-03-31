@@ -22,18 +22,6 @@
             android:name=".ExecuterActivity"
             android:label="Execute Code" />
         <activity
-            android:name=".rubberducky"
-            android:label="DroidDucky"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-            <!--
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-            -->
-        </activity>
-        <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
