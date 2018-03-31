@@ -14,6 +14,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -123,9 +126,28 @@ public class DuckyScript extends Fragment {
 
 
     public void addNewCode(View view) {
-        Intent codeEditorIntent = new Intent(this.getActivity(),CodeEditor.class);
-        codeEditorIntent.putExtra("idSelected",(String) null);
-        this.startActivityForResult(codeEditorIntent,OPEN_WRITER);
+        new MaterialDialog.Builder(getActivity())
+                .title("How to add the script?")
+                .positiveText("Create new")
+                .negativeText("Use saved file")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                        Intent codeEditorIntent = new Intent(getActivity(),CodeEditor.class);
+                        codeEditorIntent.putExtra("idSelected",(String) null);
+                        startActivityForResult(codeEditorIntent,OPEN_WRITER);
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType("text/*");
+                        startActivityForResult(intent, FIND_FILE);
+                    }
+                })
+                .show();
     }
 
     @Override
