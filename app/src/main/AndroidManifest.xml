@@ -20,9 +20,9 @@
             android:label="Edit Code" />
         <activity
             android:name=".ExecuterActivity"
-            android:label="Execute Code"/>
+            android:label="Execute Code" />
         <activity
-            android:name=".rubberducky"
+            android:name=".MainActivity"
             android:label="DroidDucky"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar">
             <intent-filter>

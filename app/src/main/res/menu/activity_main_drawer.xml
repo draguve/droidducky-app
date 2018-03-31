@@ -5,17 +5,17 @@
 
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/rb_rubber_ducky"
+            android:id="@+id/dd_duckyscript"
             android:icon="@drawable/ic_menu_camera"
-            android:title="Rubber Ducky" />
+            android:title="DuckyScript" />
         <item
-            android:id="@+id/rb_command_line"
+            android:id="@+id/dd_terminal"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="Command Line" />
+            android:title="Terminal" />
         <item
-            android:id="@+id/rb_keyboard"
-            android:icon="@drawable/ic_menu_send"
-            android:title="Keyboard"
-            />
+            android:id="@+id/dd_keyboard"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Keyboard" />
     </group>
+
 </menu>
