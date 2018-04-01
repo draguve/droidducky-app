@@ -132,6 +132,7 @@ public class DuckyScript extends Fragment {
                     public void onClick(MaterialDialog dialog, DialogAction which) {
                         Intent codeEditorIntent = new Intent(getActivity(),CodeEditor.class);
                         codeEditorIntent.putExtra("idSelected",(String) null);
+                        codeEditorIntent.putExtra("editingMode",0);
                         startActivityForResult(codeEditorIntent,OPEN_WRITER);
                     }
                 })

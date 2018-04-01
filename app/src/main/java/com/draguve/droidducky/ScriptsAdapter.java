@@ -61,6 +61,7 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
                 final int result = 1;
                 Intent codeEditorIntent = new Intent(v.getContext(),CodeEditor.class);
                 codeEditorIntent.putExtra("idSelected",scriptList.get(position).getID());
+                codeEditorIntent.putExtra("editingMode",0);
                 mainActivityContext.startActivityForResult(codeEditorIntent,result);
             }
         });
@@ -71,6 +72,7 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
                 final int result = 1;
                 Intent codeEditorIntent = new Intent(v.getContext(),ExecuterActivity.class);
                 codeEditorIntent.putExtra("idSelected",scriptList.get(position).getID());
+                codeEditorIntent.putExtra("editingMode",0);
                 mainActivityContext.startActivityForResult(codeEditorIntent,result);
             }
         });
