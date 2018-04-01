@@ -57,13 +57,21 @@ public class CommandLineScriptAdapter extends RecyclerView.Adapter<CommandLineSc
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                final int result = 1;
+                Intent codeEditorIntent = new Intent(v.getContext(),CodeEditor.class);
+                codeEditorIntent.putExtra("idSelected",scriptList.get(position).getID());
+                codeEditorIntent.putExtra("editingMode",1);
+                mainActivityContext.startActivityForResult(codeEditorIntent,result);
             }
         });
         holder.run.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                final int result = 1;
+                Intent codeEditorIntent = new Intent(v.getContext(),ExecuterActivity.class);
+                codeEditorIntent.putExtra("idSelected",scriptList.get(position).getID());
+                codeEditorIntent.putExtra("currentMode",1);
+                mainActivityContext.startActivityForResult(codeEditorIntent,result);
             }
         });
         holder.delete.setOnClickListener(new View.OnClickListener() {

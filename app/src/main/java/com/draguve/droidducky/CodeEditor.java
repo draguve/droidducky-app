@@ -127,7 +127,11 @@ public class CodeEditor extends AppCompatActivity implements AdapterView.OnItemS
 
         final Toolbar toolbar = (Toolbar) findViewById(R.id.code_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Edit DuckyScript");
+        if(currentMode == DUCKYSCRIPT_EDIT){
+            getSupportActionBar().setTitle("Edit DuckyScript");
+        }else if(currentMode == COMMANDLINE_EDIT){
+            getSupportActionBar().setTitle("Edit Terminal Script");
+        }
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,6 +155,7 @@ public class CodeEditor extends AppCompatActivity implements AdapterView.OnItemS
             final int result = 1;
             Intent codeExeIntent = new Intent(this,ExecuterActivity.class);
             codeExeIntent.putExtra("idSelected",executerScript.getID());
+            codeExeIntent.putExtra("currentMode",currentMode);
             this.startActivityForResult(codeExeIntent,result);
         }else if(currentMode == COMMANDLINE_EDIT){
             executerCLScript = new CommandLineScript("Temp",codeTextBox.getText().toString(),
@@ -159,7 +164,8 @@ public class CodeEditor extends AppCompatActivity implements AdapterView.OnItemS
             //Have to change this for it to work
             final int result = 1;
             Intent codeExeIntent = new Intent(this,ExecuterActivity.class);
-            codeExeIntent.putExtra("idSelected",executerScript.getID());
+            codeExeIntent.putExtra("idSelected",executerCLScript.getID());
+            codeExeIntent.putExtra("currentMode",currentMode);
             this.startActivityForResult(codeExeIntent,result);
         }
     }

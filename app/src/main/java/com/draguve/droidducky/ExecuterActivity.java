@@ -23,12 +23,18 @@ import java.util.Arrays;
 public class ExecuterActivity extends AppCompatActivity {
 
     Script currentScript;
+    CommandLineScript currentCLScript;
     Context appContext;
     private ProgressBar codeProgress;
     private Button runButton;
     private TextView remWindow;
     private ToggleButton serverToggle;
     private httpserver server;
+    private Integer currentMode;
+
+
+    private Integer DUCKYSCRIPT_EDIT = 0;
+    private Integer COMMANDLINE_EDIT = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,17 +50,28 @@ public class ExecuterActivity extends AppCompatActivity {
         //Getting arguments from the calling intent
         Intent callingIntent = getIntent();
         String scriptID = callingIntent.getExtras().getString("idSelected",null);
+        currentMode = callingIntent.getExtras().getInt("currentMode",-1);
 
         //To get script object from the scriptId
-        ScriptsManager db = new ScriptsManager(this);
-        appContext = this;
-        if(scriptID!=null){
-            //Stay if the script id is not null
-            currentScript = db.getScript(scriptID);
-        }else{
-            //Go back to the calling activity if the could'nt get id
-            goBackToSelector();
+        if(currentMode == DUCKYSCRIPT_EDIT){
+            ScriptsManager db = new ScriptsManager(this);
+            if(scriptID!=null){
+                //Stay if the script id is not null
+                currentScript = db.getScript(scriptID);
+            }else{
+                //Go back to the calling activity if the could'nt get id
+                goBackToSelector();
+            }
+        }else if(currentMode == COMMANDLINE_EDIT){
+            CommandLineManager commandLineDB = new CommandLineManager(this);
+            if(scriptID!=null){
+                currentCLScript = commandLineDB.getScript(scriptID);
+            }else{
+                goBackToSelector();
+            }
         }
+
+        appContext = this;
 
         //Get toolbar to change title and stuff
         final Toolbar toolbar = (Toolbar) findViewById(R.id.executer_toolbar);
@@ -105,7 +122,11 @@ public class ExecuterActivity extends AppCompatActivity {
         if(!DUtils.checkForFiles()) {
             DUtils.setupFilesForInjection(this);
         }
-        new ExecuterAsync().execute(currentScript);
+        if(currentMode == DUCKYSCRIPT_EDIT){
+            new ExecuterAsync().execute(currentScript);
+        }else if(currentMode == COMMANDLINE_EDIT){
+            new ExecuterAsync().execute(currentCLScript.convertToScript());
+        }
         runButton.setEnabled(false);
 
     }
