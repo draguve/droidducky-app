@@ -32,7 +32,12 @@
         app:met_primaryColor="@color/colorPrimary"
         android:gravity="top"/>
     </LinearLayout>
-
+    <Spinner
+        android:id="@+id/operating_system"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:drawable/btn_dropdown"
+        android:spinnerMode="dropdown"/>
     <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -68,5 +73,4 @@
             android:background="@android:drawable/btn_dropdown"
             android:spinnerMode="dropdown"/>
     </LinearLayout>
-
 </LinearLayout>

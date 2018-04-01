@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -13,6 +14,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
@@ -97,13 +101,20 @@ public class TerminalFragment extends Fragment {
         recyclerView.addItemDecoration(dividerItemDecoration);
         mAdapter.notifyDataSetChanged();
 
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addNewCode(view);
+            }
+        });
+
         ((AppCompatActivity)getActivity()).getSupportActionBar().setSubtitle("Terminal");
         return view;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==FIND_FILE){
             Uri uri = null;
             if (data != null) {
@@ -136,6 +147,33 @@ public class TerminalFragment extends Fragment {
         }
         scriptList = db.getAllScripts();
         mAdapter.updateScriptList(scriptList);
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void addNewCode(View view) {
+        new MaterialDialog.Builder(getActivity())
+                .title("How to add the script?")
+                .positiveText("Create new")
+                .negativeText("Use saved file")
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                        Intent codeEditorIntent = new Intent(getActivity(),CodeEditor.class);
+                        codeEditorIntent.putExtra("idSelected",(String) null);
+                        codeEditorIntent.putExtra("editingMode",1);
+                        startActivityForResult(codeEditorIntent,OPEN_WRITER);
+                    }
+                })
+                .onNegative(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(MaterialDialog dialog, DialogAction which) {
+                        Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+                        intent.addCategory(Intent.CATEGORY_OPENABLE);
+                        intent.setType("text/*");
+                        startActivityForResult(intent, FIND_FILE);
+                    }
+                })
+                .show();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
