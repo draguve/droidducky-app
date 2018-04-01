@@ -66,12 +66,12 @@ public class CodeEditor extends AppCompatActivity implements AdapterView.OnItemS
             osSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-
+                    currentCLScript.setOS(CommandLineScript.OperatingSystem.fromInteger(i));
                 }
 
                 @Override
                 public void onNothingSelected(AdapterView<?> adapterView) {
-
+                    currentCLScript.setOS(CommandLineScript.OperatingSystem.WINDOWS);
                 }
             });
         }
@@ -111,17 +111,17 @@ public class CodeEditor extends AppCompatActivity implements AdapterView.OnItemS
                     scriptName.setText(currentCLScript.getName());
                     codeTextBox.setText(currentCLScript.getCode());
                     //Can be optimized,the reverse search
-                    langSpinner.setSelection(Arrays.asList(languages).indexOf(currentScript.getLang()));
+                    langSpinner.setSelection(Arrays.asList(languages).indexOf(currentCLScript.getLang()));
                     osSpinner.setSelection(currentCLScript.getOS().ordinal());
                 }else{
                     currentCLScript = new CommandLineScript("","","us", CommandLineScript.OperatingSystem.WINDOWS);
                     langSpinner.setSelection(18);
-                    osSpinner.setSelection(0);
+                    osSpinner.setSelection(1);
                 }
             }else{
                 currentCLScript = new CommandLineScript("","","us", CommandLineScript.OperatingSystem.WINDOWS);
                 langSpinner.setSelection(18);
-                osSpinner.setSelection(0);
+                osSpinner.setSelection(1);
             }
         }
 
@@ -255,27 +255,12 @@ public class CodeEditor extends AppCompatActivity implements AdapterView.OnItemS
     }
 
     public void goBackToSelector(){
-        Intent goingBack = new Intent();
-        setResult(RESULT_OK,goingBack);
-        finish();
-    }
-
-    public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
-        currentScript.setLang(languages[position]);
-    }
-
-    public void onNothingSelected(AdapterView<?> parent) {
-        currentScript.setLang("us");
-        // Another interface callback
-    }
-
-    @Override
-    public void onBackPressed() {
         if(currentMode == DUCKYSCRIPT_EDIT){
             if(!codeTextBox.getText().toString().trim().equals(currentScript.getCode().trim())){
                 Toast.makeText(this,"Changes in script saved",Toast.LENGTH_SHORT).show();
                 currentScript.setCode(codeTextBox.getText().toString());
                 currentScript.setName(scriptName.getText().toString());
+                currentScript.setLang(languages[langSpinner.getSelectedItemPosition()]);
                 db.updateScript(currentScript);
             }
         }else if(currentMode == COMMANDLINE_EDIT){
@@ -283,9 +268,34 @@ public class CodeEditor extends AppCompatActivity implements AdapterView.OnItemS
                 Toast.makeText(this,"Changes in script saved",Toast.LENGTH_SHORT).show();
                 currentCLScript.setCode(codeTextBox.getText().toString());
                 currentCLScript.setName(scriptName.getText().toString());
+                currentCLScript.setOS(CommandLineScript.OperatingSystem.fromInteger(osSpinner.getSelectedItemPosition()));
+                currentCLScript.setLang(languages[langSpinner.getSelectedItemPosition()]);
                 commandLineDB.updateScript(currentCLScript);
             }
         }
+        Intent goingBack = new Intent();
+        setResult(RESULT_OK,goingBack);
+        finish();
+    }
+
+    public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
+        if(currentMode == DUCKYSCRIPT_EDIT){
+            currentScript.setLang(languages[position]);
+        }else if(currentMode == COMMANDLINE_EDIT){
+            currentCLScript.setLang(languages[position]);
+        }
+    }
+
+    public void onNothingSelected(AdapterView<?> parent) {
+        if(currentMode == DUCKYSCRIPT_EDIT){
+            currentScript.setLang("us");
+        }else if(currentMode == COMMANDLINE_EDIT){
+            currentCLScript.setLang("us");
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
         goBackToSelector();
     }
 

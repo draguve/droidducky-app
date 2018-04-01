@@ -67,6 +67,10 @@ public class CommandLineScript {
         return new Script(_name,_code,_lang);
     }
 
+    public String getString(){
+        return _os.getString();
+    }
+
     public enum OperatingSystem{
         LINUX,
         WINDOWS,
@@ -87,8 +91,8 @@ public class CommandLineScript {
             return null;
         }
 
-        public String getString(OperatingSystem os){
-            switch (os){
+        public String getString(){
+            switch (this){
                 case LINUX:
                     return "Linux";
                 case WINDOWS:

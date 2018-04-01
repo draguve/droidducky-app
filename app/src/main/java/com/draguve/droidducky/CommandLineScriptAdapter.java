@@ -93,7 +93,7 @@ public class CommandLineScriptAdapter extends RecyclerView.Adapter<CommandLineSc
         });
         CommandLineScript script = scriptList.get(position);
         holder.title.setText(script.getName());
-        holder.genre.setText("Test");
+        holder.genre.setText(script.getLang().toUpperCase() + " - " + script.getOS().getString());
     }
 
     @Override
