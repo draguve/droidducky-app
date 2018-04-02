@@ -178,7 +178,6 @@ public class ExecuterActivity extends AppCompatActivity {
                     e.printStackTrace();
                 }
                 float size = duckyLines.size();
-                //for(String line: duckyLines){
                 for(int i=0;i<duckyLines.size();i++){
                     ArrayList<String> keys = DuckConverter.convertLine(duckyLines.get(i),appContext,lastLine);
                     for(String key : keys){
