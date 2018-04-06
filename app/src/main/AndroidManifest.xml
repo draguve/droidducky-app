@@ -17,7 +17,8 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
         <activity
             android:name=".CodeEditor"
-            android:label="Edit Code" />
+            android:label="Edit Code"
+            android:windowSoftInputMode="adjustResize"/>
         <activity
             android:name=".ExecuterActivity"
             android:label="Execute Code" />
