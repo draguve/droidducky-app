@@ -153,7 +153,13 @@ public class DuckConverter {
         } else if (words[0].trim().toUpperCase().equals("DELAY") || words[0].trim().toUpperCase().equals("SLEEP")) {
             letters.add("\u0002" + line.substring(5).trim());
             return letters;
-        } else if (words[0].trim().toUpperCase().equals("DEFAULTDELAY") || words[0].trim().toUpperCase().equals("DEFAULT_DELAY")) {
+        } else if (words[0].trim().toUpperCase().equals("LOCAL_IP")) {
+            letters.add("\u0006"+0);
+            return letters;
+        } else if (words[0].trim().toUpperCase().equals("WIFI_IP")) {
+            letters.add("\u0006" + 1);
+            return letters;
+        }else if (words[0].trim().toUpperCase().equals("DEFAULTDELAY") || words[0].trim().toUpperCase().equals("DEFAULT_DELAY")) {
             if (words.length > 1) {
                 try {
                     defaultDelay = Integer.parseInt(words[1]);

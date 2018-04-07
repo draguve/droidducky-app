@@ -32,6 +32,7 @@ public class ExecuterActivity extends AppCompatActivity {
     private httpserver server;
     private Integer currentMode;
 
+    public String currentIP = "";
 
     private Integer DUCKYSCRIPT_EDIT = 0;
     private Integer COMMANDLINE_EDIT = 1;
@@ -186,6 +187,12 @@ public class ExecuterActivity extends AppCompatActivity {
                             Thread.sleep(time);
                         }else if(key.charAt(0)=='\u0001'){
                             logREMComment(key.substring(1));
+                        }else if(key.charAt(0)=='\u0006'){
+                            if(key.charAt(1)=='1'){
+                                //Write wifi address here
+                            }else{
+                                //Write usb address here
+                            }
                         }else{
                             String command = "echo " + key +" | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
                             os.writeBytes(command);
