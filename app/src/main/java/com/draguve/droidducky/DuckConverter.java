@@ -66,7 +66,7 @@ public class DuckConverter {
         return prop;
     }
 
-    private static ArrayList<String> stringToCommands(String input) {
+    public static ArrayList<String> stringToCommands(String input) {
         ArrayList < String > commands = new ArrayList<>();
         for (char x: input.toCharArray()) {
             commands.add(charToCommand(x));

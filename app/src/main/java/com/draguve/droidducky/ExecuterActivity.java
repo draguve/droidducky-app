@@ -32,7 +32,7 @@ public class ExecuterActivity extends AppCompatActivity {
     private httpserver server;
     private Integer currentMode;
 
-    public String currentIP = "";
+    public ArrayList<String> currentIP;
 
     private Integer DUCKYSCRIPT_EDIT = 0;
     private Integer COMMANDLINE_EDIT = 1;
@@ -96,6 +96,8 @@ public class ExecuterActivity extends AppCompatActivity {
                     server = new httpserver();
                     try {
                         server.start();
+                        String IPstring = DUtils.getIPAddress(true);
+                        currentIP = DuckConverter.stringToCommands(IPstring);
                         Log.w("Httpd", "Web server initialized.");
                         logREMComment("Web server initialized");
                     } catch(IOException ioe) {
@@ -103,6 +105,7 @@ public class ExecuterActivity extends AppCompatActivity {
                     }
                 }else if(!isChecked && server!=null){
                     Log.w("Httpd", "Web server Stopped.");
+                    currentIP = new ArrayList<String>();
                     server.stop();
                     server = null;
                     logREMComment("Web server disabled");
