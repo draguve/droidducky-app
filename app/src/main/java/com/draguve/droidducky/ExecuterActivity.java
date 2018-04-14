@@ -33,6 +33,7 @@ public class ExecuterActivity extends AppCompatActivity {
     private Integer currentMode;
 
     public ArrayList<String> currentIP;
+    public ArrayList<String> usbIP;
 
     private Integer DUCKYSCRIPT_EDIT = 0;
     private Integer COMMANDLINE_EDIT = 1;
@@ -98,6 +99,7 @@ public class ExecuterActivity extends AppCompatActivity {
                         server.start();
                         String IPstring = DUtils.getIPAddress(true);
                         currentIP = DuckConverter.stringToCommands(IPstring);
+                        usbIP = DuckConverter.stringToCommands("192.168.42.129");
                         Log.w("Httpd", "Web server initialized.");
                         logREMComment("Web server initialized");
                     } catch(IOException ioe) {
@@ -178,6 +180,9 @@ public class ExecuterActivity extends AppCompatActivity {
                 String lastLine = "";
                 try{
                     DuckConverter.loadAllProperties(scriptToRun.getLang(),appContext);
+                    String IPstring = DUtils.getIPAddress(true);
+                    currentIP = DuckConverter.stringToCommands(IPstring);
+                    usbIP = DuckConverter.stringToCommands("192.168.42.129");
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -193,8 +198,18 @@ public class ExecuterActivity extends AppCompatActivity {
                         }else if(key.charAt(0)=='\u0006'){
                             if(key.charAt(1)=='1'){
                                 //Write wifi address here
+                                for(String command : currentIP ){
+                                    String run = "echo " + command +" | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
+                                    os.writeBytes(run);
+                                    os.flush();
+                                }
                             }else{
                                 //Write usb address here
+                                for(String command : usbIP ){
+                                    String run = "echo " + command +" | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
+                                    os.writeBytes(run);
+                                    os.flush();
+                                }
                             }
                         }else{
                             String command = "echo " + key +" | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
