@@ -35,7 +35,7 @@ import static com.draguve.droidducky.DuckyScript.OPEN_WRITER;
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public enum DDScreen{DUCKYSCRIPT,TERMINAL,KEYBOARD;};
+    public enum DDScreen{DUCKYSCRIPT,TERMINAL,KEYBOARD,CLIPBOARD}
     public DDScreen currentScreen = null;
 
     public static final int MULTIPLE_PERMISSIONS = 10; // code you want.
@@ -137,6 +137,13 @@ public class MainActivity extends AppCompatActivity
                     .commit();
         } else if (id == R.id.dd_keyboard && currentScreen != DDScreen.KEYBOARD) {
             currentScreen = DDScreen.KEYBOARD;
+        } else if (id == R.id.dd_clipboard && currentScreen != DDScreen.CLIPBOARD){
+            currentScreen = DDScreen.CLIPBOARD;
+            ClipboardFragment clipboardFragment = new ClipboardFragment();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame,clipboardFragment)
+                    .addToBackStack(null)
+                    .commit();
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

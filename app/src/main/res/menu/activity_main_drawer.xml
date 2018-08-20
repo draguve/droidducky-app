@@ -16,6 +16,10 @@
             android:id="@+id/dd_keyboard"
             android:icon="@drawable/ic_menu_slideshow"
             android:title="Keyboard" />
+        <item
+            android:id="@+id/dd_clipboard"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Clipboard"/>
     </group>
 
 </menu>
