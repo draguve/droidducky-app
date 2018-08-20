@@ -4,23 +4,49 @@
     android:layout_height="match_parent"
     tools:context="com.draguve.droidducky.ClipboardFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <LinearLayout android:orientation="horizontal"
+    <LinearLayout android:orientation="vertical"
         android:layout_height="fill_parent"
         android:layout_width="fill_parent">
 
         <LinearLayout
             android:layout_weight="1"
             android:layout_height="fill_parent"
-            android:layout_width="0dp"/>
-        <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@android:color/darker_gray"/>
+            android:orientation="vertical">
+            <EditText
+            android:id="@+id/cipboard_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Clipboard" >
+            </EditText>
+            <Button
+                android:id="@+id/run_clipboard"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_weight="1"
+                android:text="Send over the USB" />
+        </LinearLayout>
+
         <LinearLayout
             android:layout_weight="1"
             android:layout_height="fill_parent"
-            android:layout_width="0dp"/>
+            android:layout_width="match_parent"
+            android:orientation="vertical">
+            <EditText
+                android:id="@+id/edit_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:hint="Write Custom Text" >
+            </EditText>
+            <Button
+                android:id="@+id/button2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Send over the USB" />
+        </LinearLayout>
 
     </LinearLayout>
 </FrameLayout>
