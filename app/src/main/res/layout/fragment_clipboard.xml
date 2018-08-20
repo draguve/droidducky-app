@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:orientation="vertical">
             <EditText
-            android:id="@+id/cipboard_text"
+            android:id="@+id/clipboard_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -34,14 +34,14 @@
             android:layout_width="match_parent"
             android:orientation="vertical">
             <EditText
-                android:id="@+id/edit_text"
+                android:id="@+id/custom_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="Write Custom Text" >
             </EditText>
             <Button
-                android:id="@+id/button2"
+                android:id="@+id/run_custom_text"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

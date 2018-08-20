@@ -134,7 +134,6 @@ public class ExecuterActivity extends AppCompatActivity {
             new ExecuterAsync().execute(currentCLScript.convertToScript());
         }
         runButton.setEnabled(false);
-
     }
 
     public void setPercentage(int percentage){
