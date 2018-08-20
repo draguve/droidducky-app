@@ -27,7 +27,21 @@ public class ClipboardFragment extends Fragment {
     public ClipboardFragment() {
         // Required empty public constructor
     }
-
+    @Override
+    public void onResume(){
+        super.onResume();
+        //maybe save this view if needed later
+        final EditText clipBoardText = getView().findViewById(R.id.clipboard_text);
+        final android.content.ClipboardManager clipboardManager = (ClipboardManager)getContext().getSystemService(CLIPBOARD_SERVICE);
+        ClipData clip= clipboardManager.getPrimaryClip();
+        if (clip != null) {
+            String text=null;
+            ClipData.Item item = clip.getItemAt(0);
+            if(item!=null){
+                clipBoardText.setText(item.getText());
+            }
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,11 +90,6 @@ public class ClipboardFragment extends Fragment {
         });
 
         return view;
-    }
-
-    public override void OnResume()
-    {
-        base.OnResume();
     }
 
     public void SendKeytrokes(String text){
