@@ -1,6 +1,5 @@
 package com.draguve.droidducky;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,23 +33,19 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class TerminalFragment extends Fragment {
+    static final int OPEN_WRITER = 1;
+    static final int FIND_FILE = 1337;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    CommandLineManager db = null;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private List<CommandLineScript> scriptList = new ArrayList<>();
-    CommandLineManager db = null;
     private RecyclerView recyclerView;
     private CommandLineScriptAdapter mAdapter;
-
-    static final int OPEN_WRITER = 1;
-    static final int FIND_FILE = 1337;
-
     private OnFragmentInteractionListener mListener;
 
     public TerminalFragment() {
@@ -92,7 +87,7 @@ public class TerminalFragment extends Fragment {
         db = new CommandLineManager(getActivity());
         scriptList = db.getAllScripts();
         recyclerView = view.findViewById(R.id.terminal_recyclerview);
-        mAdapter = new CommandLineScriptAdapter(scriptList,getActivity());
+        mAdapter = new CommandLineScriptAdapter(scriptList, getActivity());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -109,25 +104,25 @@ public class TerminalFragment extends Fragment {
             }
         });
 
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setSubtitle("Terminal");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("Terminal");
         return view;
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(requestCode==FIND_FILE){
+        if (requestCode == FIND_FILE) {
             Uri uri = null;
             if (data != null) {
                 //Get script from file
                 uri = data.getData();
                 InputStream inputStream = null;
-                String code="";
+                String code = "";
                 try {
                     inputStream = getActivity().getContentResolver().openInputStream(uri);
                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        code += (line+"");
+                        code += (line + "");
                     }
                     reader.close();
                     inputStream.close();
@@ -138,10 +133,10 @@ public class TerminalFragment extends Fragment {
                 int cut = filename.lastIndexOf('/');
                 if (cut != -1) {
                     filename = filename.substring(cut + 1);
-                }else{
+                } else {
                     filename = "Unknown";
                 }
-                CommandLineScript script = new CommandLineScript(filename,code,"us", CommandLineScript.OperatingSystem.WINDOWS);
+                CommandLineScript script = new CommandLineScript(filename, code, "us", CommandLineScript.OperatingSystem.WINDOWS);
                 db.addCommandScript(script);
             }
         }
@@ -158,10 +153,10 @@ public class TerminalFragment extends Fragment {
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(MaterialDialog dialog, DialogAction which) {
-                        Intent codeEditorIntent = new Intent(getActivity(),CodeEditor.class);
-                        codeEditorIntent.putExtra("idSelected",(String) null);
-                        codeEditorIntent.putExtra("editingMode",1);
-                        startActivityForResult(codeEditorIntent,OPEN_WRITER);
+                        Intent codeEditorIntent = new Intent(getActivity(), CodeEditor.class);
+                        codeEditorIntent.putExtra("idSelected", (String) null);
+                        codeEditorIntent.putExtra("editingMode", 1);
+                        startActivityForResult(codeEditorIntent, OPEN_WRITER);
                     }
                 })
                 .onNegative(new MaterialDialog.SingleButtonCallback() {

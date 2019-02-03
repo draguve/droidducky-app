@@ -20,25 +20,13 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import java.util.List;
 
 
-public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHolder>{
+public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHolder> {
 
     private List<Script> scriptList;
     private Activity mainActivityContext;
     private ScriptsManager db;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, genre;
-        public Button run,delete;
-
-        public MyViewHolder(View view) {
-            super(view);
-            title = view.findViewById(R.id.title);
-            genre = view.findViewById(R.id.genre);
-            run = view.findViewById(R.id.list_run);
-            delete = view.findViewById(R.id.list_delete);
-        }
-    }
-    public ScriptsAdapter(List<Script> scriptList,Context mainActivityContext) {
+    public ScriptsAdapter(List<Script> scriptList, Context mainActivityContext) {
         this.scriptList = scriptList;
         this.mainActivityContext = (Activity) mainActivityContext;
         db = new ScriptsManager(mainActivityContext);
@@ -53,16 +41,16 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder,final int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final int result = 1;
-                Intent codeEditorIntent = new Intent(v.getContext(),CodeEditor.class);
-                codeEditorIntent.putExtra("idSelected",scriptList.get(position).getID());
-                codeEditorIntent.putExtra("editingMode",0);
-                mainActivityContext.startActivityForResult(codeEditorIntent,result);
+                Intent codeEditorIntent = new Intent(v.getContext(), CodeEditor.class);
+                codeEditorIntent.putExtra("idSelected", scriptList.get(position).getID());
+                codeEditorIntent.putExtra("editingMode", 0);
+                mainActivityContext.startActivityForResult(codeEditorIntent, result);
             }
         });
         holder.run.setOnClickListener(new View.OnClickListener() {
@@ -70,10 +58,10 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
             public void onClick(View v) {
                 //scriptList.get(position).executeCode(mainActivityContext);
                 final int result = 1;
-                Intent codeEditorIntent = new Intent(v.getContext(),ExecuterActivity.class);
-                codeEditorIntent.putExtra("idSelected",scriptList.get(position).getID());
-                codeEditorIntent.putExtra("currentMode",0);
-                mainActivityContext.startActivityForResult(codeEditorIntent,result);
+                Intent codeEditorIntent = new Intent(v.getContext(), ExecuterActivity.class);
+                codeEditorIntent.putExtra("idSelected", scriptList.get(position).getID());
+                codeEditorIntent.putExtra("currentMode", 0);
+                mainActivityContext.startActivityForResult(codeEditorIntent, result);
             }
         });
         holder.delete.setOnClickListener(new View.OnClickListener() {
@@ -103,13 +91,26 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
         return scriptList.size();
     }
 
-    public void updateScriptList(List<Script> scripts){
+    public void updateScriptList(List<Script> scripts) {
         this.scriptList.clear();
         this.scriptList.addAll(scripts);
         this.notifyDataSetChanged();
     }
 
-    public List<Script> getCurrentList(){
+    public List<Script> getCurrentList() {
         return scriptList;
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        public TextView title, genre;
+        public Button run, delete;
+
+        public MyViewHolder(View view) {
+            super(view);
+            title = view.findViewById(R.id.title);
+            genre = view.findViewById(R.id.genre);
+            run = view.findViewById(R.id.list_run);
+            delete = view.findViewById(R.id.list_delete);
+        }
     }
 }

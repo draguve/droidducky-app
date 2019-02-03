@@ -19,25 +19,13 @@ import java.util.List;
  * Created by Draguve on 4/1/2018.
  */
 
-public class CommandLineScriptAdapter extends RecyclerView.Adapter<CommandLineScriptAdapter.MyViewHolder>{
+public class CommandLineScriptAdapter extends RecyclerView.Adapter<CommandLineScriptAdapter.MyViewHolder> {
 
     private List<CommandLineScript> scriptList;
     private Activity mainActivityContext;
     private CommandLineManager db;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, genre;
-        public Button run,delete;
-
-        public MyViewHolder(View view) {
-            super(view);
-            title = view.findViewById(R.id.title);
-            genre = view.findViewById(R.id.genre);
-            run = view.findViewById(R.id.list_run);
-            delete = view.findViewById(R.id.list_delete);
-        }
-    }
-    public CommandLineScriptAdapter(List<CommandLineScript> scriptList,Context mainActivityContext) {
+    public CommandLineScriptAdapter(List<CommandLineScript> scriptList, Context mainActivityContext) {
         this.scriptList = scriptList;
         this.mainActivityContext = (Activity) mainActivityContext;
         db = new CommandLineManager(mainActivityContext);
@@ -58,20 +46,20 @@ public class CommandLineScriptAdapter extends RecyclerView.Adapter<CommandLineSc
             @Override
             public void onClick(View v) {
                 final int result = 1;
-                Intent codeEditorIntent = new Intent(v.getContext(),CodeEditor.class);
-                codeEditorIntent.putExtra("idSelected",scriptList.get(position).getID());
-                codeEditorIntent.putExtra("editingMode",1);
-                mainActivityContext.startActivityForResult(codeEditorIntent,result);
+                Intent codeEditorIntent = new Intent(v.getContext(), CodeEditor.class);
+                codeEditorIntent.putExtra("idSelected", scriptList.get(position).getID());
+                codeEditorIntent.putExtra("editingMode", 1);
+                mainActivityContext.startActivityForResult(codeEditorIntent, result);
             }
         });
         holder.run.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 final int result = 1;
-                Intent codeEditorIntent = new Intent(v.getContext(),ExecuterActivity.class);
-                codeEditorIntent.putExtra("idSelected",scriptList.get(position).getID());
-                codeEditorIntent.putExtra("currentMode",1);
-                mainActivityContext.startActivityForResult(codeEditorIntent,result);
+                Intent codeEditorIntent = new Intent(v.getContext(), ExecuterActivity.class);
+                codeEditorIntent.putExtra("idSelected", scriptList.get(position).getID());
+                codeEditorIntent.putExtra("currentMode", 1);
+                mainActivityContext.startActivityForResult(codeEditorIntent, result);
             }
         });
         holder.delete.setOnClickListener(new View.OnClickListener() {
@@ -101,14 +89,27 @@ public class CommandLineScriptAdapter extends RecyclerView.Adapter<CommandLineSc
         return scriptList.size();
     }
 
-    public void updateScriptList(List<CommandLineScript> scripts){
+    public void updateScriptList(List<CommandLineScript> scripts) {
         this.scriptList.clear();
         this.scriptList.addAll(scripts);
         this.notifyDataSetChanged();
     }
 
-    public List<CommandLineScript> getCurrentList(){
+    public List<CommandLineScript> getCurrentList() {
         return scriptList;
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        public TextView title, genre;
+        public Button run, delete;
+
+        public MyViewHolder(View view) {
+            super(view);
+            title = view.findViewById(R.id.title);
+            genre = view.findViewById(R.id.genre);
+            run = view.findViewById(R.id.list_run);
+            delete = view.findViewById(R.id.list_delete);
+        }
     }
 }
 

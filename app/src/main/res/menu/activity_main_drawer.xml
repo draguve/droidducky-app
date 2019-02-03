@@ -13,14 +13,13 @@
             android:icon="@drawable/ic_menu_codes"
             android:title="@string/terminal" />
         <item
-            android:id="@+id/dd_keyboard"
-            android:enabled="false"
-            android:icon="@drawable/ic_menu_usb"
-            android:title="@string/keyboard" />
-        <item
             android:id="@+id/dd_clipboard"
             android:icon="@drawable/ic_menu_paste"
             android:title="@string/clipboard"/>
+        <item
+            android:id="@+id/dd_keyboard"
+            android:icon="@drawable/ic_menu_usb"
+            android:title="@string/keyboard" />
     </group>
 
 </menu>

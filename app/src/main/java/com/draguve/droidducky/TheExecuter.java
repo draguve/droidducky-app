@@ -35,14 +35,14 @@ public class TheExecuter {
         }
     }
 
-    public static void runAsRoot(String command){
-        try{
+    public static void runAsRoot(String command) {
+        try {
             Process process = Runtime.getRuntime().exec("su");
             DataOutputStream os = new DataOutputStream(process.getOutputStream());
             os.writeBytes(command + '\n');
             os.writeBytes("exit\n");
             os.flush();
-        }catch (IOException e){
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -81,9 +81,9 @@ public class TheExecuter {
         return output;
     }
 
-    public static void injectKeystrokes(ArrayList<String> keys, Context context){
+    public static void injectKeystrokes(ArrayList<String> keys, Context context) {
 
-        if(!DUtils.checkForFiles()) {
+        if (!DUtils.checkForFiles()) {
             DUtils.setupFilesForInjection(context);
         }
 
@@ -91,12 +91,12 @@ public class TheExecuter {
             Process process = Runtime.getRuntime().exec("su");
             DataOutputStream os = new DataOutputStream(process.getOutputStream());
             os.writeBytes("cd " + DUtils.binHome + '\n');
-            for(String key : keys){
-                if(key.charAt(0)=='\u0002'){
+            for (String key : keys) {
+                if (key.charAt(0) == '\u0002') {
                     int time = Integer.parseInt(key.substring(1).trim());
                     SystemClock.sleep(time);
-                } else if (key.charAt(0)=='\u0001'){
-                    Log.i("Executer",key.substring(1));
+                } else if (key.charAt(0) == '\u0001') {
+                    Log.i("Executer", key.substring(1));
                 } else {
                     String command = "echo " + key + " | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
                     os.writeBytes(command);

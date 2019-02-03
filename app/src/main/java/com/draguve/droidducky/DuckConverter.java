@@ -32,43 +32,43 @@ public class DuckConverter {
     private static int defaultDelay = 200;
     private static String lastLine;
 
-    public static ArrayList<String> convert(ArrayList<String> DuckLines,String lang,Context appContext){
-        try{
-            loadAllProperties(lang,appContext);
-        }catch(IOException e){
-            Log.e("DuckConverter",e.toString());
+    public static ArrayList<String> convert(ArrayList<String> DuckLines, String lang, Context appContext) {
+        try {
+            loadAllProperties(lang, appContext);
+        } catch (IOException e) {
+            Log.e("DuckConverter", e.toString());
         }
         ArrayList<String> letters = new ArrayList<>();
-        for(String line: DuckLines){
-            letters.addAll(convertLine(line,appContext));
+        for (String line : DuckLines) {
+            letters.addAll(convertLine(line, appContext));
         }
         return letters;
     }
 
-    public static void loadAllProperties(String lang,Context context) throws IOException {
-        keyboardProps = loadProperties("keyboard",context);
-        layoutProps = loadProperties(lang,context);
-        commandProps = loadProperties("commands",context);
+    public static void loadAllProperties(String lang, Context context) throws IOException {
+        keyboardProps = loadProperties("keyboard", context);
+        layoutProps = loadProperties(lang, context);
+        commandProps = loadProperties("commands", context);
     }
 
     private static Properties loadProperties(String file, Context context) throws IOException {
         String filename = file + ".properties";
         Properties prop = new Properties();
-        if(context==null){
-            Log.e("DuckConverter","Context is Null");
+        if (context == null) {
+            Log.e("DuckConverter", "Context is Null");
         }
         AssetManager assetManager = context.getAssets();
         InputStream inputStream = assetManager.open(filename);
-        if(inputStream==null){
-            Log.e("DuckConverter","Language not found");
+        if (inputStream == null) {
+            Log.e("DuckConverter", "Language not found");
         }
         prop.load(inputStream);
         return prop;
     }
 
     public static ArrayList<String> stringToCommands(String input) {
-        ArrayList < String > commands = new ArrayList<>();
-        for (char x: input.toCharArray()) {
+        ArrayList<String> commands = new ArrayList<>();
+        for (char x : input.toCharArray()) {
             commands.add(charToCommand(x));
         }
         return commands;
@@ -109,7 +109,7 @@ public class DuckConverter {
         }
     }
 
-    private static String charToCommand(char c){
+    private static String charToCommand(char c) {
         return codeToCommand(charToCode(c));
     }
 
@@ -127,8 +127,8 @@ public class DuckConverter {
         }
     }
 
-    public static ArrayList <String> convertLine(String line,Context context,String last) {
-        ArrayList < String > letters = new ArrayList<>();
+    public static ArrayList<String> convertLine(String line, Context context, String last) {
+        ArrayList<String> letters = new ArrayList<>();
         String[] words = line.trim().split(" ");
         if (words[0].trim().toUpperCase().equals("STRING")) {
             return stringToCommands(line.trim().substring(6));
@@ -144,7 +144,7 @@ public class DuckConverter {
                 numberOfTimes = 1;
             }
             for (int i = 0; i < numberOfTimes; i++) {
-                letters.addAll(convertLine(last,context,null));
+                letters.addAll(convertLine(last, context, null));
             }
             return letters;
         } else if (words[0].trim().toUpperCase().equals("REM")) {
@@ -154,12 +154,12 @@ public class DuckConverter {
             letters.add("\u0002" + line.substring(5).trim());
             return letters;
         } else if (words[0].trim().toUpperCase().equals("LOCAL_IP")) {
-            letters.add("\u0006"+0);
+            letters.add("\u0006" + 0);
             return letters;
         } else if (words[0].trim().toUpperCase().equals("WIFI_IP")) {
             letters.add("\u0006" + 1);
             return letters;
-        }else if (words[0].trim().toUpperCase().equals("DEFAULTDELAY") || words[0].trim().toUpperCase().equals("DEFAULT_DELAY")) {
+        } else if (words[0].trim().toUpperCase().equals("DEFAULTDELAY") || words[0].trim().toUpperCase().equals("DEFAULT_DELAY")) {
             if (words.length > 1) {
                 try {
                     defaultDelay = Integer.parseInt(words[1]);
@@ -170,37 +170,36 @@ public class DuckConverter {
                 letters.add("\u0002" + defaultDelay);
                 return letters;
             }
-        }else if(words[0].trim().toUpperCase().equals("WRITE_FILE")){
+        } else if (words[0].trim().toUpperCase().equals("WRITE_FILE")) {
             File path = Environment.getExternalStorageDirectory();
-            File file = new File(path,"/DroidDucky/code/"+words[1].trim());
-            if(file.exists()){
+            File file = new File(path, "/DroidDucky/code/" + words[1].trim());
+            if (file.exists()) {
                 try {
                     BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
                     String receiveString;
-                    while ( (receiveString = bufferedReader.readLine()) != null ) {
+                    while ((receiveString = bufferedReader.readLine()) != null) {
                         letters.addAll(stringToCommands(receiveString));
                         letters.add("enter");
                     }
                     bufferedReader.close();
-                }
-                catch (FileNotFoundException e) {
+                } catch (FileNotFoundException e) {
                     Log.e("login activity", "File not found: " + e.toString());
                 } catch (IOException e) {
                     Log.e("login activity", "Can not read file: " + e.toString());
                 }
-            }else{
-                Toast.makeText(context,"Can't Find File , Ignoring File ",Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(context, "Can't Find File , Ignoring File ", Toast.LENGTH_SHORT).show();
             }
             return letters;
-        }else {
+        } else {
             letters.add(convertCommand(line.trim().split(" ")));
             return letters;
         }
         return null;
     }
 
-    private static ArrayList <String> convertLine(String line,Context context) {
-        ArrayList toReturn  = convertLine(line,context,lastLine);
+    private static ArrayList<String> convertLine(String line, Context context) {
+        ArrayList toReturn = convertLine(line, context, lastLine);
         lastLine = line;
         return toReturn;
     }

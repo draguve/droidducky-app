@@ -1,9 +1,6 @@
 package com.draguve.droidducky;
 
-import android.util.Log;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.UUID;
 
 /**
@@ -19,7 +16,7 @@ public class CommandLineScript {
     private Integer delayBetweenLines = 200;
     private Integer initalDelay = 1000;
 
-    public CommandLineScript(String id,String name,String code,String lang,OperatingSystem os){
+    public CommandLineScript(String id, String name, String code, String lang, OperatingSystem os) {
         _id = id;
         _name = name;
         _code = code;
@@ -27,7 +24,7 @@ public class CommandLineScript {
         _os = os;
     }
 
-    public CommandLineScript(String name,String code,String lang,OperatingSystem os){
+    public CommandLineScript(String name, String code, String lang, OperatingSystem os) {
         _id = UUID.randomUUID().toString();
         _name = name;
         _code = code;
@@ -35,44 +32,48 @@ public class CommandLineScript {
         _os = os;
     }
 
-    public void setName(String name){
+    public String getName() {
+        return _name;
+    }
+
+    public void setName(String name) {
         _name = name;
     }
 
-    public void setCode(String code){
-        _code = code;
-    }
-
-    public void setLang(String lang) { _lang = lang; }
-
-    public void setOS(OperatingSystem os){
-        _os = os;
-    }
-
-    public String getName(){
-        return  _name;
-    }
-
-    public String getCode(){
+    public String getCode() {
         return _code;
     }
 
-    public String getID(){
+    public void setCode(String code) {
+        _code = code;
+    }
+
+    public String getID() {
         return _id;
     }
 
-    public String getLang() { return _lang;}
+    public String getLang() {
+        return _lang;
+    }
 
-    public OperatingSystem getOS(){
+    public void setLang(String lang) {
+        _lang = lang;
+    }
+
+    public OperatingSystem getOS() {
         return _os;
     }
 
-    public Script convertToScript(){
+    public void setOS(OperatingSystem os) {
+        _os = os;
+    }
+
+    public Script convertToScript() {
         //Change this to convert the code according to the system
-        String[] converted_code = _code.replace("\r","").split("\n");
+        String[] converted_code = _code.replace("\r", "").split("\n");
         ArrayList<String> finalCode = new ArrayList<String>();
         String compiledCode = "";
-        switch(_os){
+        switch (_os) {
             case WINDOWS:
                 finalCode.add("DELAY " + initalDelay);
                 finalCode.add("GUI r");
@@ -82,14 +83,14 @@ public class CommandLineScript {
                 finalCode.add("ENTER \nDELAY 1000");
                 break;
             case DARWIN:
-                finalCode.add("DELAY " + initalDelay+ "\n" +
+                finalCode.add("DELAY " + initalDelay + "\n" +
                         "GUI space\n" +
                         "DELAY 500\n" +
                         "ALT F2\n" +
                         "DELAY 500\n" +
                         "BACKSPACE\n" +
                         "DELAY 100\n" +
-                        "STRING terminal\n"+
+                        "STRING terminal\n" +
                         "ENTER\n" +
                         "DELAY 3000");
                 break;
@@ -115,30 +116,30 @@ public class CommandLineScript {
                         "ENTER\n" + "DELAY 1000");
                 break;
         }
-        for(String line : converted_code){
-            finalCode.add("STRING "+line);
+        for (String line : converted_code) {
+            finalCode.add("STRING " + line);
             finalCode.add("DELAY " + delayBetweenLines);
             finalCode.add("ENTER");
             finalCode.add("DELAY " + delayBetweenLines);
         }
-        for(String line : finalCode){
+        for (String line : finalCode) {
             compiledCode += line + "\n";
         }
-        return new Script(_name,compiledCode,_lang);
+        return new Script(_name, compiledCode, _lang);
     }
 
-    public String getString(){
+    public String getString() {
         return _os.getString();
     }
 
-    public enum OperatingSystem{
+    public enum OperatingSystem {
         LINUX,
         WINDOWS,
         DARWIN,
         WINDOWS_ADMIN;
 
         public static OperatingSystem fromInteger(int x) {
-            switch(x) {
+            switch (x) {
                 case 0:
                     return LINUX;
                 case 1:
@@ -151,8 +152,8 @@ public class CommandLineScript {
             return null;
         }
 
-        public String getString(){
-            switch (this){
+        public String getString() {
+            switch (this) {
                 case LINUX:
                     return "Linux";
                 case WINDOWS:

@@ -3,8 +3,8 @@ package com.draguve.droidducky;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
@@ -12,7 +12,6 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.io.DataOutputStream;
@@ -22,6 +21,8 @@ import java.util.Arrays;
 
 public class ExecuterActivity extends AppCompatActivity {
 
+    public ArrayList<String> currentIP;
+    public ArrayList<String> usbIP;
     Script currentScript;
     CommandLineScript currentCLScript;
     Context appContext;
@@ -31,10 +32,6 @@ public class ExecuterActivity extends AppCompatActivity {
     private ToggleButton serverToggle;
     private httpserver server;
     private Integer currentMode;
-
-    public ArrayList<String> currentIP;
-    public ArrayList<String> usbIP;
-
     private Integer DUCKYSCRIPT_EDIT = 0;
     private Integer COMMANDLINE_EDIT = 1;
 
@@ -51,24 +48,24 @@ public class ExecuterActivity extends AppCompatActivity {
 
         //Getting arguments from the calling intent
         Intent callingIntent = getIntent();
-        String scriptID = callingIntent.getExtras().getString("idSelected",null);
-        currentMode = callingIntent.getExtras().getInt("currentMode",-1);
+        String scriptID = callingIntent.getExtras().getString("idSelected", null);
+        currentMode = callingIntent.getExtras().getInt("currentMode", -1);
 
         //To get script object from the scriptId
-        if(currentMode == DUCKYSCRIPT_EDIT){
+        if (currentMode == DUCKYSCRIPT_EDIT) {
             ScriptsManager db = new ScriptsManager(this);
-            if(scriptID!=null){
+            if (scriptID != null) {
                 //Stay if the script id is not null
                 currentScript = db.getScript(scriptID);
-            }else{
+            } else {
                 //Go back to the calling activity if the could'nt get id
                 goBackToSelector();
             }
-        }else if(currentMode == COMMANDLINE_EDIT){
+        } else if (currentMode == COMMANDLINE_EDIT) {
             CommandLineManager commandLineDB = new CommandLineManager(this);
-            if(scriptID!=null){
+            if (scriptID != null) {
                 currentCLScript = commandLineDB.getScript(scriptID);
-            }else{
+            } else {
                 goBackToSelector();
             }
         }
@@ -93,7 +90,7 @@ public class ExecuterActivity extends AppCompatActivity {
         serverToggle.setChecked(false);
         serverToggle.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked && server==null) {
+                if (isChecked && server == null) {
                     server = new httpserver();
                     try {
                         server.start();
@@ -102,10 +99,10 @@ public class ExecuterActivity extends AppCompatActivity {
                         usbIP = DuckConverter.stringToCommands("192.168.42.129");
                         Log.w("Httpd", "Web server initialized.");
                         logREMComment("Web server initialized");
-                    } catch(IOException ioe) {
+                    } catch (IOException ioe) {
                         Log.w("Httpd", "The server could not start.");
                     }
-                }else if(!isChecked && server!=null){
+                } else if (!isChecked && server != null) {
                     Log.w("Httpd", "Web server Stopped.");
                     currentIP = new ArrayList<String>();
                     server.stop();
@@ -123,36 +120,36 @@ public class ExecuterActivity extends AppCompatActivity {
         return true;
     }
 
-    public void executeCode(View view){
+    public void executeCode(View view) {
         remWindow.setText("");
-        if(!DUtils.checkForFiles()) {
+        if (!DUtils.checkForFiles()) {
             DUtils.setupFilesForInjection(this);
         }
-        if(currentMode == DUCKYSCRIPT_EDIT){
+        if (currentMode == DUCKYSCRIPT_EDIT) {
             new ExecuterAsync().execute(currentScript);
-        }else if(currentMode == COMMANDLINE_EDIT){
+        } else if (currentMode == COMMANDLINE_EDIT) {
             new ExecuterAsync().execute(currentCLScript.convertToScript());
         }
         runButton.setEnabled(false);
     }
 
-    public void setPercentage(int percentage){
+    public void setPercentage(int percentage) {
         codeProgress.setProgress(percentage);
     }
 
-    public void executionFinished(){
+    public void executionFinished() {
         runButton.setEnabled(true);
     }
 
-    public void logREMComment(String comment){
+    public void logREMComment(String comment) {
         String s = remWindow.getText().toString();
-        s += "\n"+ comment;
+        s += "\n" + comment;
         remWindow.setText(s);
     }
 
-    public void goBackToSelector(){
+    public void goBackToSelector() {
         Intent goingBack = new Intent();
-        setResult(RESULT_OK,goingBack);
+        setResult(RESULT_OK, goingBack);
         finish();
     }
 
@@ -163,9 +160,9 @@ public class ExecuterActivity extends AppCompatActivity {
 
 
     //Class to execute the duckyscript without blocking the main thread
-    public class ExecuterAsync extends AsyncTask<Script,Float,Integer>{
+    public class ExecuterAsync extends AsyncTask<Script, Float, Integer> {
 
-        protected Integer doInBackground(Script... scripts){
+        protected Integer doInBackground(Script... scripts) {
             try {
                 publishProgress(0f);
                 Script scriptToRun = scripts[0];
@@ -178,34 +175,34 @@ public class ExecuterActivity extends AppCompatActivity {
                 ArrayList<String> duckyLines = new ArrayList<>(Arrays.asList(scriptToRun.getCode().replaceAll("\\r", "").split("\n")));
                 String lastLine = "";
                 try {
-                    DuckConverter.loadAllProperties(scriptToRun.getLang(),appContext);
+                    DuckConverter.loadAllProperties(scriptToRun.getLang(), appContext);
                     String IPstring = DUtils.getIPAddress(true);
                     currentIP = DuckConverter.stringToCommands(IPstring);
                     // TODO: Fix static IP
                     usbIP = DuckConverter.stringToCommands("192.168.42.129");
-                } catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 float size = duckyLines.size();
-                for(int i=0;i<duckyLines.size();i++){
-                    ArrayList<String> keys = DuckConverter.convertLine(duckyLines.get(i),appContext,lastLine);
-                    for(String key : keys){
-                        if(key.charAt(0)=='\u0002'){
+                for (int i = 0; i < duckyLines.size(); i++) {
+                    ArrayList<String> keys = DuckConverter.convertLine(duckyLines.get(i), appContext, lastLine);
+                    for (String key : keys) {
+                        if (key.charAt(0) == '\u0002') {
                             int time = Integer.parseInt(key.substring(1).trim());
                             Thread.sleep(time);
-                        } else if(key.charAt(0)=='\u0001'){
+                        } else if (key.charAt(0) == '\u0001') {
                             logREMComment(key.substring(1));
-                        } else if(key.charAt(0)=='\u0006'){
-                            if(key.charAt(1)=='1'){
+                        } else if (key.charAt(0) == '\u0006') {
+                            if (key.charAt(1) == '1') {
                                 //Write wifi address here
-                                for(String command : currentIP ){
+                                for (String command : currentIP) {
                                     String run = "echo " + command + " | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
                                     os.writeBytes(run);
                                     os.flush();
                                 }
                             } else {
                                 //Write usb address here
-                                for(String command : usbIP ){
+                                for (String command : usbIP) {
                                     String run = "echo " + command + " | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
                                     os.writeBytes(run);
                                     os.flush();
@@ -218,7 +215,7 @@ public class ExecuterActivity extends AppCompatActivity {
                         }
                     }
                     lastLine = duckyLines.get(i);
-                    publishProgress(i/size);
+                    publishProgress(i / size);
                 }
                 //stop and flush the shell after execution finished
                 os.writeBytes("exit\n");
@@ -232,7 +229,7 @@ public class ExecuterActivity extends AppCompatActivity {
         }
 
         protected void onProgressUpdate(Float... progress) {
-            setPercentage((int)(progress[0]*100));
+            setPercentage((int) (progress[0] * 100));
         }
 
         protected void onPostExecute(Integer result) {

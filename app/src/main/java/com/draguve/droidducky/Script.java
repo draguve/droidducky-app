@@ -1,9 +1,5 @@
 package com.draguve.droidducky;
 
-import android.content.Context;
-
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.UUID;
 
 /**
@@ -16,41 +12,45 @@ public class Script {
     private String _code;
     private String _lang;
 
-    public Script(String id,String name,String code,String lang){
+    public Script(String id, String name, String code, String lang) {
         _id = id;
         _name = name;
         _code = code;
         _lang = lang;
     }
 
-    public Script(String name,String code,String lang){
+    public Script(String name, String code, String lang) {
         _id = UUID.randomUUID().toString();
         _name = name;
         _code = code;
         _lang = lang;
     }
 
-    public void setName(String name){
+    public String getName() {
+        return _name;
+    }
+
+    public void setName(String name) {
         _name = name;
     }
 
-    public void setCode(String code){
-        _code = code;
-    }
-
-    public void setLang(String lang) { _lang = lang; }
-
-    public String getName(){
-        return  _name;
-    }
-
-    public String getCode(){
+    public String getCode() {
         return _code;
     }
 
-    public String getID(){
+    public void setCode(String code) {
+        _code = code;
+    }
+
+    public String getID() {
         return _id;
     }
 
-    public String getLang() { return _lang;}
+    public String getLang() {
+        return _lang;
+    }
+
+    public void setLang(String lang) {
+        _lang = lang;
+    }
 }

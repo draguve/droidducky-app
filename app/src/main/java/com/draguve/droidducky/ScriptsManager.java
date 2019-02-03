@@ -5,13 +5,14 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
 import java.util.ArrayList;
 
 /**
  * Created by Draguve on 1/2/2018.
  */
 
-public class ScriptsManager extends SQLiteOpenHelper{
+public class ScriptsManager extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 2;
 
     // Database Name
@@ -35,7 +36,7 @@ public class ScriptsManager extends SQLiteOpenHelper{
     public void onCreate(SQLiteDatabase db) {
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_SCRIPTS + "("
                 + KEY_ID + " TEXT PRIMARY KEY," + KEY_NAME + " TEXT,"
-                + KEY_CODE + " TEXT," + KEY_LANG + " TEXT" +  ")";
+                + KEY_CODE + " TEXT," + KEY_LANG + " TEXT" + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
@@ -48,45 +49,45 @@ public class ScriptsManager extends SQLiteOpenHelper{
         onCreate(db);
     }
 
-    public void addScript(Script script){
+    public void addScript(Script script) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY_ID,script.getID());
-        values.put(KEY_NAME,script.getName());
-        values.put(KEY_CODE,script.getCode());
-        values.put(KEY_LANG,script.getLang());
-        db.insert(TABLE_SCRIPTS,null,values);
+        values.put(KEY_ID, script.getID());
+        values.put(KEY_NAME, script.getName());
+        values.put(KEY_CODE, script.getCode());
+        values.put(KEY_LANG, script.getLang());
+        db.insert(TABLE_SCRIPTS, null, values);
         db.close();
     }
 
-    public Script getScript(String id){
+    public Script getScript(String id) {
         Script script = null;
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_SCRIPTS, new String[] { KEY_ID,
-                        KEY_NAME, KEY_CODE,KEY_LANG }, KEY_ID + "=?",
-                new String[] { id }, null, null, null, null);
-        if (cursor != null && cursor.getCount()>0) {
+        Cursor cursor = db.query(TABLE_SCRIPTS, new String[]{KEY_ID,
+                        KEY_NAME, KEY_CODE, KEY_LANG}, KEY_ID + "=?",
+                new String[]{id}, null, null, null, null);
+        if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
-            script = new Script(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3));
+            script = new Script(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3));
         }
         return script;
     }
 
-    public ArrayList<Script> getAllScripts(){
+    public ArrayList<Script> getAllScripts() {
         ArrayList<Script> scripts = new ArrayList<>();
         String query = "SELECT * FROM " + TABLE_SCRIPTS;
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery(query,null);
-        if(cursor.moveToFirst()){
-            do{
-                Script script = new Script(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3));
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do {
+                Script script = new Script(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3));
                 scripts.add(script);
-            } while(cursor.moveToNext());
+            } while (cursor.moveToNext());
         }
         return scripts;
     }
 
-    public void updateScript(Script script){
+    public void updateScript(Script script) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
@@ -94,12 +95,12 @@ public class ScriptsManager extends SQLiteOpenHelper{
         values.put(KEY_CODE, script.getCode());
         values.put(KEY_LANG, script.getLang());
         // updating row
-        db.update(TABLE_SCRIPTS, values, KEY_ID + " = ?", new String[] { String.valueOf(script.getID()) });
+        db.update(TABLE_SCRIPTS, values, KEY_ID + " = ?", new String[]{String.valueOf(script.getID())});
     }
 
-    public void deleteScript(String id){
+    public void deleteScript(String id) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE_SCRIPTS,KEY_ID + " = ?",new String[]{ id });
+        db.delete(TABLE_SCRIPTS, KEY_ID + " = ?", new String[]{id});
         db.close();
     }
 }
