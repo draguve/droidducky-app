@@ -179,10 +179,10 @@ public class CodeEditor extends AppCompatActivity implements AdapterView.OnItemS
             currentCLScript.setName(scriptName.getText().toString());
             if (commandLineDB.getScript(currentCLScript.getID()) != null) {
                 new MaterialDialog.Builder(this)
-                        .title("How do you want to save the script")
-                        .positiveText("Create new")
-                        .negativeText("Cancel")
-                        .neutralText("Overwrite")
+                        .title(R.string.save_script_dialog)
+                        .positiveText(R.string.create_new_dialog)
+                        .negativeText(R.string.cancel_dialog)
+                        .neutralText(R.string.overwrite_dialog)
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(MaterialDialog dialog, DialogAction which) {
@@ -219,9 +219,9 @@ public class CodeEditor extends AppCompatActivity implements AdapterView.OnItemS
             currentScript.setName(scriptName.getText().toString());
             if (db.getScript(currentScript.getID()) != null) {
                 new MaterialDialog.Builder(this)
-                        .title("How do you want to save the script")
+                        .title(R.string.save_script_dialog)
                         .positiveText("Create new")
-                        .negativeText("Cancel")
+                        .negativeText(R.string.cancel_dialog)
                         .neutralText("Overwrite")
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override

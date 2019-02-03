@@ -23,4 +23,6 @@
     <string name="delete_script_dialog">Do you really want to delete the script?</string>
     <string name="delete_dialog">Delete</string>
     <string name="cancel_dialog">Cancel</string>
+    <string name="save_script_dialog">How do you want to save the script</string>
+    <string name="overwrite_dialog">Overwrite</string>
 </resources>
