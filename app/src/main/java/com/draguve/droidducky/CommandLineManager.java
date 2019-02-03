@@ -37,7 +37,7 @@ public class CommandLineManager extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         String CREATE_CONTACTS_TABLE = "CREATE TABLE " + TABLE_SCRIPTS + "("
                 + KEY_ID + " TEXT PRIMARY KEY," + KEY_NAME + " TEXT,"
-                + KEY_CODE + " TEXT," + KEY_LANG + " TEXT," + KEY_OS + " INTEGER" +  ")";
+                + KEY_CODE + " TEXT," + KEY_LANG + " TEXT," + KEY_OS + " INTEGER" + ")";
         db.execSQL(CREATE_CONTACTS_TABLE);
     }
 
@@ -50,60 +50,60 @@ public class CommandLineManager extends SQLiteOpenHelper {
         onCreate(db);
     }
 
-    public void addCommandScript(CommandLineScript script){
+    public void addCommandScript(CommandLineScript script) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(KEY_ID,script.getID());
-        values.put(KEY_NAME,script.getName());
-        values.put(KEY_CODE,script.getCode());
-        values.put(KEY_LANG,script.getLang());
-        values.put(KEY_OS,script.getOS().ordinal());
-        db.insert(TABLE_SCRIPTS,null,values);
+        values.put(KEY_ID, script.getID());
+        values.put(KEY_NAME, script.getName());
+        values.put(KEY_CODE, script.getCode());
+        values.put(KEY_LANG, script.getLang());
+        values.put(KEY_OS, script.getOS().ordinal());
+        db.insert(TABLE_SCRIPTS, null, values);
         db.close();
     }
 
-    public CommandLineScript getScript(String id){
+    public CommandLineScript getScript(String id) {
         CommandLineScript script = null;
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.query(TABLE_SCRIPTS, new String[] { KEY_ID,
-                        KEY_NAME, KEY_CODE,KEY_LANG,KEY_OS }, KEY_ID + "=?",
-                new String[] { id }, null, null, null, null);
-        if (cursor != null && cursor.getCount()>0) {
+        Cursor cursor = db.query(TABLE_SCRIPTS, new String[]{KEY_ID,
+                        KEY_NAME, KEY_CODE, KEY_LANG, KEY_OS}, KEY_ID + "=?",
+                new String[]{id}, null, null, null, null);
+        if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
-            script = new CommandLineScript(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3), CommandLineScript.OperatingSystem.fromInteger(cursor.getInt(4)));
+            script = new CommandLineScript(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), CommandLineScript.OperatingSystem.fromInteger(cursor.getInt(4)));
         }
         return script;
     }
 
-    public ArrayList<CommandLineScript> getAllScripts(){
+    public ArrayList<CommandLineScript> getAllScripts() {
         ArrayList<CommandLineScript> scripts = new ArrayList<>();
         String query = "SELECT * FROM " + TABLE_SCRIPTS;
         SQLiteDatabase db = getReadableDatabase();
-        Cursor cursor = db.rawQuery(query,null);
-        if(cursor.moveToFirst()){
-            do{
-                CommandLineScript script = new CommandLineScript(cursor.getString(0),cursor.getString(1),cursor.getString(2),cursor.getString(3), CommandLineScript.OperatingSystem.fromInteger(cursor.getInt(4)));
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do {
+                CommandLineScript script = new CommandLineScript(cursor.getString(0), cursor.getString(1), cursor.getString(2), cursor.getString(3), CommandLineScript.OperatingSystem.fromInteger(cursor.getInt(4)));
                 scripts.add(script);
-            } while(cursor.moveToNext());
+            } while (cursor.moveToNext());
         }
         return scripts;
     }
 
-    public void updateScript(CommandLineScript script){
+    public void updateScript(CommandLineScript script) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = new ContentValues();
         values.put(KEY_NAME, script.getName());
         values.put(KEY_CODE, script.getCode());
         values.put(KEY_LANG, script.getLang());
-        values.put(KEY_OS,script.getOS().ordinal());
+        values.put(KEY_OS, script.getOS().ordinal());
         // updating row
-        db.update(TABLE_SCRIPTS, values, KEY_ID + " = ?", new String[] { String.valueOf(script.getID()) });
+        db.update(TABLE_SCRIPTS, values, KEY_ID + " = ?", new String[]{String.valueOf(script.getID())});
     }
 
-    public void deleteScript(String id){
+    public void deleteScript(String id) {
         SQLiteDatabase db = getWritableDatabase();
-        db.delete(TABLE_SCRIPTS,KEY_ID + " = ?",new String[]{ id });
+        db.delete(TABLE_SCRIPTS, KEY_ID + " = ?", new String[]{id});
         db.close();
     }
 }

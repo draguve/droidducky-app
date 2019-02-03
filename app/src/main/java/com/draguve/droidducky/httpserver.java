@@ -7,7 +7,6 @@ import android.webkit.MimeTypeMap;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.Map;
 
 import fi.iki.elonen.NanoHTTPD;
 
@@ -21,24 +20,6 @@ public class httpserver extends NanoHTTPD {
         super(8080);
     }
 
-    @Override
-    public Response serve(IHTTPSession session){
-        Log.d("nanoHttpd",session.getUri());
-        FileInputStream fis = null;
-        String fileName = session.getUri();
-        File file = new File(Environment.getExternalStorageDirectory(),"/Droidducky/host"+fileName);
-        if(file.exists() && file.isFile()){
-            try {
-                fis = new FileInputStream(Environment.getExternalStorageDirectory() + "/Droidducky/host" +fileName);
-            } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-            return NanoHTTPD.newChunkedResponse(Response.Status.OK,getMimeType(fileName),fis);
-        }
-        return NanoHTTPD.newFixedLengthResponse("File Not Found");
-    }
-
     public static String getMimeType(String url) {
         String type = null;
         String extension = MimeTypeMap.getFileExtensionFromUrl(url);
@@ -46,5 +27,23 @@ public class httpserver extends NanoHTTPD {
             type = MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension);
         }
         return type;
+    }
+
+    @Override
+    public Response serve(IHTTPSession session) {
+        Log.d("nanoHttpd", session.getUri());
+        FileInputStream fis = null;
+        String fileName = session.getUri();
+        File file = new File(Environment.getExternalStorageDirectory(), "/Droidducky/host" + fileName);
+        if (file.exists() && file.isFile()) {
+            try {
+                fis = new FileInputStream(Environment.getExternalStorageDirectory() + "/Droidducky/host" + fileName);
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            return NanoHTTPD.newChunkedResponse(Response.Status.OK, getMimeType(fileName), fis);
+        }
+        return NanoHTTPD.newFixedLengthResponse("File Not Found");
     }
 }

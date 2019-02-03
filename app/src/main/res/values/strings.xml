@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Droidducky</string>
+    <string name="app_name">DroidDucky</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="title_activity_rubberducky">rubberducky</string>
 
@@ -8,6 +8,21 @@
 
     <string name="action_settings">Settings</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="duckyscript">DuckyScript</string>
+    <string name="terminal">Terminal</string>
+    <string name="keyboard">Keyboard</string>
+    <string name="clipboard">Clipboard</string>
+
+    <string name="source_code">Source Code</string>
+    <string name="repo">https://github.com/draguve/droidducky-app</string>
+
+    <!--Dialog-->
+    <string name="add_script_dialog">How to add the script?</string>
+    <string name="create_new_dialog">Create new</string>
+    <string name="saved_file_dialog">Use saved file</string>
+    <string name="delete_script_dialog">Do you really want to delete the script?</string>
+    <string name="delete_dialog">Delete</string>
+    <string name="cancel_dialog">Cancel</string>
+    <string name="save_script_dialog">How do you want to save the script</string>
+    <string name="overwrite_dialog">Overwrite</string>
 </resources>

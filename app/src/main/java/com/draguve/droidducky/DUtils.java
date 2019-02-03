@@ -28,13 +28,13 @@ public class DUtils {
     public static String binHome;
 
     //Copies files from the assets folder to the files folder as assets folder is non executable
-    public static void assetsToFiles(String TARGET_BASE_PATH, String path, String copyType,Context appContext) {
+    public static void assetsToFiles(String TARGET_BASE_PATH, String path, String copyType, Context appContext) {
         AssetManager assetManager = appContext.getAssets();
         String assets[];
         try {
             assets = assetManager.list(path);
             if (assets.length == 0) {
-                copyFile(TARGET_BASE_PATH, path,appContext);
+                copyFile(TARGET_BASE_PATH, path, appContext);
             } else {
                 String fullPath = TARGET_BASE_PATH + "/" + path;
                 File dir = new File(fullPath);
@@ -50,7 +50,7 @@ public class DUtils {
                     } else {
                         p = path + "/";
                     }
-                    assetsToFiles(TARGET_BASE_PATH, p + asset, copyType,appContext);
+                    assetsToFiles(TARGET_BASE_PATH, p + asset, copyType, appContext);
                 }
             }
         } catch (IOException ex) {
@@ -58,11 +58,11 @@ public class DUtils {
         }
     }
 
-    public static void initUtils(String _path){
+    public static void initUtils(String _path) {
         binHome = _path;
     }
 
-    public static void copyFile(String TARGET_BASE_PATH, String filename,Context appContext) {
+    public static void copyFile(String TARGET_BASE_PATH, String filename, Context appContext) {
         AssetManager assetManager = appContext.getAssets();
 
         InputStream in;
@@ -88,59 +88,29 @@ public class DUtils {
 
 
     public static boolean checkForFiles() {
-        if (DUtils.checkFilePermissions(binHome + "/hid-gadget-test")) {
-            return true;
-        } else {
-            return false;
-        }
+        return DUtils.checkFilePermissions(binHome + "/hid-gadget-test");
     }
 
-    public static void setupFilesForInjection(Context context){
-        binHome = "/data/data/"+context.getApplicationContext().getPackageName()+"/files";
+    public static void setupFilesForInjection(Context context) {
+        binHome = "/data/data/" + context.getApplicationContext().getPackageName() + "/files";
         DUtils.initUtils(binHome);
-        assetsToFiles(binHome,"","data",context);
+        assetsToFiles(binHome, "", "data", context);
         String command = "chmod 755 " + binHome + "/hid-gadget-test";
         TheExecuter.runAsRoot(command);
     }
 
     //Checks If File is present and has execution permission
-    public static boolean checkFilePermissions(String path){
+    public static boolean checkFilePermissions(String path) {
         File f = new File(path);
         return (f.exists() && f.canExecute() && f.canRead() && f.canWrite());
     }
 
-    public void addFileToCodes(String filename,Context appContext){
-        File path = Environment.getExternalStorageDirectory();
-        File file = new File(path,"/DroidDucky/"+filename.trim());
-        String finalCode = "";
-        if(file.exists()){
-            try {
-                BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-                String receiveString = "";
-                while ( (receiveString = bufferedReader.readLine()) != null ) {
-                    finalCode += receiveString+"\n";
-                }
-                bufferedReader.close();
-                Script toAdd = new Script(filename,finalCode,"us");
-                ScriptsManager db = new ScriptsManager(appContext);
-                db.addScript(toAdd);
-            }
-            catch (FileNotFoundException e) {
-                Log.e("login activity", "File not found: " + e.toString());
-            } catch (IOException e) {
-                Log.e("login activity", "Can not read file: " + e.toString());
-            }
-        }else{
-            Toast.makeText(appContext,"Can't Find File",Toast.LENGTH_SHORT);
-        }
-    }
-
-    public static void setUSBTether(boolean enable){
+    public static void setUSBTether(boolean enable) {
         int checkint = 33; //Check and set for all androids
-        if(enable){
-            TheExecuter.runAsRoot("service call connectivity "+checkint+" i32 1");
-        }else{
-            TheExecuter.runAsRoot("service call connectivity "+checkint+" i32 0");
+        if (enable) {
+            TheExecuter.runAsRoot("service call connectivity " + checkint + " i32 1");
+        } else {
+            TheExecuter.runAsRoot("service call connectivity " + checkint + " i32 0");
         }
     }
 
@@ -153,7 +123,7 @@ public class DUtils {
                     if (!addr.isLoopbackAddress()) {
                         String sAddr = addr.getHostAddress();
                         //boolean isIPv4 = InetAddressUtils.isIPv4Address(sAddr);
-                        boolean isIPv4 = sAddr.indexOf(':')<0;
+                        boolean isIPv4 = sAddr.indexOf(':') < 0;
 
                         if (useIPv4) {
                             if (isIPv4)
@@ -161,13 +131,39 @@ public class DUtils {
                         } else {
                             if (!isIPv4) {
                                 int delim = sAddr.indexOf('%'); // drop ip6 zone suffix
-                                return delim<0 ? sAddr.toUpperCase() : sAddr.substring(0, delim).toUpperCase();
+                                return delim < 0 ? sAddr.toUpperCase() : sAddr.substring(0, delim).toUpperCase();
                             }
                         }
                     }
                 }
             }
-        } catch (Exception ex) { } // for now eat exceptions
+        } catch (Exception ex) {
+        } // for now eat exceptions
         return "";
+    }
+
+    public void addFileToCodes(String filename, Context appContext) {
+        File path = Environment.getExternalStorageDirectory();
+        File file = new File(path, "/DroidDucky/" + filename.trim());
+        String finalCode = "";
+        if (file.exists()) {
+            try {
+                BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+                String receiveString = "";
+                while ((receiveString = bufferedReader.readLine()) != null) {
+                    finalCode += receiveString + "\n";
+                }
+                bufferedReader.close();
+                Script toAdd = new Script(filename, finalCode, "us");
+                ScriptsManager db = new ScriptsManager(appContext);
+                db.addScript(toAdd);
+            } catch (FileNotFoundException e) {
+                Log.e("login activity", "File not found: " + e.toString());
+            } catch (IOException e) {
+                Log.e("login activity", "Can not read file: " + e.toString());
+            }
+        } else {
+            Toast.makeText(appContext, "Can't Find File", Toast.LENGTH_SHORT);
+        }
     }
 }

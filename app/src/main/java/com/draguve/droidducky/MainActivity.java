@@ -6,72 +6,76 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
-import android.view.View;
-import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
-
-import static com.draguve.droidducky.DuckyScript.OPEN_WRITER;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
 
-    public enum DDScreen{DUCKYSCRIPT,TERMINAL,KEYBOARD,CLIPBOARD}
-    public DDScreen currentScreen = null;
-
     public static final int MULTIPLE_PERMISSIONS = 10; // code you want.
-
-    String[] permissions= new String[]{
+    public DDScreen currentScreen = null;
+    String[] permissions = new String[]{
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
 
+    public static void createFolder() {
+        File path = Environment.getExternalStorageDirectory();
+        File file = new File(path, "Droidducky");
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        File serverFolder = new File(file, "host");
+        if (!serverFolder.exists()) {
+            serverFolder.mkdirs();
+        }
+        File codeFolder = new File(file, "code");
+        if (!codeFolder.exists()) {
+            codeFolder.mkdirs();
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
-        ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
         DUtils.setupFilesForInjection(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         currentScreen = DDScreen.DUCKYSCRIPT;
-        if(checkPermissions()){
+        if (checkPermissions()) {
             createFolder();
         }
 
         DuckyScript duckyScriptScreen = new DuckyScript();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_frame,duckyScriptScreen)
+                .replace(R.id.content_frame, duckyScriptScreen)
                 .addToBackStack(null)
                 .commit();
 
@@ -79,13 +83,13 @@ public class MainActivity extends AppCompatActivity
         Window window = this.getWindow();
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
-        window.setNavigationBarColor(ContextCompat.getColor(this,R.color.colorPrimaryDark));
+        window.setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
+        window.setNavigationBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
     }
 
     @Override
     public void onBackPressed() {
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
@@ -105,14 +109,21 @@ public class MainActivity extends AppCompatActivity
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
+        switch (item.getItemId()) {
+            case R.id.action_settings:
+                // User chose the "Settings" item, show the app settings UI...
+                return true;
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+            case R.id.source_code:
+                Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.repo)));
+                startActivity(browserIntent);
+
+            default:
+                // If we got here, the user's action was not recognized.
+                // Invoke the superclass to handle it.
+                return super.onOptionsItemSelected(item);
+
         }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -125,28 +136,34 @@ public class MainActivity extends AppCompatActivity
             currentScreen = DDScreen.DUCKYSCRIPT;
             DuckyScript duckyScriptScreen = new DuckyScript();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame,duckyScriptScreen)
+                    .replace(R.id.content_frame, duckyScriptScreen)
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.dd_terminal && currentScreen != DDScreen.TERMINAL) {
             currentScreen = DDScreen.TERMINAL;
             TerminalFragment terminalFragment = new TerminalFragment();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame,terminalFragment)
+                    .replace(R.id.content_frame, terminalFragment)
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.dd_keyboard && currentScreen != DDScreen.KEYBOARD) {
-            currentScreen = DDScreen.KEYBOARD;
-        } else if (id == R.id.dd_clipboard && currentScreen != DDScreen.CLIPBOARD){
+            String packageName = "remote.hid.keyboard.client";
+            Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
+
+            if (intent == null) {
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName));
+            }
+            startActivity(intent);
+        } else if (id == R.id.dd_clipboard && currentScreen != DDScreen.CLIPBOARD) {
             currentScreen = DDScreen.CLIPBOARD;
             ClipboardFragment clipboardFragment = new ClipboardFragment();
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame,clipboardFragment)
+                    .replace(R.id.content_frame, clipboardFragment)
                     .addToBackStack(null)
                     .commit();
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        DrawerLayout drawer = findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
@@ -154,47 +171,33 @@ public class MainActivity extends AppCompatActivity
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
-            case MULTIPLE_PERMISSIONS:{
-                if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED){
+            case MULTIPLE_PERMISSIONS: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permissions granted.
                     createFolder();
                 } else {
-                    Log.d("Permissions","PermissionsProblem");
+                    Log.d("Permissions", "PermissionsProblem");
                 }
                 return;
             }
         }
     }
 
-    public static void createFolder(){
-        File path = Environment.getExternalStorageDirectory();
-        File file = new File(path,"Droidducky");
-        if (!file.exists()) {
-            file.mkdirs();
-        }
-        File serverFolder = new File(file,"host");
-        if(!serverFolder.exists()){
-            serverFolder.mkdirs();
-        }
-        File codeFolder = new File(file,"code");
-        if(!codeFolder.exists()){
-            codeFolder.mkdirs();
-        }
-    }
-
-    private  boolean checkPermissions() {
+    private boolean checkPermissions() {
         int result;
         List<String> listPermissionsNeeded = new ArrayList<>();
-        for (String p:permissions) {
-            result = ContextCompat.checkSelfPermission(this,p);
+        for (String p : permissions) {
+            result = ContextCompat.checkSelfPermission(this, p);
             if (result != PackageManager.PERMISSION_GRANTED) {
                 listPermissionsNeeded.add(p);
             }
         }
         if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]),MULTIPLE_PERMISSIONS );
+            ActivityCompat.requestPermissions(this, listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MULTIPLE_PERMISSIONS);
             return false;
         }
         return true;
     }
+
+    public enum DDScreen {DUCKYSCRIPT, TERMINAL, KEYBOARD, CLIPBOARD}
 }

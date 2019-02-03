@@ -1,6 +1,5 @@
 package com.draguve.droidducky;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -34,23 +33,19 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class DuckyScript extends Fragment {
+    static final int OPEN_WRITER = 1;
+    static final int FIND_FILE = 1337;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+    ScriptsManager db = null;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
     private List<Script> scriptList = new ArrayList<>();
-    ScriptsManager db = null;
     private RecyclerView recyclerView;
     private ScriptsAdapter mAdapter;
-
-    static final int OPEN_WRITER = 1;
-    static final int FIND_FILE = 1337;
-
     private OnFragmentInteractionListener mListener;
 
     public DuckyScript() {
@@ -92,8 +87,8 @@ public class DuckyScript extends Fragment {
 
         db = new ScriptsManager(getActivity());
         scriptList = db.getAllScripts();
-        recyclerView = (RecyclerView) view.findViewById(R.id.duckyscript_recyclerview);
-        mAdapter = new ScriptsAdapter(scriptList,getActivity());
+        recyclerView = view.findViewById(R.id.duckyscript_recyclerview);
+        mAdapter = new ScriptsAdapter(scriptList, getActivity());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -101,9 +96,9 @@ public class DuckyScript extends Fragment {
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(dividerItemDecoration);
         mAdapter.notifyDataSetChanged();
-        ((AppCompatActivity)getActivity()).getSupportActionBar().setSubtitle("DuckyScript");
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("DuckyScript");
 
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -124,16 +119,16 @@ public class DuckyScript extends Fragment {
 
     public void addNewCode(View view) {
         new MaterialDialog.Builder(getActivity())
-                .title("How to add the script?")
-                .positiveText("Create new")
-                .negativeText("Use saved file")
+                .title(getString(R.string.add_script_dialog))
+                .positiveText(R.string.create_new_dialog)
+                .negativeText(R.string.saved_file_dialog)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(MaterialDialog dialog, DialogAction which) {
-                        Intent codeEditorIntent = new Intent(getActivity(),CodeEditor.class);
-                        codeEditorIntent.putExtra("idSelected",(String) null);
-                        codeEditorIntent.putExtra("editingMode",0);
-                        startActivityForResult(codeEditorIntent,OPEN_WRITER);
+                        Intent codeEditorIntent = new Intent(getActivity(), CodeEditor.class);
+                        codeEditorIntent.putExtra("idSelected", (String) null);
+                        codeEditorIntent.putExtra("editingMode", 0);
+                        startActivityForResult(codeEditorIntent, OPEN_WRITER);
                     }
                 })
                 .onNegative(new MaterialDialog.SingleButtonCallback() {
@@ -151,19 +146,19 @@ public class DuckyScript extends Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(requestCode==FIND_FILE){
+        if (requestCode == FIND_FILE) {
             Uri uri = null;
             if (data != null) {
                 //Get script from file
                 uri = data.getData();
                 InputStream inputStream = null;
-                String code="";
+                String code = "";
                 try {
                     inputStream = getActivity().getContentResolver().openInputStream(uri);
                     BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        code += (line+"");
+                        code += (line + "");
                     }
                     reader.close();
                     inputStream.close();
@@ -174,10 +169,10 @@ public class DuckyScript extends Fragment {
                 int cut = filename.lastIndexOf('/');
                 if (cut != -1) {
                     filename = filename.substring(cut + 1);
-                }else{
+                } else {
                     filename = "Unknown";
                 }
-                Script script = new Script(filename,code,"us");
+                Script script = new Script(filename, code, "us");
                 db.addScript(script);
             }
         }
