@@ -88,11 +88,7 @@ public class DUtils {
 
 
     public static boolean checkForFiles() {
-        if (DUtils.checkFilePermissions(binHome + "/hid-gadget-test")) {
-            return true;
-        } else {
-            return false;
-        }
+        return DUtils.checkFilePermissions(binHome + "/hid-gadget-test");
     }
 
     public static void setupFilesForInjection(Context context){

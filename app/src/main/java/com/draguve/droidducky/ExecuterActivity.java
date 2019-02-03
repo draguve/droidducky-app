@@ -44,10 +44,10 @@ public class ExecuterActivity extends AppCompatActivity {
         setContentView(R.layout.activity_executer);
 
         //Storing ui elements
-        codeProgress = (ProgressBar)findViewById(R.id.script_progress);
-        runButton = (Button) findViewById(R.id.runcode);
-        remWindow = (TextView) findViewById(R.id.rem_output);
-        serverToggle = (ToggleButton) findViewById(R.id.serverToggle);
+        codeProgress = findViewById(R.id.script_progress);
+        runButton = findViewById(R.id.runcode);
+        remWindow = findViewById(R.id.rem_output);
+        serverToggle = findViewById(R.id.serverToggle);
 
         //Getting arguments from the calling intent
         Intent callingIntent = getIntent();
@@ -76,7 +76,7 @@ public class ExecuterActivity extends AppCompatActivity {
         appContext = this;
 
         //Get toolbar to change title and stuff
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.executer_toolbar);
+        final Toolbar toolbar = findViewById(R.id.executer_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("The Executor");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -177,12 +177,13 @@ public class ExecuterActivity extends AppCompatActivity {
                 //for each line run the codes
                 ArrayList<String> duckyLines = new ArrayList<>(Arrays.asList(scriptToRun.getCode().replaceAll("\\r", "").split("\n")));
                 String lastLine = "";
-                try{
+                try {
                     DuckConverter.loadAllProperties(scriptToRun.getLang(),appContext);
                     String IPstring = DUtils.getIPAddress(true);
                     currentIP = DuckConverter.stringToCommands(IPstring);
+                    // TODO: Fix static IP
                     usbIP = DuckConverter.stringToCommands("192.168.42.129");
-                }catch (Exception e){
+                } catch (Exception e){
                     e.printStackTrace();
                 }
                 float size = duckyLines.size();
@@ -192,26 +193,26 @@ public class ExecuterActivity extends AppCompatActivity {
                         if(key.charAt(0)=='\u0002'){
                             int time = Integer.parseInt(key.substring(1).trim());
                             Thread.sleep(time);
-                        }else if(key.charAt(0)=='\u0001'){
+                        } else if(key.charAt(0)=='\u0001'){
                             logREMComment(key.substring(1));
-                        }else if(key.charAt(0)=='\u0006'){
+                        } else if(key.charAt(0)=='\u0006'){
                             if(key.charAt(1)=='1'){
                                 //Write wifi address here
                                 for(String command : currentIP ){
-                                    String run = "echo " + command +" | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
+                                    String run = "echo " + command + " | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
                                     os.writeBytes(run);
                                     os.flush();
                                 }
-                            }else{
+                            } else {
                                 //Write usb address here
                                 for(String command : usbIP ){
-                                    String run = "echo " + command +" | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
+                                    String run = "echo " + command + " | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
                                     os.writeBytes(run);
                                     os.flush();
                                 }
                             }
-                        }else{
-                            String command = "echo " + key +" | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
+                        } else {
+                            String command = "echo " + key + " | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
                             os.writeBytes(command);
                             os.flush();
                         }

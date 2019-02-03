@@ -31,10 +31,10 @@ public class CommandLineScriptAdapter extends RecyclerView.Adapter<CommandLineSc
 
         public MyViewHolder(View view) {
             super(view);
-            title = (TextView) view.findViewById(R.id.title);
-            genre = (TextView) view.findViewById(R.id.genre);
-            run = (Button)view.findViewById(R.id.list_run);
-            delete = (Button)view.findViewById(R.id.list_delete);
+            title = view.findViewById(R.id.title);
+            genre = view.findViewById(R.id.genre);
+            run = view.findViewById(R.id.list_run);
+            delete = view.findViewById(R.id.list_delete);
         }
     }
     public CommandLineScriptAdapter(List<CommandLineScript> scriptList,Context mainActivityContext) {

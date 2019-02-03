@@ -95,10 +95,10 @@ public class TheExecuter {
                 if(key.charAt(0)=='\u0002'){
                     int time = Integer.parseInt(key.substring(1).trim());
                     SystemClock.sleep(time);
-                }else if(key.charAt(0)=='\u0001'){
+                } else if (key.charAt(0)=='\u0001'){
                     Log.i("Executer",key.substring(1));
-                }else{
-                    String command = "echo " + key +" | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
+                } else {
+                    String command = "echo " + key + " | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
                     os.writeBytes(command);
                     os.flush();
                 }

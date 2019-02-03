@@ -89,7 +89,7 @@ public class DuckConverter {
     private static String codeToCommand(String str) {
         if (layoutProps.getProperty(str) != null) {
             String keys[] = layoutProps.getProperty(str).split(",");
-            StringBuilder code = new StringBuilder("");
+            StringBuilder code = new StringBuilder();
             for (int j = keys.length - 1; j >= 0; j--) {
                 String key = keys[j].trim();
                 if (keyboardProps.getProperty(key) != null) {

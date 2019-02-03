@@ -53,10 +53,10 @@ public class CodeEditor extends AppCompatActivity implements AdapterView.OnItemS
         currentMode = callingIntent.getExtras().getInt("editingMode",0);
 
         //Spinner Settings
-        langSpinner = (Spinner)findViewById(R.id.lang);
+        langSpinner = findViewById(R.id.lang);
         ArrayAdapter<String>adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item,languages);
 
-        osSpinner = (Spinner)findViewById(R.id.operating_system);
+        osSpinner = findViewById(R.id.operating_system);
         if(currentMode == DUCKYSCRIPT_EDIT){
             osSpinner.setVisibility(View.GONE);
         }else{
@@ -80,8 +80,8 @@ public class CodeEditor extends AppCompatActivity implements AdapterView.OnItemS
         langSpinner.setAdapter(adapter);
         langSpinner.setOnItemSelectedListener(this);
 
-        codeTextBox = (EditText)findViewById(R.id.codeEdit);
-        scriptName = (EditText)findViewById(R.id.scriptName);
+        codeTextBox = findViewById(R.id.codeEdit);
+        scriptName = findViewById(R.id.scriptName);
         codeTextBox.setHorizontallyScrolling(true);
         codeTextBox.setHorizontalScrollBarEnabled(true);
         codeTextBox.setVerticalScrollBarEnabled(true);
@@ -125,7 +125,7 @@ public class CodeEditor extends AppCompatActivity implements AdapterView.OnItemS
             }
         }
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.code_toolbar);
+        final Toolbar toolbar = findViewById(R.id.code_toolbar);
         setSupportActionBar(toolbar);
         if(currentMode == DUCKYSCRIPT_EDIT){
             getSupportActionBar().setTitle("Edit DuckyScript");

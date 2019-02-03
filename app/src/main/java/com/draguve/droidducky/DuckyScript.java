@@ -92,7 +92,7 @@ public class DuckyScript extends Fragment {
 
         db = new ScriptsManager(getActivity());
         scriptList = db.getAllScripts();
-        recyclerView = (RecyclerView) view.findViewById(R.id.duckyscript_recyclerview);
+        recyclerView = view.findViewById(R.id.duckyscript_recyclerview);
         mAdapter = new ScriptsAdapter(scriptList,getActivity());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -103,7 +103,7 @@ public class DuckyScript extends Fragment {
         mAdapter.notifyDataSetChanged();
         ((AppCompatActivity)getActivity()).getSupportActionBar().setSubtitle("DuckyScript");
 
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -124,9 +124,9 @@ public class DuckyScript extends Fragment {
 
     public void addNewCode(View view) {
         new MaterialDialog.Builder(getActivity())
-                .title("How to add the script?")
-                .positiveText("Create new")
-                .negativeText("Use saved file")
+                .title(getString(R.string.add_script_dialog))
+                .positiveText(R.string.create_new_dialog)
+                .negativeText(R.string.saved_file_dialog)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(MaterialDialog dialog, DialogAction which) {

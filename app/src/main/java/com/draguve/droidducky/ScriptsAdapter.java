@@ -32,10 +32,10 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
 
         public MyViewHolder(View view) {
             super(view);
-            title = (TextView) view.findViewById(R.id.title);
-            genre = (TextView) view.findViewById(R.id.genre);
-            run = (Button)view.findViewById(R.id.list_run);
-            delete = (Button)view.findViewById(R.id.list_delete);
+            title = view.findViewById(R.id.title);
+            genre = view.findViewById(R.id.genre);
+            run = view.findViewById(R.id.list_run);
+            delete = view.findViewById(R.id.list_delete);
         }
     }
     public ScriptsAdapter(List<Script> scriptList,Context mainActivityContext) {
@@ -80,9 +80,9 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
             @Override
             public void onClick(View v) {
                 new MaterialDialog.Builder(mainActivityContext)
-                        .title("Do you really want to delete the Script")
-                        .positiveText("Delete")
-                        .negativeText("Cancel")
+                        .title(R.string.delete_script_dialog)
+                        .positiveText(R.string.delete_dialog)
+                        .negativeText(R.string.cancel_dialog)
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(MaterialDialog dialog, DialogAction which) {

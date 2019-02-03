@@ -91,7 +91,7 @@ public class TerminalFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_terminal, container, false);
         db = new CommandLineManager(getActivity());
         scriptList = db.getAllScripts();
-        recyclerView = (RecyclerView) view.findViewById(R.id.terminal_recyclerview);
+        recyclerView = view.findViewById(R.id.terminal_recyclerview);
         mAdapter = new CommandLineScriptAdapter(scriptList,getActivity());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
@@ -101,7 +101,7 @@ public class TerminalFragment extends Fragment {
         recyclerView.addItemDecoration(dividerItemDecoration);
         mAdapter.notifyDataSetChanged();
 
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        FloatingActionButton fab = view.findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -152,9 +152,9 @@ public class TerminalFragment extends Fragment {
 
     public void addNewCode(View view) {
         new MaterialDialog.Builder(getActivity())
-                .title("How to add the script?")
-                .positiveText("Create new")
-                .negativeText("Use saved file")
+                .title(getString(R.string.add_script_dialog))
+                .positiveText(R.string.create_new_dialog)
+                .negativeText(R.string.saved_file_dialog)
                 .onPositive(new MaterialDialog.SingleButtonCallback() {
                     @Override
                     public void onClick(MaterialDialog dialog, DialogAction which) {

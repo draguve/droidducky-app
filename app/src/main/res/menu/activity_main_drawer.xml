@@ -6,20 +6,21 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/dd_duckyscript"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="DuckyScript" />
+            android:icon="@drawable/ic_menu_new_file"
+            android:title="@string/duckyscript" />
         <item
             android:id="@+id/dd_terminal"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Terminal" />
+            android:icon="@drawable/ic_menu_codes"
+            android:title="@string/terminal" />
         <item
             android:id="@+id/dd_keyboard"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Keyboard" />
+            android:enabled="false"
+            android:icon="@drawable/ic_menu_usb"
+            android:title="@string/keyboard" />
         <item
             android:id="@+id/dd_clipboard"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Clipboard"/>
+            android:icon="@drawable/ic_menu_paste"
+            android:title="@string/clipboard"/>
     </group>
 
 </menu>
