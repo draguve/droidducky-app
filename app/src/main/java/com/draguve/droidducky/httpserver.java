@@ -4,9 +4,21 @@ import android.os.Environment;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
+import org.json.JSONObject;
+
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import fi.iki.elonen.NanoHTTPD;
 
@@ -32,18 +44,37 @@ public class httpserver extends NanoHTTPD {
     @Override
     public Response serve(IHTTPSession session) {
         Log.d("nanoHttpd", session.getUri());
-        FileInputStream fis = null;
-        String fileName = session.getUri();
-        File file = new File(Environment.getExternalStorageDirectory(), "/Droidducky/host" + fileName);
-        if (file.exists() && file.isFile()) {
+        Method method = session.getMethod();
+        if (Method.PUT.equals(method) || Method.POST.equals(method)) {
             try {
-                fis = new FileInputStream(Environment.getExternalStorageDirectory() + "/Droidducky/host" + fileName);
-            } catch (FileNotFoundException e) {
-                // TODO Auto-generated catch block
+                Map<String, String> postData = new HashMap<String, String>();
+                session.parseBody(postData);
+                JSONObject jsonObject = new JSONObject(postData);
+                Writer output = null;
+                DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
+                String date = UUID.randomUUID().toString()+df.format(Calendar.getInstance().getTime());
+                File file = new File(Environment.getExternalStorageDirectory(),"/DroidDucky/responses" + date);
+                output = new BufferedWriter(new FileWriter(file));
+                output.write(jsonObject.toString());
+                output.close();
+            }catch (Exception e){
                 e.printStackTrace();
             }
-            return NanoHTTPD.newChunkedResponse(Response.Status.OK, getMimeType(fileName), fis);
+        }else{
+            FileInputStream fis = null;
+            String fileName = session.getUri();
+            File file = new File(Environment.getExternalStorageDirectory(), "/Droidducky/host" + fileName);
+            if (file.exists() && file.isFile()) {
+                try {
+                    fis = new FileInputStream(Environment.getExternalStorageDirectory() + "/Droidducky/host" + fileName);
+                } catch (FileNotFoundException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                return NanoHTTPD.newChunkedResponse(Response.Status.OK, getMimeType(fileName), fis);
+            }
+            return NanoHTTPD.newFixedLengthResponse("File Not Found");
         }
-        return NanoHTTPD.newFixedLengthResponse("File Not Found");
+        return NanoHTTPD.newFixedLengthResponse("Problem in serve");
     }
 }
