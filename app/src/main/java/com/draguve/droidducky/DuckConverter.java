@@ -51,7 +51,7 @@ public class DuckConverter {
         commandProps = loadProperties("commands", context);
     }
 
-    private static Properties loadProperties(String file, Context context) throws IOException {
+    public static Properties loadProperties(String file, Context context) throws IOException {
         String filename = file + ".properties";
         Properties prop = new Properties();
         if (context == null) {
