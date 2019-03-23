@@ -119,7 +119,7 @@ public class Response extends Fragment {
             for (int i = 0; i < files.length; i++)
             {
                 ResponseItem item = new ResponseItem();
-                item.fileLocation = files[i].getAbsolutePath();
+                item.fileLocation = files[i].getPath();
                 item.fileName = files[i].getName();
                 responses.add(item);
             }
