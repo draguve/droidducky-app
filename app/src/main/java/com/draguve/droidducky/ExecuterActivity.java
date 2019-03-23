@@ -21,8 +21,8 @@ import java.util.Arrays;
 
 public class ExecuterActivity extends AppCompatActivity {
 
-    public ArrayList<String> currentIP;
-    public ArrayList<String> usbIP;
+    public String currentIP;
+    public String usbIP;
     Script currentScript;
     CommandLineScript currentCLScript;
     Context appContext;
@@ -95,8 +95,8 @@ public class ExecuterActivity extends AppCompatActivity {
                     try {
                         server.start();
                         String IPstring = DUtils.getIPAddress(true);
-                        currentIP = DuckConverter.stringToCommands(IPstring);
-                        usbIP = DuckConverter.stringToCommands("192.168.42.129");
+                        currentIP = IPstring;
+                        usbIP = "192.168.42.129";
                         Log.w("Httpd", "Web server initialized.");
                         logREMComment("Web server initialized");
                     } catch (IOException ioe) {
@@ -104,7 +104,7 @@ public class ExecuterActivity extends AppCompatActivity {
                     }
                 } else if (!isChecked && server != null) {
                     Log.w("Httpd", "Web server Stopped.");
-                    currentIP = new ArrayList<String>();
+                    currentIP = "";
                     server.stop();
                     server = null;
                     logREMComment("Web server disabled");
@@ -177,9 +177,9 @@ public class ExecuterActivity extends AppCompatActivity {
                 try {
                     DuckConverter.loadAllProperties(scriptToRun.getLang(), appContext);
                     String IPstring = DUtils.getIPAddress(true);
-                    currentIP = DuckConverter.stringToCommands(IPstring);
+                    currentIP = IPstring;
                     // TODO: Fix static IP
-                    usbIP = DuckConverter.stringToCommands("192.168.42.129");
+                    usbIP = "192.168.42.129";
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -195,14 +195,18 @@ public class ExecuterActivity extends AppCompatActivity {
                         } else if (key.charAt(0) == '\u0006') {
                             if (key.charAt(1) == '1') {
                                 //Write wifi address here
-                                for (String command : currentIP) {
+                                ArrayList<String> ipCommands = new ArrayList<>();
+                                ipCommands = DuckConverter.stringToCommands(currentIP);
+                                for (String command : ipCommands) {
                                     String run = "echo " + command + " | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
                                     os.writeBytes(run);
                                     os.flush();
                                 }
                             } else {
                                 //Write usb address here
-                                for (String command : usbIP) {
+                                ArrayList<String> ipCommands = new ArrayList<>();
+                                ipCommands = DuckConverter.stringToCommands(usbIP);
+                                for (String command : ipCommands) {
                                     String run = "echo " + command + " | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
                                     os.writeBytes(run);
                                     os.flush();
