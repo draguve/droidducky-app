@@ -27,7 +27,7 @@
             android:layout_height="match_parent"
             android:ems="10"
             android:inputType="none"
-            android:hint="Code"
+            android:hint="Response Data"
             app:met_floatingLabel="highlight"
             app:met_primaryColor="@color/colorPrimary"
             android:gravity="top"/>
@@ -42,7 +42,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:hint="Reponse Name"
+            android:hint="Filename"
             android:inputType="none"
             android:id="@+id/response_name"
             app:met_primaryColor="@color/colorPrimary"

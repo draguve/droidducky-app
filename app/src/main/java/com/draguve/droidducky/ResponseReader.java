@@ -55,9 +55,11 @@ public class ResponseReader extends AppCompatActivity {
         responseTextBox.setHorizontalScrollBarEnabled(true);
         responseTextBox.setVerticalScrollBarEnabled(true);
         responseTextBox.setText(text.toString());
+        responseTextBox.setKeyListener(null);
 
         EditText nameBox = findViewById(R.id.response_name);
         nameBox.setText(fileName);
+        nameBox.setKeyListener(null);
 
 
         final Toolbar toolbar = findViewById(R.id.response_toolbar);
