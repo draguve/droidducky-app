@@ -13,6 +13,10 @@
             android:icon="@drawable/ic_menu_codes"
             android:title="@string/terminal" />
         <item
+            android:id="@+id/dd_responses"
+            android:icon="@drawable/ic_menu_paste"
+            android:title="Responses" />
+        <item
             android:id="@+id/dd_clipboard"
             android:icon="@drawable/ic_menu_paste"
             android:title="@string/clipboard"/>

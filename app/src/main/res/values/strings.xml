@@ -25,4 +25,7 @@
     <string name="cancel_dialog">Cancel</string>
     <string name="save_script_dialog">How do you want to save the script</string>
     <string name="overwrite_dialog">Overwrite</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

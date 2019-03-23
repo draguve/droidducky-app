@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.UUID;
 
 import fi.iki.elonen.NanoHTTPD;
@@ -49,13 +50,12 @@ public class httpserver extends NanoHTTPD {
             try {
                 Map<String, String> postData = new HashMap<String, String>();
                 session.parseBody(postData);
-                JSONObject jsonObject = new JSONObject(postData);
                 Writer output = null;
-                DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm");
-                String date = UUID.randomUUID().toString()+df.format(Calendar.getInstance().getTime());
-                File file = new File(Environment.getExternalStorageDirectory(),"/DroidDucky/responses" + date);
+                DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss");
+                String date = getRandomHexString(8)+" "+df.format(Calendar.getInstance().getTime());
+                File file = new File(Environment.getExternalStorageDirectory(),"/DroidDucky/responses/" + date);
                 output = new BufferedWriter(new FileWriter(file));
-                output.write(jsonObject.toString());
+                output.write(postData.get("postData"));
                 output.close();
             }catch (Exception e){
                 e.printStackTrace();
@@ -76,5 +76,15 @@ public class httpserver extends NanoHTTPD {
             return NanoHTTPD.newFixedLengthResponse("File Not Found");
         }
         return NanoHTTPD.newFixedLengthResponse("Problem in serve");
+    }
+
+    private String getRandomHexString(int numchars){
+        Random r = new Random();
+        StringBuffer sb = new StringBuffer();
+        while(sb.length() < numchars){
+            sb.append(Integer.toHexString(r.nextInt()));
+        }
+
+        return sb.toString().substring(0, numchars);
     }
 }
