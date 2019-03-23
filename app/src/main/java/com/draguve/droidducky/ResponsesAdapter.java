@@ -36,10 +36,14 @@ public class ResponsesAdapter extends RecyclerView.Adapter<ResponsesAdapter.Resp
     @Override
     public void onBindViewHolder(ResponsesHolder holder, final int position) {
 
-        holder.response_view_button.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                final int result = 1;
+                Intent responseReaderIntent = new Intent(v.getContext(), ResponseReader.class);
+                responseReaderIntent.putExtra("fileName", responsesList.get(position).fileName);
+                responseReaderIntent.putExtra("filePath", responsesList.get(position).fileLocation);
+                mainActivityContext.startActivityForResult(responseReaderIntent, result);
             }
         });
         holder.title.setText(responsesList.get(position).fileName);
@@ -57,7 +61,6 @@ public class ResponsesAdapter extends RecyclerView.Adapter<ResponsesAdapter.Resp
         public ResponsesHolder(View view) {
             super(view);
             title = view.findViewById(R.id.title);
-            response_view_button = view.findViewById(R.id.response_view);
         }
     }
 }

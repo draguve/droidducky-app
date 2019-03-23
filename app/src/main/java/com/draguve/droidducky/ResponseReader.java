@@ -50,7 +50,7 @@ public class ResponseReader extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        EditText responseTextBox = findViewById(R.id.codeEdit);
+        EditText responseTextBox = findViewById(R.id.response_read);
         responseTextBox.setHorizontallyScrolling(true);
         responseTextBox.setHorizontalScrollBarEnabled(true);
         responseTextBox.setVerticalScrollBarEnabled(true);
@@ -60,7 +60,7 @@ public class ResponseReader extends AppCompatActivity {
         nameBox.setText(fileName);
 
 
-        final Toolbar toolbar = findViewById(R.id.code_toolbar);
+        final Toolbar toolbar = findViewById(R.id.response_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("View Response");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
