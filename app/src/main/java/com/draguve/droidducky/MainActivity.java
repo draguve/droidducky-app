@@ -48,6 +48,10 @@ public class MainActivity extends AppCompatActivity
         if (!codeFolder.exists()) {
             codeFolder.mkdirs();
         }
+        File responseFolder = new File(file, "responses");
+        if (!codeFolder.exists()) {
+            codeFolder.mkdirs();
+        }
     }
 
     @Override
@@ -154,6 +158,13 @@ public class MainActivity extends AppCompatActivity
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + packageName));
             }
             startActivity(intent);
+        } else if (id == R.id.dd_responses && currentScreen != DDScreen.RESPONSE) {
+            currentScreen = DDScreen.RESPONSE;
+            Response responseFragment = new Response();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame, responseFragment)
+                    .addToBackStack(null)
+                    .commit();
         } else if (id == R.id.dd_clipboard && currentScreen != DDScreen.CLIPBOARD) {
             currentScreen = DDScreen.CLIPBOARD;
             ClipboardFragment clipboardFragment = new ClipboardFragment();
@@ -199,5 +210,5 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public enum DDScreen {DUCKYSCRIPT, TERMINAL, KEYBOARD, CLIPBOARD}
+    public enum DDScreen {DUCKYSCRIPT, TERMINAL, KEYBOARD, CLIPBOARD , RESPONSE}
 }

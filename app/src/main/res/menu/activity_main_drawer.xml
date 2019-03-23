@@ -5,6 +5,10 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:id="@+id/dd_responses"
+            android:icon="@drawable/ic_menu_paste"
+            android:title="Responses" />
+        <item
             android:id="@+id/dd_duckyscript"
             android:icon="@drawable/ic_menu_new_file"
             android:title="@string/duckyscript" />
