@@ -50,13 +50,12 @@ public class httpserver extends NanoHTTPD {
             try {
                 Map<String, String> postData = new HashMap<String, String>();
                 session.parseBody(postData);
-                JSONObject jsonObject = new JSONObject(postData);
                 Writer output = null;
                 DateFormat df = new SimpleDateFormat("EEE, d MMM yyyy, HH:mm:ss");
-                String date = getRandomHexString(8).toString()+" "+df.format(Calendar.getInstance().getTime());
+                String date = getRandomHexString(8)+" "+df.format(Calendar.getInstance().getTime());
                 File file = new File(Environment.getExternalStorageDirectory(),"/DroidDucky/responses/" + date);
                 output = new BufferedWriter(new FileWriter(file));
-                output.write(jsonObject.toString());
+                output.write(postData.get("postData"));
                 output.close();
             }catch (Exception e){
                 e.printStackTrace();

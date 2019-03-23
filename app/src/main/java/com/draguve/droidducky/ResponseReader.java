@@ -12,6 +12,8 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -50,11 +52,20 @@ public class ResponseReader extends AppCompatActivity {
             e.printStackTrace();
         }
 
+        JSONObject json=null;
+        String jsonText="";
+        try{
+            json = new JSONObject(text.toString());
+            jsonText = json.toString(4);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
+
         EditText responseTextBox = findViewById(R.id.response_read);
         responseTextBox.setHorizontallyScrolling(true);
         responseTextBox.setHorizontalScrollBarEnabled(true);
         responseTextBox.setVerticalScrollBarEnabled(true);
-        responseTextBox.setText(text.toString());
+        responseTextBox.setText(jsonText);
         responseTextBox.setKeyListener(null);
 
         EditText nameBox = findViewById(R.id.response_name);
