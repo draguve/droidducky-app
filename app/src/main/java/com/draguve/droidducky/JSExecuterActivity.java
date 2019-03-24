@@ -32,7 +32,7 @@ import java.util.Properties;
 
 import static com.draguve.droidducky.DuckConverter.stringToCommands;
 
-public class JSExecuterActivity extends AppCompatActivity {
+public class JSExecuterActivity extends AppCompatActivity implements REMLogger {
 
     Context appContext;
     String lang = "us";
@@ -44,12 +44,6 @@ public class JSExecuterActivity extends AppCompatActivity {
     private TextView remWindow;
     private ToggleButton serverToggle;
     private httpserver server;
-
-    public void logREMComment(String comment) {
-        String s = remWindow.getText().toString();
-        s += "\n" + comment;
-        remWindow.setText(s);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,11 +73,7 @@ public class JSExecuterActivity extends AppCompatActivity {
         runButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!DUtils.checkForFiles()) {
-                    DUtils.setupFilesForInjection(appContext);
-                }
-                new JSExecuterAsync().execute("");
-                runButton.setEnabled(false);
+                startExecution();
             }
         });
 
@@ -98,7 +88,7 @@ public class JSExecuterActivity extends AppCompatActivity {
                         currentIP = IPstring;
                         usbIP = "192.168.42.129";
                         Log.w("Httpd", "Web server initialized.");
-                        logREMComment("Web server initialized");
+                        REMLog("Web server initialized");
                     } catch (IOException ioe) {
                         Log.w("Httpd", "The server could not start.");
                     }
@@ -107,12 +97,20 @@ public class JSExecuterActivity extends AppCompatActivity {
                     currentIP = "";
                     server.stop();
                     server = null;
-                    logREMComment("Web server disabled");
+                    REMLog("Web server disabled");
                 }
             }
 
         });
 
+    }
+
+    public void startExecution(){
+        if (!DUtils.checkForFiles()) {
+            DUtils.setupFilesForInjection(appContext);
+        }
+        new JSExecuterAsync(this).execute("");
+        runButton.setEnabled(false);
     }
 
     public void goBackToSelector() {
@@ -130,9 +128,22 @@ public class JSExecuterActivity extends AppCompatActivity {
         runButton.setEnabled(true);
     }
 
+    @Override
+    public void REMLog(String log) {
+        String s = remWindow.getText().toString();
+        s += "\n" + log;
+        remWindow.setText(s);
+    }
+
 
     //Class to execute the js without blocking the main thread
     public class JSExecuterAsync extends AsyncTask<String, Float, Integer> {
+
+        private REMLogger LogListener;
+
+        public JSExecuterAsync(REMLogger listener){
+            this.LogListener= listener;
+        }
 
         protected Integer doInBackground(String... jsScripts) {
             V8 runtime = V8.createV8Runtime();
@@ -140,7 +151,7 @@ public class JSExecuterActivity extends AppCompatActivity {
             V8Object ducky = new V8Object(runtime);
             runtime.add("ducky", ducky);
             ducky.registerJavaMethod(writer, "SendString", "SendString", new Class<?>[] { String.class });
-            ducky.registerJavaMethod(writer, "SendCommands", "SendCommands", new Class<?>[] { String.class });
+            ducky.registerJavaMethod(writer, "SendCommand", "SendCommand", new Class<?>[] { String.class });
             ducky.registerJavaMethod(writer, "Log", "Log", new Class<?>[] { String.class });
             ducky.registerJavaMethod(writer, "Delay", "Delay", new Class<?>[] { Integer.class });
             ducky.registerJavaMethod(writer, "Delay", "Delay", new Class<?>[] {});
@@ -148,11 +159,13 @@ public class JSExecuterActivity extends AppCompatActivity {
             ducky.registerJavaMethod(writer, "WriteFile", "WriteFile", new Class<?>[] { String.class });
             ducky.release();
 
-            runtime.executeVoidScript(""
-                    + "var hello = 'hello, ';\n"
-                    + "var world = 'world!';\n"
-                    + "ducky.Log(hello);\n");
-            runtime.release();
+            try{
+                runtime.executeVoidScript("ducky.SendCommand('GUI r');");
+                runtime.release();
+            }
+            catch(RuntimeException e){
+                LogListener.REMLog(e.getMessage());
+            }
             return 0;
         }
 
@@ -170,21 +183,15 @@ public class JSExecuterActivity extends AppCompatActivity {
 
             int DEFAULT_DELAY = 200;
             DataOutputStream os = null;
-            private Properties keyboardProps;
-            private Properties layoutProps;
-            private Properties commandProps;
 
             public KeyWriter(){
-                initProcess();
+                os = initProcess();
                 initProperties();
             }
 
             protected void initProperties(){
                 try {
-                    keyboardProps = DuckConverter.loadProperties("keyboard", appContext);
-                    //TODO: Change this default language selection and remove the global variable
-                    layoutProps = DuckConverter.loadProperties(lang, appContext);
-                    commandProps = DuckConverter.loadProperties("commands", appContext);
+                    DuckConverter.loadAllProperties(lang,appContext);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -207,13 +214,13 @@ public class JSExecuterActivity extends AppCompatActivity {
                 sendKeys(keys);
             }
 
-            public void SendCommands(String string){
+            public void SendCommand(String string){
                 String key = DuckConverter.convertCommand(string.trim().split(" "));
                 sendKey(key);
             }
 
             public void Log(String log){
-                logREMComment(log);
+                LogListener.REMLog(log);
             }
 
             public void Delay(Integer time){
@@ -288,6 +295,8 @@ public class JSExecuterActivity extends AppCompatActivity {
         }
 
     }
+}
 
-
+interface REMLogger{
+    void REMLog(String log);
 }
