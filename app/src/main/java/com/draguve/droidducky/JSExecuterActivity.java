@@ -18,6 +18,7 @@ import android.widget.ToggleButton;
 
 
 import com.eclipsesource.v8.V8;
+import com.eclipsesource.v8.V8Object;
 
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
@@ -61,8 +62,6 @@ public class JSExecuterActivity extends AppCompatActivity {
         remWindow = findViewById(R.id.rem_output);
         serverToggle = findViewById(R.id.serverToggle);
 
-        //executeJS("");
-
         //Get toolbar to change title and stuff
         final Toolbar toolbar = findViewById(R.id.executer_toolbar);
         setSupportActionBar(toolbar);
@@ -74,6 +73,17 @@ public class JSExecuterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 onBackPressed();
+            }
+        });
+
+        runButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!DUtils.checkForFiles()) {
+                    DUtils.setupFilesForInjection(appContext);
+                }
+                new JSExecuterAsync().execute("");
+                runButton.setEnabled(false);
             }
         });
 
@@ -116,147 +126,164 @@ public class JSExecuterActivity extends AppCompatActivity {
         goBackToSelector();
     }
 
+    public void executionFinished() {
+        runButton.setEnabled(true);
+    }
 
-    //Class to execute the duckyscript without blocking the main thread
-    public class ExecuterAsync extends AsyncTask<String, Float, Integer> {
 
-        int DEFAULT_DELAY = 200;
-        DataOutputStream os = null;
-        /* contains the keyboard configuration */
-        private Properties keyboardProps;
-        /* contains the language layout */
-        private Properties layoutProps;
-        /* contains the commands configuration */
-        private Properties commandProps;
+    //Class to execute the js without blocking the main thread
+    public class JSExecuterAsync extends AsyncTask<String, Float, Integer> {
 
         protected Integer doInBackground(String... jsScripts) {
-            initProcess();
-            initProperties();
-
             V8 runtime = V8.createV8Runtime();
-            //runtime.registerJavaMethod();
-           runtime.executeVoidScript(""
+            KeyWriter writer = new KeyWriter();
+            V8Object ducky = new V8Object(runtime);
+            runtime.add("ducky", ducky);
+            ducky.registerJavaMethod(writer, "SendString", "SendString", new Class<?>[] { String.class });
+            ducky.registerJavaMethod(writer, "SendCommands", "SendCommands", new Class<?>[] { String.class });
+            ducky.registerJavaMethod(writer, "Log", "Log", new Class<?>[] { String.class });
+            ducky.registerJavaMethod(writer, "Delay", "Delay", new Class<?>[] { Integer.class });
+            ducky.registerJavaMethod(writer, "Delay", "Delay", new Class<?>[] {});
+            ducky.registerJavaMethod(writer, "PrintIP", "PrintIP", new Class<?>[] { Boolean.class });
+            ducky.registerJavaMethod(writer, "WriteFile", "WriteFile", new Class<?>[] { String.class });
+            ducky.release();
+
+            runtime.executeVoidScript(""
                     + "var hello = 'hello, ';\n"
                     + "var world = 'world!';\n"
-                    + "hello.concat(world).length;\n");
-           runtime.release();
-
-
+                    + "ducky.Log(hello);\n");
+            runtime.release();
             return 0;
         }
 
-        protected void initProperties(){
-            try {
-                keyboardProps = DuckConverter.loadProperties("keyboard", appContext);
-                //TODO: Change this default language selection
-                layoutProps = DuckConverter.loadProperties(lang, appContext);
-                commandProps = DuckConverter.loadProperties("commands", appContext);
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
+
 
         protected void onProgressUpdate(Float... progress) {
 
         }
 
         protected void onPostExecute(Integer result) {
-
+            executionFinished();
         }
 
-        public DataOutputStream initProcess(){
+        class KeyWriter {
+
+            int DEFAULT_DELAY = 200;
             DataOutputStream os = null;
-            try {
-                Process process = Runtime.getRuntime().exec("su");
-                os = new DataOutputStream(process.getOutputStream());
-                os.writeBytes("cd " + DUtils.binHome + '\n');
-            }catch(Exception e){
-                e.printStackTrace();
+            private Properties keyboardProps;
+            private Properties layoutProps;
+            private Properties commandProps;
+
+            public KeyWriter(){
+                initProcess();
+                initProperties();
             }
-            return os;
-        }
 
-        public void sendString(String string){
-            ArrayList<String> keys =  stringToCommands(string);
-            sendKeys(keys);
-        }
-
-        public void sendCommands(String string){
-            String key = DuckConverter.convertCommand(string.trim().split(" "));
-            sendKey(key);
-        }
-
-        public void Log(String log){
-            logREMComment(log);
-        }
-
-        public void Delay(int time){
-            try {
-                Thread.sleep(time);
-            }catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        public void Delay(){
-            Delay(DEFAULT_DELAY);
-        }
-
-        public void PrintIP(Boolean wifi){
-            if(wifi){
-                sendString(currentIP);
-            }else{
-                sendString(usbIP);
-            }
-        }
-
-        public void WriteFile(String filename){
-            ArrayList<String> letters = new ArrayList<>();
-            File path = Environment.getExternalStorageDirectory();
-            File file = new File(path, "/DroidDucky/host/" + filename);
-            if (file.exists()) {
+            protected void initProperties(){
                 try {
-                    BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-                    String receiveString;
-                    while ((receiveString = bufferedReader.readLine()) != null) {
-                        letters.addAll(stringToCommands(receiveString));
-                        letters.add("enter");
+                    keyboardProps = DuckConverter.loadProperties("keyboard", appContext);
+                    //TODO: Change this default language selection and remove the global variable
+                    layoutProps = DuckConverter.loadProperties(lang, appContext);
+                    commandProps = DuckConverter.loadProperties("commands", appContext);
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+
+            public DataOutputStream initProcess(){
+                DataOutputStream os = null;
+                try {
+                    Process process = Runtime.getRuntime().exec("su");
+                    os = new DataOutputStream(process.getOutputStream());
+                    os.writeBytes("cd " + DUtils.binHome + '\n');
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+                return os;
+            }
+
+            public void SendString(String string){
+                ArrayList<String> keys =  stringToCommands(string);
+                sendKeys(keys);
+            }
+
+            public void SendCommands(String string){
+                String key = DuckConverter.convertCommand(string.trim().split(" "));
+                sendKey(key);
+            }
+
+            public void Log(String log){
+                logREMComment(log);
+            }
+
+            public void Delay(Integer time){
+                try {
+                    Thread.sleep(time);
+                }catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            public void Delay(){
+                Delay(DEFAULT_DELAY);
+            }
+
+            public void PrintIP(Boolean wifi){
+                if(wifi){
+                    SendString(currentIP);
+                }else{
+                    SendString(usbIP);
+                }
+            }
+
+            public void WriteFile(String filename){
+                ArrayList<String> letters = new ArrayList<>();
+                File path = Environment.getExternalStorageDirectory();
+                File file = new File(path, "/DroidDucky/host/" + filename);
+                if (file.exists()) {
+                    try {
+                        BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
+                        String receiveString;
+                        while ((receiveString = bufferedReader.readLine()) != null) {
+                            letters.addAll(stringToCommands(receiveString));
+                            letters.add("enter");
+                        }
+                        bufferedReader.close();
+                    } catch (FileNotFoundException e) {
+                        Log("File not found: " + e.toString());
+                    } catch (IOException e) {
+                        Log("Can not read file: " + e.toString());
                     }
-                    bufferedReader.close();
-                } catch (FileNotFoundException e) {
-                    Log("File not found: " + e.toString());
-                } catch (IOException e) {
-                    Log("Can not read file: " + e.toString());
+                } else {
+                    Log("File does not exist");
                 }
-            } else {
-                Log("File does not exist");
+                sendKeys(letters);
             }
-            sendKeys(letters);
-        }
 
-        public void sendKey(String key){
-            try {
-                if (os != null) {
-                    String command = "echo " + key + " | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
-                    os.writeBytes(command);
-                    os.flush();
-                }
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-
-        public void sendKeys(ArrayList<String> keys){
-            try {
-                if (os != null) {
-                    for (String key : keys) {
+            public void sendKey(String key){
+                try {
+                    if (os != null) {
                         String command = "echo " + key + " | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
                         os.writeBytes(command);
                         os.flush();
                     }
+                }catch (Exception e){
+                    e.printStackTrace();
                 }
-            }catch (Exception e){
-                e.printStackTrace();
+            }
+
+            public void sendKeys(ArrayList<String> keys){
+                try {
+                    if (os != null) {
+                        for (String key : keys) {
+                            String command = "echo " + key + " | ./hid-gadget-test /dev/hidg0 keyboard" + '\n';
+                            os.writeBytes(command);
+                            os.flush();
+                        }
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
             }
         }
 
