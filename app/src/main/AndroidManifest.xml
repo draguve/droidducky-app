@@ -13,7 +13,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar">
-        <activity android:name=".ResponseReader"></activity>
+        <activity android:name=".JSExecuterActivity"></activity>
+        <activity android:name=".ResponseReader" />
         <activity
             android:name=".CodeEditor"
             android:label="Edit Code"

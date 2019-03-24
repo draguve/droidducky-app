@@ -178,7 +178,6 @@ public class ExecuterActivity extends AppCompatActivity {
                     DuckConverter.loadAllProperties(scriptToRun.getLang(), appContext);
                     String IPstring = DUtils.getIPAddress(true);
                     currentIP = IPstring;
-                    // TODO: Fix static IP
                     usbIP = "192.168.42.129";
                 } catch (Exception e) {
                     e.printStackTrace();

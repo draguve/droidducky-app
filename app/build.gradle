@@ -33,4 +33,5 @@ dependencies {
     implementation 'com.android.support:recyclerview-v7:26.1.0'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
     testCompile 'junit:junit:4.12'
+    implementation 'com.eclipsesource.j2v8:j2v8:4.5.0@aar'
 }

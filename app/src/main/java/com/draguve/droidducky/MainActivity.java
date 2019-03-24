@@ -165,6 +165,13 @@ public class MainActivity extends AppCompatActivity
                     .replace(R.id.content_frame, responseFragment)
                     .addToBackStack(null)
                     .commit();
+        } else if (id == R.id.dd_javascript && currentScreen != DDScreen.JAVASCRIPT) {
+            currentScreen = DDScreen.JAVASCRIPT;
+            JSSelector jsFragment = new JSSelector();
+            getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.content_frame, jsFragment)
+                    .addToBackStack(null)
+                    .commit();
         } else if (id == R.id.dd_clipboard && currentScreen != DDScreen.CLIPBOARD) {
             currentScreen = DDScreen.CLIPBOARD;
             ClipboardFragment clipboardFragment = new ClipboardFragment();
@@ -210,5 +217,5 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public enum DDScreen {DUCKYSCRIPT, TERMINAL, KEYBOARD, CLIPBOARD , RESPONSE}
+    public enum DDScreen {DUCKYSCRIPT, TERMINAL, KEYBOARD, CLIPBOARD , RESPONSE , JAVASCRIPT}
 }

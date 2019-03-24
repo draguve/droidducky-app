@@ -51,7 +51,7 @@ public class DuckConverter {
         commandProps = loadProperties("commands", context);
     }
 
-    private static Properties loadProperties(String file, Context context) throws IOException {
+    public static Properties loadProperties(String file, Context context) throws IOException {
         String filename = file + ".properties";
         Properties prop = new Properties();
         if (context == null) {
@@ -113,7 +113,7 @@ public class DuckConverter {
         return codeToCommand(charToCode(c));
     }
 
-    private static String convertCommand(String[] words) {
+    public static String convertCommand(String[] words) {
         if (words.length > 1) {
             String word = words[0].trim().toUpperCase();
             word = commandProps.getProperty(word, "");
