@@ -9,6 +9,10 @@
             android:icon="@drawable/ic_menu_new_file"
             android:title="@string/duckyscript" />
         <item
+            android:id="@+id/dd_javascript"
+            android:icon="@drawable/ic_menu_new_file"
+            android:title="JavaScript" />
+        <item
             android:id="@+id/dd_terminal"
             android:icon="@drawable/ic_menu_codes"
             android:title="@string/terminal" />
