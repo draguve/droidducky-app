@@ -113,7 +113,7 @@ public class DuckConverter {
         return codeToCommand(charToCode(c));
     }
 
-    private static String convertCommand(String[] words) {
+    public static String convertCommand(String[] words) {
         if (words.length > 1) {
             String word = words[0].trim().toUpperCase();
             word = commandProps.getProperty(word, "");
