@@ -109,7 +109,8 @@ public class JSExecuterActivity extends AppCompatActivity{
         if (!DUtils.checkForFiles()) {
             DUtils.setupFilesForInjection(appContext);
         }
-        new JSExecuterAsync().execute("");
+        String code = "ducky.SendCommand('GUI r');ducky.Delay(1000);ducky.SendString('notepad');ducky.Delay(1000);ducky.SendCommand('enter');ducky.Delay(1000);ducky.WriteFile('draguve.txt');";
+        new JSExecuterAsync().execute(code);
         runButton.setEnabled(false);
     }
 
@@ -147,13 +148,12 @@ public class JSExecuterActivity extends AppCompatActivity{
             ducky.registerJavaMethod(writer, "SendCommand", "SendCommand", new Class<?>[] { String.class });
             ducky.registerJavaMethod(writer, "Log", "Log", new Class<?>[] { String.class });
             ducky.registerJavaMethod(writer, "Delay", "Delay", new Class<?>[] { Integer.class });
-            ducky.registerJavaMethod(writer, "Delay", "Delay", new Class<?>[] {});
             ducky.registerJavaMethod(writer, "PrintIP", "PrintIP", new Class<?>[] { Boolean.class });
             ducky.registerJavaMethod(writer, "WriteFile", "WriteFile", new Class<?>[] { String.class });
             ducky.release();
 
             try{
-                runtime.executeVoidScript("ducky.SendCommand('GUI r');");
+                runtime.executeVoidScript(jsScripts[0]);
                 runtime.release();
             }
             catch(RuntimeException e){
