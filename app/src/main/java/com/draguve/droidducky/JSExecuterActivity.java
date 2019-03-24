@@ -202,6 +202,14 @@ public class JSExecuterActivity extends AppCompatActivity {
             Delay(DEFAULT_DELAY);
         }
 
+        public void PrintIP(Boolean wifi){
+            if(wifi){
+                sendString(currentIP);
+            }else{
+                sendString(usbIP);
+            }
+        }
+
         public void WriteFile(String filename){
             ArrayList<String> letters = new ArrayList<>();
             File path = Environment.getExternalStorageDirectory();
