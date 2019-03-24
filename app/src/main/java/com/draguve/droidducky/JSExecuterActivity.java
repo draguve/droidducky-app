@@ -32,7 +32,7 @@ import java.util.Properties;
 
 import static com.draguve.droidducky.DuckConverter.stringToCommands;
 
-public class JSExecuterActivity extends AppCompatActivity implements REMLogger {
+public class JSExecuterActivity extends AppCompatActivity{
 
     Context appContext;
     String lang = "us";
@@ -109,7 +109,7 @@ public class JSExecuterActivity extends AppCompatActivity implements REMLogger {
         if (!DUtils.checkForFiles()) {
             DUtils.setupFilesForInjection(appContext);
         }
-        new JSExecuterAsync(this).execute("");
+        new JSExecuterAsync().execute("");
         runButton.setEnabled(false);
     }
 
@@ -128,7 +128,6 @@ public class JSExecuterActivity extends AppCompatActivity implements REMLogger {
         runButton.setEnabled(true);
     }
 
-    @Override
     public void REMLog(String log) {
         String s = remWindow.getText().toString();
         s += "\n" + log;
@@ -138,12 +137,6 @@ public class JSExecuterActivity extends AppCompatActivity implements REMLogger {
 
     //Class to execute the js without blocking the main thread
     public class JSExecuterAsync extends AsyncTask<String, Float, Integer> {
-
-        private REMLogger LogListener;
-
-        public JSExecuterAsync(REMLogger listener){
-            this.LogListener= listener;
-        }
 
         protected Integer doInBackground(String... jsScripts) {
             V8 runtime = V8.createV8Runtime();
@@ -164,12 +157,20 @@ public class JSExecuterActivity extends AppCompatActivity implements REMLogger {
                 runtime.release();
             }
             catch(RuntimeException e){
-                LogListener.REMLog(e.getMessage());
+                Log(e.getMessage());
             }
             return 0;
         }
 
-
+        public void Log(final String log){
+            final String text = log;
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    REMLog(text);
+                }
+            });
+        }
 
         protected void onProgressUpdate(Float... progress) {
 
@@ -219,8 +220,14 @@ public class JSExecuterActivity extends AppCompatActivity implements REMLogger {
                 sendKey(key);
             }
 
-            public void Log(String log){
-                LogListener.REMLog(log);
+            public void Log(final String log){
+                final String text = log;
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        REMLog(text);
+                    }
+                });
             }
 
             public void Delay(Integer time){
@@ -295,8 +302,4 @@ public class JSExecuterActivity extends AppCompatActivity implements REMLogger {
         }
 
     }
-}
-
-interface REMLogger{
-    void REMLog(String log);
 }
