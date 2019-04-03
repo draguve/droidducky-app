@@ -17,9 +17,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 public class JSSelector extends Fragment {
 
     private OnFragmentInteractionListener mListener;
+
+    private RecyclerView recyclerView;
+    private JSAdapter mAdapter;
+    public List<String> scriptList;
 
     public JSSelector() {
         // Required empty public constructor
@@ -31,42 +39,26 @@ public class JSSelector extends Fragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_jsselector, container, false);
+        scriptList = getAllStoredResponse();
+        recyclerView = view.findViewById(R.id.jsselector_recyclerview);
+        mAdapter = new JSAdapter(scriptList, getActivity());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.setItemAnimator(new DefaultItemAnimator());
+        recyclerView.setAdapter(mAdapter);
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(dividerItemDecoration);
+        mAdapter.notifyDataSetChanged();
 
-        Button launchExec = view.findViewById(R.id.launch_exec);
-        launchExec.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab = view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final int result = 1;
-                Intent responseReaderIntent = new Intent(view.getContext(), JSExecuterActivity.class);
-                getActivity().startActivityForResult(responseReaderIntent, result);
+                //What to do when we press the fab
             }
         });
-
-        return view;
-
-//        View view = inflater.inflate(R.layout.fragment_jsselector, container, false);
-//        scriptList = db.getAllScripts();
-//        recyclerView = view.findViewById(R.id.jsselector_recyclerview);
-//        mAdapter = new CommandLineScriptAdapter(scriptList, getActivity());
-//        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
-//        recyclerView.setLayoutManager(mLayoutManager);
-//        recyclerView.setItemAnimator(new DefaultItemAnimator());
-//        recyclerView.setAdapter(mAdapter);
-//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
-//        recyclerView.addItemDecoration(dividerItemDecoration);
-//        mAdapter.notifyDataSetChanged();
-//
-//        FloatingActionButton fab = view.findViewById(R.id.fab);
-//        fab.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                addNewCode(view);
-//            }
-//        });
 
         ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("JavaScript");
         return view;
@@ -79,22 +71,26 @@ public class JSSelector extends Fragment {
         }
     }
 
+    ArrayList<String> getAllStoredResponse(){
+        ArrayList<String> responses = new ArrayList<String>();
+        String path = Environment.getExternalStorageDirectory().toString()+"/DroidDucky/Javascripts/";
+        File directory = new File(path);
+        File[] files = directory.listFiles();
+        if(files!=null){
+            for (int i = 0; i < files.length; i++)
+            {
+                responses.add(files[i].getName());
+            }
+        }
+        return responses;
+    }
+
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
     }
 
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);

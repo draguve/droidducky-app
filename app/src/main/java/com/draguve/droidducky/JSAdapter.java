@@ -3,6 +3,7 @@ package com.draguve.droidducky;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -32,11 +33,15 @@ public class JSAdapter extends RecyclerView.Adapter<JSAdapter.JSHolder> {
     }
 
     @Override
-    public void onBindViewHolder(JSHolder holder, int position) {
+    public void onBindViewHolder(JSHolder holder, final int position) {
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Send Intent to edit a script
+                final int result = 1;
+                Intent responseReaderIntent = new Intent(v.getContext(), ResponseReader.class);
+                responseReaderIntent.putExtra("fileName", fileList.get(position));
+                responseReaderIntent.putExtra("filePath", Environment.getExternalStorageDirectory().toString()+"/DroidDucky/JavaScript/"+fileList.get(position));
+                mainActivityContext.startActivityForResult(responseReaderIntent, result);
             }
         });
         holder.runCode.setOnClickListener(new View.OnClickListener() {
