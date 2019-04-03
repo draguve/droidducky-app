@@ -47,6 +47,29 @@ public class JSSelector extends Fragment {
         });
 
         return view;
+
+//        View view = inflater.inflate(R.layout.fragment_jsselector, container, false);
+//        scriptList = db.getAllScripts();
+//        recyclerView = view.findViewById(R.id.jsselector_recyclerview);
+//        mAdapter = new CommandLineScriptAdapter(scriptList, getActivity());
+//        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
+//        recyclerView.setLayoutManager(mLayoutManager);
+//        recyclerView.setItemAnimator(new DefaultItemAnimator());
+//        recyclerView.setAdapter(mAdapter);
+//        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL);
+//        recyclerView.addItemDecoration(dividerItemDecoration);
+//        mAdapter.notifyDataSetChanged();
+//
+//        FloatingActionButton fab = view.findViewById(R.id.fab);
+//        fab.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                addNewCode(view);
+//            }
+//        });
+
+        ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("JavaScript");
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
