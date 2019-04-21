@@ -41,6 +41,7 @@ public class JSAdapter extends RecyclerView.Adapter<JSAdapter.JSHolder> {
                 Intent responseReaderIntent = new Intent(v.getContext(), ResponseReader.class);
                 responseReaderIntent.putExtra("fileName", fileList.get(position));
                 responseReaderIntent.putExtra("filePath", Environment.getExternalStorageDirectory().toString()+"/DroidDucky/JavaScript/"+fileList.get(position));
+                responseReaderIntent.putExtra("canEdit",true);
                 mainActivityContext.startActivityForResult(responseReaderIntent, result);
             }
         });
@@ -50,8 +51,15 @@ public class JSAdapter extends RecyclerView.Adapter<JSAdapter.JSHolder> {
                 //Code to start jsexecuter
             }
         });
-        holder.title.setText("Set name for each js here");
-        holder.lang.setText("us");
+        holder.title.setText(fileList.get(position));
+
+        ScriptDatabase db = new ScriptDatabase(mainActivityContext);
+        ScriptID scriptID = db.getScript(fileList.get(position));
+        if(scriptID!=null){
+            holder.lang.setText(scriptID.getLanguage());
+        }else{
+            holder.lang.setText("us");
+        }
     }
 
     @Override
