@@ -66,7 +66,7 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
                 final int result = 1;
                 Intent executeIntent = new Intent(v.getContext(), ExecuterActivity.class);
                 executeIntent.putExtra("fileName", scriptList.get(position));
-                executeIntent.putExtra("filePath", Environment.getExternalStorageDirectory().toString()+"/DroidDucky/DuckyScripts/"+scriptList.get(position));
+                executeIntent.putExtra("filePath", Environment.getExternalStorageDirectory().toString()+"/Droidducky/DuckyScripts/"+scriptList.get(position));
                 executeIntent.putExtra("scripttype","duckyscript");
                 mainActivityContext.startActivityForResult(executeIntent, result);
             }
@@ -81,7 +81,7 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(MaterialDialog dialog, DialogAction which) {
-                                File toDelete = new File(scriptList.get(position));
+                                File toDelete = new File(Environment.getExternalStorageDirectory().toString()+"/Droidducky/DuckyScripts/"+scriptList.get(position));
                                 if(toDelete.delete()){
                                     Toast.makeText(mainActivityContext,"FileDeleted", Toast.LENGTH_LONG);
                                 }else{
@@ -108,13 +108,12 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView title, genre;
+        public TextView title;
         public Button run, delete;
 
         public MyViewHolder(View view) {
             super(view);
             title = view.findViewById(R.id.title);
-            genre = view.findViewById(R.id.genre);
             run = view.findViewById(R.id.list_run);
             delete = view.findViewById(R.id.list_delete);
         }

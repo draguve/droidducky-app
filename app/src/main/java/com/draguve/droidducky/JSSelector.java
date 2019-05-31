@@ -12,6 +12,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,16 +74,22 @@ public class JSSelector extends Fragment {
 
     ArrayList<String> getAllStoredResponse(){
         ArrayList<String> responses = new ArrayList<String>();
-        String path = Environment.getExternalStorageDirectory().toString()+"/DroidDucky/Javascripts/";
+        String path = Environment.getExternalStorageDirectory().toString()+"/Droidducky/JavaScript/";
         File directory = new File(path);
         File[] files = directory.listFiles();
         if(files!=null){
             for (int i = 0; i < files.length; i++)
             {
                 responses.add(files[i].getName());
+                Log.e("Test",files[i].getName());
             }
         }
         return responses;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
     }
 
     @Override

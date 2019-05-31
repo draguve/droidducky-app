@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity
         if (!codeFolder.exists()) {
             codeFolder.mkdirs();
         }
-        File cmdFolder = new File(file, "CommandScripts");
+        File cmdFolder = new File(file, "JavaScript");
         if (!codeFolder.exists()) {
             codeFolder.mkdirs();
         }
@@ -151,14 +151,7 @@ public class MainActivity extends AppCompatActivity
                     .replace(R.id.content_frame, duckyScriptScreen)
                     .addToBackStack(null)
                     .commit();
-        } else if (id == R.id.dd_terminal && currentScreen != DDScreen.TERMINAL) {
-            currentScreen = DDScreen.TERMINAL;
-            TerminalFragment terminalFragment = new TerminalFragment();
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, terminalFragment)
-                    .addToBackStack(null)
-                    .commit();
-        } else if (id == R.id.dd_keyboard && currentScreen != DDScreen.KEYBOARD) {
+        }  else if (id == R.id.dd_keyboard && currentScreen != DDScreen.KEYBOARD) {
             String packageName = "remote.hid.keyboard.client";
             Intent intent = getPackageManager().getLaunchIntentForPackage(packageName);
 
@@ -225,5 +218,5 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    public enum DDScreen {DUCKYSCRIPT, TERMINAL, KEYBOARD, CLIPBOARD , RESPONSE , JAVASCRIPT}
+    public enum DDScreen {DUCKYSCRIPT, KEYBOARD, CLIPBOARD , RESPONSE , JAVASCRIPT}
 }

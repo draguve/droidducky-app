@@ -116,12 +116,17 @@ public class ResponseReader extends AppCompatActivity {
         runButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final int result = 1;
-                Intent executeIntent = new Intent(getApplicationContext(), ExecuterActivity.class);
-                executeIntent.putExtra("fileName", fileName);
-                executeIntent.putExtra("filePath", filePath);
-                executeIntent.putExtra("scripttype","duckyscript");
-                startActivityForResult(executeIntent, result);
+                if(scriptType.equals("")){
+                    final int result = 1;
+                    Intent executeIntent = new Intent(getApplicationContext(), ExecuterActivity.class);
+                    executeIntent.putExtra("fileName", fileName);
+                    executeIntent.putExtra("filePath", filePath);
+                    executeIntent.putExtra("scripttype","duckyscript");
+                    startActivityForResult(executeIntent, result);
+                }else if(scriptType.equals("")){
+
+                }
+
             }
         });
 
