@@ -148,7 +148,6 @@ public class DuckyScript extends Fragment {
             for (int i = 0; i < files.length; i++)
             {
                 responses.add(files[i].getName());
-                Log.e("Test",files[i].getAbsolutePath());
             }
         }
         return responses;

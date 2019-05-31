@@ -8,13 +8,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
+import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,17 +29,24 @@ public class ExecuterActivity extends AppCompatActivity {
 
     public String currentIP;
     public String usbIP;
-    Script currentScript;
-    CommandLineScript currentCLScript;
     Context appContext;
     private ProgressBar codeProgress;
     private Button runButton;
     private TextView remWindow;
     private ToggleButton serverToggle;
     private httpserver server;
-    private Integer currentMode;
     private Integer DUCKYSCRIPT_EDIT = 0;
     private Integer COMMANDLINE_EDIT = 1;
+
+    private Spinner langSpinner;
+
+    String fileName;
+    String filePath;
+    String scriptType;
+
+    String code;
+    String lang = "us";
+    private static final String[] languages = {"be", "br", "ca", "ch", "de", "dk", "es", "fi", "fr", "gb", "hr", "it", "no", "pt", "ru", "si", "sv", "tr", "us"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,28 +59,63 @@ public class ExecuterActivity extends AppCompatActivity {
         remWindow = findViewById(R.id.rem_output);
         serverToggle = findViewById(R.id.serverToggle);
 
+        langSpinner = findViewById(R.id.lang);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, languages);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        langSpinner.setAdapter(adapter);
+        langSpinner.setSelection(18);
+        langSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                lang = languages[i];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                lang = languages[18];
+            }
+        });
+
         //Getting arguments from the calling intent
         Intent callingIntent = getIntent();
-        String scriptID = callingIntent.getExtras().getString("idSelected", null);
-        currentMode = callingIntent.getExtras().getInt("currentMode", -1);
+
+        fileName = callingIntent.getExtras().getString("fileName", null);
+        filePath = callingIntent.getExtras().getString("filePath", null);
+        scriptType = callingIntent.getExtras().getString("scripttype",null);
+
+        //Load File
+        StringBuilder text = new StringBuilder();
+        try{
+            File file = new File(filePath);
+            if(file.exists()) {
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String line;
+
+                while ((line = br.readLine()) != null) {
+                    text.append(line);
+                    text.append('\n');
+                }
+                br.close();
+            }else{
+                goBackToSelector();
+            }
+        }catch (Exception e ){
+            e.printStackTrace();
+            goBackToSelector();
+        }
+
+        code = text.toString();
 
         //To get script object from the scriptId
-        if (currentMode == DUCKYSCRIPT_EDIT) {
-            ScriptsManager db = new ScriptsManager(this);
-            if (scriptID != null) {
-                //Stay if the script id is not null
-                currentScript = db.getScript(scriptID);
-            } else {
-                //Go back to the calling activity if the could'nt get id
-                goBackToSelector();
-            }
-        } else if (currentMode == COMMANDLINE_EDIT) {
-            CommandLineManager commandLineDB = new CommandLineManager(this);
-            if (scriptID != null) {
-                currentCLScript = commandLineDB.getScript(scriptID);
-            } else {
-                goBackToSelector();
-            }
+        if (scriptType == "duckyscript") {
+
+        } else if (scriptType == "commandscript") {
+//            CommandLineManager commandLineDB = new CommandLineManager(this);
+//            if (scriptID != null) {
+//                currentCLScript = commandLineDB.getScript(scriptID);
+//            } else {
+//                goBackToSelector();
+//            }
         }
 
         appContext = this;
@@ -125,11 +173,15 @@ public class ExecuterActivity extends AppCompatActivity {
         if (!DUtils.checkForFiles()) {
             DUtils.setupFilesForInjection(this);
         }
-        if (currentMode == DUCKYSCRIPT_EDIT) {
-            new ExecuterAsync().execute(currentScript);
-        } else if (currentMode == COMMANDLINE_EDIT) {
-            new ExecuterAsync().execute(currentCLScript.convertToScript());
-        }
+//        if (currentMode == DUCKYSCRIPT_EDIT) {
+//            new ExecuterAsync().execute(currentScript);
+//        } else if (currentMode == COMMANDLINE_EDIT) {
+//            new ExecuterAsync().execute(currentCLScript.convertToScript());
+//        }
+        Code script = new Code();
+        script.code = code;
+        script.lang = lang;
+        new ExecuterAsync().execute(script);
         runButton.setEnabled(false);
     }
 
@@ -160,22 +212,22 @@ public class ExecuterActivity extends AppCompatActivity {
 
 
     //Class to execute the duckyscript without blocking the main thread
-    public class ExecuterAsync extends AsyncTask<Script, Float, Integer> {
+    public class ExecuterAsync extends AsyncTask<Code, Float, Integer> {
 
-        protected Integer doInBackground(Script... scripts) {
+        protected Integer doInBackground(Code... scripts) {
             try {
                 publishProgress(0f);
-                Script scriptToRun = scripts[0];
+                Code scriptToRun = scripts[0];
                 //Initialize the superuser shell
                 Process process = Runtime.getRuntime().exec("su");
                 DataOutputStream os = new DataOutputStream(process.getOutputStream());
                 os.writeBytes("cd " + DUtils.binHome + '\n');
 
                 //for each line run the codes
-                ArrayList<String> duckyLines = new ArrayList<>(Arrays.asList(scriptToRun.getCode().replaceAll("\\r", "").split("\n")));
+                ArrayList<String> duckyLines = new ArrayList<>(Arrays.asList(scriptToRun.code.replaceAll("\\r", "").split("\n")));
                 String lastLine = "";
                 try {
-                    DuckConverter.loadAllProperties(scriptToRun.getLang(), appContext);
+                    DuckConverter.loadAllProperties(scriptToRun.lang, appContext);
                     String IPstring = DUtils.getIPAddress(true);
                     currentIP = IPstring;
                     usbIP = "192.168.42.129";
@@ -239,6 +291,11 @@ public class ExecuterActivity extends AppCompatActivity {
             executionFinished();
         }
 
+
     }
 
+    private static class Code{
+        public String code;
+        public String lang;
+    }
 }

@@ -56,18 +56,19 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
                 responseReaderIntent.putExtra("fileName", scriptList.get(position));
                 responseReaderIntent.putExtra("filePath", Environment.getExternalStorageDirectory().toString()+"/DroidDucky/DuckyScripts/"+scriptList.get(position));
                 responseReaderIntent.putExtra("canEdit",true);
+                responseReaderIntent.putExtra("scripttype","duckyscript");
                 mainActivityContext.startActivityForResult(responseReaderIntent, result);
             }
         });
         holder.run.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //scriptList.get(position).executeCode(mainActivityContext);
                 final int result = 1;
-                //Intent codeEditorIntent = new Intent(v.getContext(), ExecuterActivity.class);
-//                codeEditorIntent.putExtra("idSelected", scriptList.get(position).getID());
-//                codeEditorIntent.putExtra("currentMode", 0);
-//                mainActivityContext.startActivityForResult(codeEditorIntent, result);
+                Intent executeIntent = new Intent(v.getContext(), ExecuterActivity.class);
+                executeIntent.putExtra("fileName", scriptList.get(position));
+                executeIntent.putExtra("filePath", Environment.getExternalStorageDirectory().toString()+"/DroidDucky/DuckyScripts/"+scriptList.get(position));
+                executeIntent.putExtra("scripttype","duckyscript");
+                mainActivityContext.startActivityForResult(executeIntent, result);
             }
         });
         holder.delete.setOnClickListener(new View.OnClickListener() {

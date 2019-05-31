@@ -32,6 +32,7 @@ public class ResponseReader extends AppCompatActivity {
     String fileName;
     String filePath;
     Boolean canEdit;
+    String scriptType;
 
     EditText responseTextBox;
     @Override
@@ -43,6 +44,8 @@ public class ResponseReader extends AppCompatActivity {
         fileName = callingIntent.getExtras().getString("fileName", null);
         filePath = callingIntent.getExtras().getString("filePath", null);
         canEdit = callingIntent.getExtras().getBoolean("canEdit",false);
+        scriptType = callingIntent.getExtras().getString("scripttype",null);
+
 
         //If cant edit need to hide the elements where we have the save and run code
         if(!canEdit){
@@ -113,7 +116,12 @@ public class ResponseReader extends AppCompatActivity {
         runButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Open Executer here
+                final int result = 1;
+                Intent executeIntent = new Intent(getApplicationContext(), ExecuterActivity.class);
+                executeIntent.putExtra("fileName", fileName);
+                executeIntent.putExtra("filePath", filePath);
+                executeIntent.putExtra("scripttype","duckyscript");
+                startActivityForResult(executeIntent, result);
             }
         });
 
@@ -147,6 +155,7 @@ public class ResponseReader extends AppCompatActivity {
                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(MaterialDialog dialog, DialogAction which) {
+                            // TODO : change this filepath to new filepath if specified
                             writeFile(filePath,responseTextBox.getText().toString());
                             goBackToSelector();
                         }
