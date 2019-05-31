@@ -45,6 +45,9 @@ public class JSExecuterActivity extends AppCompatActivity{
     private ToggleButton serverToggle;
     private httpserver server;
 
+    String filePath;
+    String code;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,6 +58,35 @@ public class JSExecuterActivity extends AppCompatActivity{
         runButton = findViewById(R.id.runcode);
         remWindow = findViewById(R.id.rem_output);
         serverToggle = findViewById(R.id.serverToggle);
+
+        Intent callingIntent = getIntent();
+        filePath = callingIntent.getExtras().getString("filePath", null);
+        if(filePath==null){
+            goBackToSelector();
+        }
+
+        //Load File
+        StringBuilder text = new StringBuilder();
+        try{
+            File file = new File(filePath);
+            if(file.exists()) {
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String line;
+
+                while ((line = br.readLine()) != null) {
+                    text.append(line);
+                    text.append('\n');
+                }
+                br.close();
+            }else{
+                goBackToSelector();
+            }
+        }catch (Exception e ){
+            e.printStackTrace();
+            goBackToSelector();
+        }
+
+        code = text.toString();
 
         //Get toolbar to change title and stuff
         final Toolbar toolbar = findViewById(R.id.executer_toolbar);
@@ -109,7 +141,6 @@ public class JSExecuterActivity extends AppCompatActivity{
         if (!DUtils.checkForFiles()) {
             DUtils.setupFilesForInjection(appContext);
         }
-        String code = "ducky.SendCommand('GUI r');ducky.Delay(1000);ducky.SendString('notepad');ducky.Delay(1000);ducky.SendCommand('enter');ducky.Delay(1000);ducky.WriteFile('draguve.txt');";
         new JSExecuterAsync().execute(code);
         runButton.setEnabled(false);
     }

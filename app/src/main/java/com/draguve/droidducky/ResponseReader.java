@@ -135,7 +135,10 @@ public class ResponseReader extends AppCompatActivity {
                     executeIntent.putExtra("scripttype","duckyscript");
                     startActivityForResult(executeIntent, result);
                 }else if(scriptType.equals("js")){
-
+                    final int result = 1;
+                    Intent executerIntent = new Intent(getApplicationContext(), JSExecuterActivity.class);
+                    executerIntent.putExtra("filePath", filePath);
+                    startActivityForResult(executerIntent, result);
                 }
 
             }
@@ -193,7 +196,7 @@ public class ResponseReader extends AppCompatActivity {
 
     void SaveAs(String filePath){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("FileName");
+        builder.setTitle("new FileName");
 
         final EditText input = new EditText(this);
         input.setInputType(InputType.TYPE_CLASS_TEXT);

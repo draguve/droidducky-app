@@ -109,18 +109,6 @@ public class ExecuterActivity extends AppCompatActivity {
 
         code = text.toString();
 
-        //To get script object from the scriptId
-        if (scriptType == "duckyscript") {
-
-        } else if (scriptType == "commandscript") {
-//            CommandLineManager commandLineDB = new CommandLineManager(this);
-//            if (scriptID != null) {
-//                currentCLScript = commandLineDB.getScript(scriptID);
-//            } else {
-//                goBackToSelector();
-//            }
-        }
-
         appContext = this;
 
         //Get toolbar to change title and stuff

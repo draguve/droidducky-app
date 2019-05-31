@@ -55,10 +55,13 @@ public class JSAdapter extends RecyclerView.Adapter<JSAdapter.JSHolder> {
         holder.runCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Code to start jsexecuter
+                final int result = 1;
+                Intent executerIntent = new Intent(v.getContext(), JSExecuterActivity.class);
+                executerIntent.putExtra("filePath", Environment.getExternalStorageDirectory().toString()+"/Droidducky/JavaScript/"+fileList.get(position));
+                mainActivityContext.startActivityForResult(executerIntent, result);
             }
         });
-        holder.runCode.setOnClickListener(new View.OnClickListener() {
+        holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 new MaterialDialog.Builder(mainActivityContext)
