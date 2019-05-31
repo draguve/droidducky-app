@@ -110,7 +110,7 @@ public class ResponseReader extends AppCompatActivity {
         });
 
         final Button runButton = findViewById(R.id.runcode);
-        saveButton.setOnClickListener(new View.OnClickListener() {
+        runButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //Open Executer here

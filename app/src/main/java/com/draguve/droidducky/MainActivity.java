@@ -52,6 +52,14 @@ public class MainActivity extends AppCompatActivity
         if (!codeFolder.exists()) {
             codeFolder.mkdirs();
         }
+        File scriptsFolder = new File(file, "DuckyScripts");
+        if (!codeFolder.exists()) {
+            codeFolder.mkdirs();
+        }
+        File cmdFolder = new File(file, "CommandScripts");
+        if (!codeFolder.exists()) {
+            codeFolder.mkdirs();
+        }
     }
 
     @Override

@@ -7,29 +7,34 @@ package com.draguve.droidducky;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Debug;
+import android.os.Environment;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 
+import java.io.File;
 import java.util.List;
+
+import javax.xml.datatype.Duration;
 
 
 public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHolder> {
 
-    private List<Script> scriptList;
+    private List<String> scriptList;
     private Activity mainActivityContext;
-    private ScriptsManager db;
 
-    public ScriptsAdapter(List<Script> scriptList, Context mainActivityContext) {
+    public ScriptsAdapter(List<String> scriptList, Context mainActivityContext) {
         this.scriptList = scriptList;
         this.mainActivityContext = (Activity) mainActivityContext;
-        db = new ScriptsManager(mainActivityContext);
     }
 
     @Override
@@ -47,10 +52,11 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
             @Override
             public void onClick(View v) {
                 final int result = 1;
-                Intent codeEditorIntent = new Intent(v.getContext(), CodeEditor.class);
-                codeEditorIntent.putExtra("idSelected", scriptList.get(position).getID());
-                codeEditorIntent.putExtra("editingMode", 0);
-                mainActivityContext.startActivityForResult(codeEditorIntent, result);
+                Intent responseReaderIntent = new Intent(v.getContext(), ResponseReader.class);
+                responseReaderIntent.putExtra("fileName", scriptList.get(position));
+                responseReaderIntent.putExtra("filePath", Environment.getExternalStorageDirectory().toString()+"/DroidDucky/DuckyScripts/"+scriptList.get(position));
+                responseReaderIntent.putExtra("canEdit",true);
+                mainActivityContext.startActivityForResult(responseReaderIntent, result);
             }
         });
         holder.run.setOnClickListener(new View.OnClickListener() {
@@ -58,10 +64,10 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
             public void onClick(View v) {
                 //scriptList.get(position).executeCode(mainActivityContext);
                 final int result = 1;
-                Intent codeEditorIntent = new Intent(v.getContext(), ExecuterActivity.class);
-                codeEditorIntent.putExtra("idSelected", scriptList.get(position).getID());
-                codeEditorIntent.putExtra("currentMode", 0);
-                mainActivityContext.startActivityForResult(codeEditorIntent, result);
+                //Intent codeEditorIntent = new Intent(v.getContext(), ExecuterActivity.class);
+//                codeEditorIntent.putExtra("idSelected", scriptList.get(position).getID());
+//                codeEditorIntent.putExtra("currentMode", 0);
+//                mainActivityContext.startActivityForResult(codeEditorIntent, result);
             }
         });
         holder.delete.setOnClickListener(new View.OnClickListener() {
@@ -74,16 +80,19 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
                         .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
                             public void onClick(MaterialDialog dialog, DialogAction which) {
-                                db.deleteScript(scriptList.get(position).getID());
-                                updateScriptList(db.getAllScripts());
+                                File toDelete = new File(scriptList.get(position));
+                                if(toDelete.delete()){
+                                    Toast.makeText(mainActivityContext,"FileDeleted", Toast.LENGTH_LONG);
+                                }else{
+                                    Log.e("ScriptsAdapter","Unable to delete a file");
+                                }
                             }
                         })
                         .show();
             }
         });
-        Script script = scriptList.get(position);
-        holder.title.setText(script.getName());
-        holder.genre.setText(script.getLang().toUpperCase());
+        String script = scriptList.get(position);
+        holder.title.setText(script);
     }
 
     @Override
@@ -91,14 +100,10 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
         return scriptList.size();
     }
 
-    public void updateScriptList(List<Script> scripts) {
+    public void updateScriptList(List<String> scripts) {
         this.scriptList.clear();
         this.scriptList.addAll(scripts);
         this.notifyDataSetChanged();
-    }
-
-    public List<Script> getCurrentList() {
-        return scriptList;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
