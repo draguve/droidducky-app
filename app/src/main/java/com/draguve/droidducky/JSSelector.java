@@ -101,4 +101,11 @@ public class JSSelector extends Fragment {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        scriptList = getAllStoredResponse();
+        mAdapter.updateScriptList(scriptList);
+    }
 }

@@ -82,6 +82,12 @@ public class JSAdapter extends RecyclerView.Adapter<JSAdapter.JSHolder> {
         holder.title.setText(fileList.get(position));
     }
 
+    public void updateScriptList(List<String> scripts) {
+        this.fileList.clear();
+        this.fileList.addAll(scripts);
+        this.notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
         return fileList.size();
