@@ -82,6 +82,9 @@ public class ExecuterActivity extends AppCompatActivity {
         fileName = callingIntent.getExtras().getString("fileName", null);
         filePath = callingIntent.getExtras().getString("filePath", null);
         scriptType = callingIntent.getExtras().getString("scripttype",null);
+        if(fileName == null || filePath == null || scriptType == null){
+            goBackToSelector();
+        }
 
         //Load File
         StringBuilder text = new StringBuilder();
