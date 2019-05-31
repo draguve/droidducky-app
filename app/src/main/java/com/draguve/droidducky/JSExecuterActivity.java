@@ -10,8 +10,11 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -44,6 +47,11 @@ public class JSExecuterActivity extends AppCompatActivity{
     private TextView remWindow;
     private ToggleButton serverToggle;
     private httpserver server;
+    private Spinner langSpinner;
+    private static final String[] languages = {"be", "br", "ca", "ch", "de", "dk", "es", "fi", "fr", "gb", "hr", "it", "no", "pt", "ru", "si", "sv", "tr", "us"};
+
+    String filePath;
+    String code;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +63,52 @@ public class JSExecuterActivity extends AppCompatActivity{
         runButton = findViewById(R.id.runcode);
         remWindow = findViewById(R.id.rem_output);
         serverToggle = findViewById(R.id.serverToggle);
+
+        langSpinner = findViewById(R.id.lang);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, languages);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        langSpinner.setAdapter(adapter);
+        langSpinner.setSelection(18);
+        langSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                lang = languages[i];
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                lang = languages[18];
+            }
+        });
+
+        Intent callingIntent = getIntent();
+        filePath = callingIntent.getExtras().getString("filePath", null);
+        if(filePath==null){
+            goBackToSelector();
+        }
+
+        //Load File
+        StringBuilder text = new StringBuilder();
+        try{
+            File file = new File(filePath);
+            if(file.exists()) {
+                BufferedReader br = new BufferedReader(new FileReader(file));
+                String line;
+
+                while ((line = br.readLine()) != null) {
+                    text.append(line);
+                    text.append('\n');
+                }
+                br.close();
+            }else{
+                goBackToSelector();
+            }
+        }catch (Exception e ){
+            e.printStackTrace();
+            goBackToSelector();
+        }
+
+        code = text.toString();
 
         //Get toolbar to change title and stuff
         final Toolbar toolbar = findViewById(R.id.executer_toolbar);
@@ -109,7 +163,6 @@ public class JSExecuterActivity extends AppCompatActivity{
         if (!DUtils.checkForFiles()) {
             DUtils.setupFilesForInjection(appContext);
         }
-        String code = "ducky.SendCommand('GUI r');ducky.Delay(1000);ducky.SendString('notepad');ducky.Delay(1000);ducky.SendCommand('enter');ducky.Delay(1000);ducky.WriteFile('draguve.txt');";
         new JSExecuterAsync().execute(code);
         runButton.setEnabled(false);
     }

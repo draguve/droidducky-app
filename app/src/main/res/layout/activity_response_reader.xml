@@ -36,6 +36,28 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:gravity="center|bottom"
+        android:id="@+id/canEdit">
+        <Button
+            android:id="@+id/runcode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Test"/>
+        <Button
+            android:id="@+id/save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save"/>
+        <Button
+            android:id="@+id/saveas"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Save As"/>
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:gravity="center|bottom">
 
         <com.rengwuxian.materialedittext.MaterialEditText

@@ -27,11 +27,19 @@
         android:layout_height="wrap_content"
         android:text="Run"
         android:onClick="executeCode"
-            android:layout_gravity="center"/>
+        android:layout_gravity="center"/>
+
         <ToggleButton
             android:id="@+id/serverToggle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
+
+        <Spinner
+            android:id="@+id/lang"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:drawable/btn_dropdown"
+            android:spinnerMode="dropdown"/>
     </LinearLayout>
 
     <ProgressBar

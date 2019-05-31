@@ -141,29 +141,4 @@ public class DUtils {
         } // for now eat exceptions
         return "";
     }
-
-    public void addFileToCodes(String filename, Context appContext) {
-        File path = Environment.getExternalStorageDirectory();
-        File file = new File(path, "/DroidDucky/" + filename.trim());
-        String finalCode = "";
-        if (file.exists()) {
-            try {
-                BufferedReader bufferedReader = new BufferedReader(new FileReader(file));
-                String receiveString = "";
-                while ((receiveString = bufferedReader.readLine()) != null) {
-                    finalCode += receiveString + "\n";
-                }
-                bufferedReader.close();
-                Script toAdd = new Script(filename, finalCode, "us");
-                ScriptsManager db = new ScriptsManager(appContext);
-                db.addScript(toAdd);
-            } catch (FileNotFoundException e) {
-                Log.e("login activity", "File not found: " + e.toString());
-            } catch (IOException e) {
-                Log.e("login activity", "Can not read file: " + e.toString());
-            }
-        } else {
-            Toast.makeText(appContext, "Can't Find File", Toast.LENGTH_SHORT);
-        }
-    }
 }

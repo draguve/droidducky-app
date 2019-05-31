@@ -112,7 +112,7 @@ public class Response extends Fragment {
 
     ArrayList<ResponseItem> getAllStoredResponse(){
         ArrayList<ResponseItem> responses = new ArrayList<ResponseItem>();
-        String path = Environment.getExternalStorageDirectory().toString()+"/DroidDucky/responses/";
+        String path = Environment.getExternalStorageDirectory().toString()+"/Droidducky/responses/";
         File directory = new File(path);
         File[] files = directory.listFiles();
         if(files!=null){
