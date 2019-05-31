@@ -23,7 +23,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 
@@ -119,10 +122,15 @@ public class DuckyScript extends Fragment {
 
 
     public void addNewCode(View view) {
-//        Intent codeEditorIntent = new Intent(getActivity(), CodeEditor.class);
-//        codeEditorIntent.putExtra("idSelected", (String) null);
-//        codeEditorIntent.putExtra("editingMode", 0);
-//        startActivityForResult(codeEditorIntent, OPEN_WRITER);
+        DateFormat df = new SimpleDateFormat("EEE,d-MMM-yyyy-HH:mm:ss");
+        String newFileName = df.format(Calendar.getInstance().getTime())+".txt";
+        final int result = 1;
+        Intent responseReaderIntent = new Intent(view.getContext(), ResponseReader.class);
+        responseReaderIntent.putExtra("fileName",newFileName);
+        responseReaderIntent.putExtra("filePath", Environment.getExternalStorageDirectory().toString()+"/Droidducky/DuckyScripts/"+newFileName);
+        responseReaderIntent.putExtra("canEdit",true);
+        responseReaderIntent.putExtra("scripttype","duckyscript");
+        startActivityForResult(responseReaderIntent, result);
     }
 
     @Override

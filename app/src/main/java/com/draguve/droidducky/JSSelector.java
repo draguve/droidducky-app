@@ -19,7 +19,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 public class JSSelector extends Fragment {
@@ -57,7 +60,15 @@ public class JSSelector extends Fragment {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //What to do when we press the fab
+                DateFormat df = new SimpleDateFormat("EEE,d-MMM-yyyy-HH:mm:ss");
+                String newFileName = df.format(Calendar.getInstance().getTime())+".js";
+                final int result = 1;
+                Intent responseReaderIntent = new Intent(view.getContext(), ResponseReader.class);
+                responseReaderIntent.putExtra("fileName",newFileName);
+                responseReaderIntent.putExtra("filePath", Environment.getExternalStorageDirectory().toString()+"/Droidducky/DuckyScripts/"+newFileName);
+                responseReaderIntent.putExtra("canEdit",true);
+                responseReaderIntent.putExtra("scripttype","js");
+                startActivityForResult(responseReaderIntent, result);
             }
         });
 
