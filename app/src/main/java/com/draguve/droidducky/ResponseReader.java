@@ -1,12 +1,15 @@
 package com.draguve.droidducky;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Debug;
 import android.os.Environment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
@@ -108,7 +111,15 @@ public class ResponseReader extends AppCompatActivity {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                saveScript();
+                saveScript(filePath);
+            }
+        });
+
+        final Button saveAsButton = findViewById(R.id.saveas);
+        saveAsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SaveAs(filePath);
             }
         });
 
@@ -116,14 +127,14 @@ public class ResponseReader extends AppCompatActivity {
         runButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(scriptType.equals("")){
+                if(scriptType.equals("duckyscript")){
                     final int result = 1;
                     Intent executeIntent = new Intent(getApplicationContext(), ExecuterActivity.class);
                     executeIntent.putExtra("fileName", fileName);
                     executeIntent.putExtra("filePath", filePath);
                     executeIntent.putExtra("scripttype","duckyscript");
                     startActivityForResult(executeIntent, result);
-                }else if(scriptType.equals("")){
+                }else if(scriptType.equals("js")){
 
                 }
 
@@ -150,18 +161,17 @@ public class ResponseReader extends AppCompatActivity {
         finish();
     }
 
-    public void saveScript() {
+    void saveScript(final String SaveLocation) {
         if (canEdit) {
             new MaterialDialog.Builder(this)
-                    .title("Do you want to save the script")
+                    .title("Do you want to overwrite the script")
                     .positiveText("Save Script")
                     .negativeText("Cancel")
                     .neutralText("Don't Save")
                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(MaterialDialog dialog, DialogAction which) {
-                            // TODO : change this filepath to new filepath if specified
-                            writeFile(filePath,responseTextBox.getText().toString());
+                            writeFile(SaveLocation,responseTextBox.getText().toString());
                             goBackToSelector();
                         }
                     })
@@ -181,9 +191,34 @@ public class ResponseReader extends AppCompatActivity {
         }
     }
 
-    void writeFile(String fileName, String data) {
+    void SaveAs(String filePath){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("FileName");
 
-        File outFile = new File(Environment.getExternalStorageDirectory(), fileName);
+        final EditText input = new EditText(this);
+        input.setInputType(InputType.TYPE_CLASS_TEXT);
+        input.setText(filePath);
+        builder.setView(input);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                writeFile(input.getText().toString(),responseTextBox.getText().toString());
+                goBackToSelector();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+    }
+
+    void writeFile(String filePath, String data) {
+
+        File outFile = new File(filePath);
         FileOutputStream out;
         try {
             out = new FileOutputStream(outFile, false);

@@ -81,7 +81,6 @@ public class JSSelector extends Fragment {
             for (int i = 0; i < files.length; i++)
             {
                 responses.add(files[i].getName());
-                Log.e("Test",files[i].getName());
             }
         }
         return responses;
