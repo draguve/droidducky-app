@@ -30,6 +30,17 @@ Computers recognize it as a regular keyboard and accept pre-programmed keystroke
 * ``` ducky.WriteFile(String filename) ``` writes a file char by char using the hid
 * ``` ducky.PrintIP(Boolean wifi) ``` write the IP of the android device , if true then the wifi ip else the rndis ip
 
+ExampleScript
+```
+ducky.SendCommand('GUI r');
+ducky.Delay(1000);
+ducky.SendString('notepad');
+ducky.Delay(1000);
+ducky.SendCommand('enter');
+ducky.Delay(1000);
+ducky.WriteFile('draguve.txt');
+```
+
 
 ## Prerequisites
 * Rooted device with unlocked bootloader
@@ -37,7 +48,6 @@ Computers recognize it as a regular keyboard and accept pre-programmed keystroke
 * Check this link for device specific procedure if you can't find a kernel on xda : [link](https://github.com/pelya/android-keyboard-gadget)
 
 ## Dependencies
-
 * The original hid-gadget-test is taken from [pelya](https://github.com/pelya/android-keyboard-gadget) used to write the keys to usb
 * [Nanohttpd](https://github.com/NanoHttpd/nanohttpd) used to create a http server on usb ethernet
 * [material-dialogs](https://github.com/afollestad/material-dialogs) used to create dialog boxes
