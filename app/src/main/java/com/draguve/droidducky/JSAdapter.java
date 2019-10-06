@@ -24,10 +24,12 @@ public class JSAdapter extends RecyclerView.Adapter<JSAdapter.JSHolder> {
 
     private List<String> fileList;
     private Activity mainActivityContext;
+    JSSelector selector;
 
-    public JSAdapter(List<String> scriptList, Context mainActivityContext) {
+    public JSAdapter(List<String> scriptList, Context mainActivityContext,JSSelector selector) {
         this.fileList = scriptList;
         this.mainActivityContext = (Activity) mainActivityContext;
+        this.selector = selector;
     }
 
     @Override
@@ -73,6 +75,7 @@ public class JSAdapter extends RecyclerView.Adapter<JSAdapter.JSHolder> {
                             public void onClick(MaterialDialog dialog, DialogAction which) {
                                 File toDelete = new File(Environment.getExternalStorageDirectory().toString()+"/Droidducky/JavaScript/"+fileList.get(position));
                                 if(toDelete.delete()){
+                                    updateScriptList(selector.getAllStoredResponse());
                                     Toast.makeText(mainActivityContext,"FileDeleted", Toast.LENGTH_LONG);
                                 }else{
                                     Log.e("JSAdapter","Unable to delete a file");

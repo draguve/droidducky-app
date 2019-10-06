@@ -31,10 +31,13 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
 
     private List<String> scriptList;
     private Activity mainActivityContext;
+    DuckyScript selector;
 
-    public ScriptsAdapter(List<String> scriptList, Context mainActivityContext) {
+
+    public ScriptsAdapter(List<String> scriptList, Context mainActivityContext,DuckyScript selector) {
         this.scriptList = scriptList;
         this.mainActivityContext = (Activity) mainActivityContext;
+        this.selector = selector;
     }
 
     @Override
@@ -83,6 +86,7 @@ public class ScriptsAdapter extends RecyclerView.Adapter<ScriptsAdapter.MyViewHo
                             public void onClick(MaterialDialog dialog, DialogAction which) {
                                 File toDelete = new File(Environment.getExternalStorageDirectory().toString()+"/Droidducky/DuckyScripts/"+scriptList.get(position));
                                 if(toDelete.delete()){
+                                    updateScriptList(selector.getAllStoredResponse());
                                     Toast.makeText(mainActivityContext,"FileDeleted", Toast.LENGTH_LONG);
                                 }else{
                                     Log.e("ScriptsAdapter","Unable to delete a file");

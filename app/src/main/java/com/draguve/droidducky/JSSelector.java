@@ -50,7 +50,7 @@ public class JSSelector extends Fragment implements SwipeRefreshLayout.OnRefresh
         View view = inflater.inflate(R.layout.fragment_jsselector, container, false);
         scriptList = getAllStoredResponse();
         recyclerView = view.findViewById(R.id.jsselector_recyclerview);
-        mAdapter = new JSAdapter(scriptList, getActivity());
+        mAdapter = new JSAdapter(scriptList, getActivity(),this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());

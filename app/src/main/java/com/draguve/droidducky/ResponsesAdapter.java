@@ -23,10 +23,12 @@ public class ResponsesAdapter extends RecyclerView.Adapter<ResponsesAdapter.Resp
 
     private List<Response.ResponseItem> responsesList;
     private Activity mainActivityContext;
+    private Response response;
 
-    public ResponsesAdapter(List<Response.ResponseItem> responsesList, Context mainActivityContext) {
+    public ResponsesAdapter(List<Response.ResponseItem> responsesList, Context mainActivityContext,Response response) {
         this.responsesList = responsesList;
         this.mainActivityContext = (Activity) mainActivityContext;
+        this.response = response;
     }
 
     @Override
@@ -73,6 +75,7 @@ public class ResponsesAdapter extends RecyclerView.Adapter<ResponsesAdapter.Resp
                                 File toDelete = new File(Environment.getExternalStorageDirectory().toString()+"/Droidducky/responses/"+responsesList.get(position));
                                 if(toDelete.delete()){
                                     Toast.makeText(mainActivityContext,"FileDeleted", Toast.LENGTH_LONG);
+                                    updateScriptList(response.getAllStoredResponse());
                                 }else{
                                     Log.e("Responses","Unable to delete a file");
                                 }
