@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -36,7 +37,7 @@ import java.util.List;
  */
 
 
-public class Response extends Fragment {
+public class Response extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -51,6 +52,8 @@ public class Response extends Fragment {
     private ResponsesAdapter mAdapter;
 
     private ArrayList<ResponseItem> responseItems;
+    SwipeRefreshLayout mSwipeRefreshLayout;
+
 
     public Response() {
         // Required empty public constructor
@@ -100,6 +103,14 @@ public class Response extends Fragment {
         mAdapter.notifyDataSetChanged();
         ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("Responses");
 
+        // SwipeRefreshLayout
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.response_container);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark);
+
         return view;
     }
 
@@ -136,6 +147,14 @@ public class Response extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onRefresh() {
+        responseItems = getAllStoredResponse();
+        mAdapter.updateScriptList(responseItems);
+        mAdapter.notifyDataSetChanged();
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     /**

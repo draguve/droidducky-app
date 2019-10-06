@@ -121,7 +121,6 @@ public class JSSelector extends Fragment implements SwipeRefreshLayout.OnRefresh
 
     @Override
     public void onRefresh() {
-        Log.e("this","ran");
         scriptList = getAllStoredResponse();
         mAdapter.updateScriptList(scriptList);
         mAdapter.notifyDataSetChanged();

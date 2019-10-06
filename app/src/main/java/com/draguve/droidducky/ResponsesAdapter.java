@@ -84,6 +84,12 @@ public class ResponsesAdapter extends RecyclerView.Adapter<ResponsesAdapter.Resp
         holder.title.setText(responsesList.get(position).fileName);
     }
 
+    public void updateScriptList(List<Response.ResponseItem> scripts) {
+        this.responsesList.clear();
+        this.responsesList.addAll(scripts);
+        this.notifyDataSetChanged();
+    }
+
     @Override
     public int getItemCount() {
         return responsesList.size();

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -38,7 +39,7 @@ import java.util.List;
  * Use the {@link DuckyScript#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class DuckyScript extends Fragment {
+public class DuckyScript extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
     static final int OPEN_WRITER = 1;
     static final int FIND_FILE = 1337;
     // TODO: Rename parameter arguments, choose names that match
@@ -52,6 +53,8 @@ public class DuckyScript extends Fragment {
     private RecyclerView recyclerView;
     private ScriptsAdapter mAdapter;
     private OnFragmentInteractionListener mListener;
+    SwipeRefreshLayout mSwipeRefreshLayout;
+
 
     public DuckyScript() {
         // Required empty public constructor
@@ -110,6 +113,14 @@ public class DuckyScript extends Fragment {
             }
         });
 
+        // SwipeRefreshLayout
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.duckscript_container);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark);
+
         return view;
     }
 
@@ -138,6 +149,14 @@ public class DuckyScript extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         scriptList = getAllStoredResponse();
         mAdapter.updateScriptList(scriptList);
+    }
+
+    @Override
+    public void onRefresh() {
+        scriptList = getAllStoredResponse();
+        mAdapter.updateScriptList(scriptList);
+        mAdapter.notifyDataSetChanged();
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
