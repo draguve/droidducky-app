@@ -93,7 +93,7 @@ public class Response extends Fragment implements SwipeRefreshLayout.OnRefreshLi
 
         responseItems = getAllStoredResponse();
         recyclerView = view.findViewById(R.id.response_recyclerview);
-        mAdapter = new ResponsesAdapter(responseItems, getActivity());
+        mAdapter = new ResponsesAdapter(responseItems, getActivity(),this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());

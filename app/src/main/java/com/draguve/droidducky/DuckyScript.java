@@ -36,7 +36,7 @@ import java.util.List;
  * Activities that contain this fragment must implement the
  * {@link DuckyScript.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link DuckyScript#newInstance} factory method to
+ * Use the {@link DuckyScript} factory method to
  * create an instance of this fragment.
  */
 public class DuckyScript extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
@@ -47,8 +47,6 @@ public class DuckyScript extends Fragment implements SwipeRefreshLayout.OnRefres
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
     private List<String> scriptList = new ArrayList<>();
     private RecyclerView recyclerView;
     private ScriptsAdapter mAdapter;
@@ -60,31 +58,10 @@ public class DuckyScript extends Fragment implements SwipeRefreshLayout.OnRefres
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment DuckyScript.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static DuckyScript newInstance(String param1, String param2) {
-        DuckyScript fragment = new DuckyScript();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -95,7 +72,7 @@ public class DuckyScript extends Fragment implements SwipeRefreshLayout.OnRefres
 
         scriptList = getAllStoredResponse();
         recyclerView = view.findViewById(R.id.duckyscript_recyclerview);
-        mAdapter = new ScriptsAdapter(scriptList, getActivity());
+        mAdapter = new ScriptsAdapter(scriptList, getActivity(),this);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.setItemAnimator(new DefaultItemAnimator());
