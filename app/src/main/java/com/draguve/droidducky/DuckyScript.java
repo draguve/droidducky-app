@@ -148,7 +148,7 @@ public class DuckyScript extends Fragment {
 
     ArrayList<String> getAllStoredResponse(){
         ArrayList<String> responses = new ArrayList<String>();
-        String path = Environment.getExternalStorageDirectory().toString()+"/DroidDucky/DuckyScripts/";
+        String path = Environment.getExternalStorageDirectory().toString()+"/Droidducky/DuckyScripts/";
         File directory = new File(path);
         File[] files = directory.listFiles();
         if(files!=null){
