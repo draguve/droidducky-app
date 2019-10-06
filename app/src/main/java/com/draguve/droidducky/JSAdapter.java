@@ -86,9 +86,9 @@ public class JSAdapter extends RecyclerView.Adapter<JSAdapter.JSHolder> {
     }
 
     public void updateScriptList(List<String> scripts) {
-        this.fileList.clear();
-        this.fileList.addAll(scripts);
-        this.notifyDataSetChanged();
+        fileList.clear();
+        fileList.addAll(scripts);
+        notifyDataSetChanged();
     }
 
     @Override

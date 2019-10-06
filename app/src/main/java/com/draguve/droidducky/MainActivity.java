@@ -49,16 +49,16 @@ public class MainActivity extends AppCompatActivity
             codeFolder.mkdirs();
         }
         File responseFolder = new File(file, "responses");
-        if (!codeFolder.exists()) {
-            codeFolder.mkdirs();
+        if (!responseFolder.exists()) {
+            responseFolder.mkdirs();
         }
         File scriptsFolder = new File(file, "DuckyScripts");
-        if (!codeFolder.exists()) {
-            codeFolder.mkdirs();
+        if (!scriptsFolder.exists()) {
+            scriptsFolder.mkdirs();
         }
         File cmdFolder = new File(file, "JavaScript");
-        if (!codeFolder.exists()) {
-            codeFolder.mkdirs();
+        if (!cmdFolder.exists()) {
+            cmdFolder.mkdirs();
         }
     }
 

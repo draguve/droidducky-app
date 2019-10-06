@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 26
-    buildToolsVersion "26.0.2"
     defaultConfig {
         applicationId "com.draguve.droidducky"
         minSdkVersion 23
@@ -20,10 +19,11 @@ android {
 }
 
 dependencies {
+    //noinspection GradleCompatible
     implementation 'com.android.support:design:26.1.0'
     implementation 'com.android.support:support-v4:26.1.0'
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
     implementation 'com.android.support:appcompat-v7:26.+'
@@ -32,6 +32,6 @@ dependencies {
     implementation 'org.nanohttpd:nanohttpd:2.3.1'
     implementation 'com.android.support:recyclerview-v7:26.1.0'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
     implementation 'com.eclipsesource.j2v8:j2v8:4.5.0@aar'
 }

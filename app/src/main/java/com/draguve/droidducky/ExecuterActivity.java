@@ -159,6 +159,10 @@ public class ExecuterActivity extends AppCompatActivity {
         return true;
     }
 
+    public void enableTether(View view){
+
+    }
+
     public void executeCode(View view) {
         remWindow.setText("");
         if (!DUtils.checkForFiles()) {

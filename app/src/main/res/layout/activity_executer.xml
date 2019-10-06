@@ -32,7 +32,8 @@
         <ToggleButton
             android:id="@+id/serverToggle"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:text="Enable Server"/>
 
         <Spinner
             android:id="@+id/lang"

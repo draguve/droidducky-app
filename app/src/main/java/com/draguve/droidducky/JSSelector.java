@@ -4,9 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.DividerItemDecoration;
@@ -25,13 +27,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
-public class JSSelector extends Fragment {
+public class JSSelector extends Fragment implements SwipeRefreshLayout.OnRefreshListener{
 
     private OnFragmentInteractionListener mListener;
 
     private RecyclerView recyclerView;
     private JSAdapter mAdapter;
     public List<String> scriptList;
+    SwipeRefreshLayout mSwipeRefreshLayout;
 
     public JSSelector() {
         // Required empty public constructor
@@ -72,6 +75,14 @@ public class JSSelector extends Fragment {
             }
         });
 
+        // SwipeRefreshLayout
+        mSwipeRefreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.js_container);
+        mSwipeRefreshLayout.setOnRefreshListener(this);
+        mSwipeRefreshLayout.setColorSchemeResources(R.color.colorPrimary,
+                android.R.color.holo_green_dark,
+                android.R.color.holo_orange_dark,
+                android.R.color.holo_blue_dark);
+
         ((AppCompatActivity) getActivity()).getSupportActionBar().setSubtitle("JavaScript");
         return view;
     }
@@ -106,6 +117,14 @@ public class JSSelector extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onRefresh() {
+        scriptList = getAllStoredResponse();
+        mAdapter.updateScriptList(scriptList);
+        mAdapter.notifyDataSetChanged();
+        mSwipeRefreshLayout.setRefreshing(false);
     }
 
     public interface OnFragmentInteractionListener {
